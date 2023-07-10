@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Npgsql;
 
 namespace ToDoApp
 {
@@ -84,6 +85,36 @@ namespace ToDoApp
                  )*/
 
             return null;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+           
+            
+                insertSQL();
+                this.Dispose();
+
+        }
+        private void insertSQL()
+        {
+            string title = this.textBox1.Text;
+            string memo = this.textBox2.Text;
+            string sql = $"INSERT INTO todo_items(title,date_start,date_end,memo) VALUES('{title}','{dateTimePicker1.Value}','{dateTimePicker2.Value}','{memo}');";
+            string ConnectionString =
+               "Server=127.0.0.1;"
+               + "Port=5432;"
+               + "Database=todoapp_db;"
+               + "User ID=postgres;"
+               + "Password=postgres;";
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
+            conn.Open();
+            
+               
+            NpgsqlCommand command = new NpgsqlCommand(sql, conn);
+            int result = command.ExecuteNonQuery();
+
+
+            conn.Close();
         }
     }
 }

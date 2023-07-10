@@ -28,22 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.panelRoot = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // panel1
+            // panelRoot
             // 
-            this.panel1.Location = new System.Drawing.Point(0, 3);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(450, 544);
-            this.panel1.TabIndex = 0;
+            this.panelRoot.Location = new System.Drawing.Point(0, 4);
+            this.panelRoot.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panelRoot.Name = "panelRoot";
+            this.panelRoot.Size = new System.Drawing.Size(600, 680);
+            this.panelRoot.TabIndex = 0;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(456, 12);
+            this.button1.Location = new System.Drawing.Point(608, 15);
+            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(89, 33);
+            this.button1.Size = new System.Drawing.Size(119, 41);
             this.button1.TabIndex = 1;
             this.button1.Text = "ToDoの入力";
             this.button1.UseVisualStyleBackColor = true;
@@ -51,11 +53,12 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(557, 559);
+            this.ClientSize = new System.Drawing.Size(743, 699);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.panelRoot);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
@@ -64,7 +67,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panelRoot;
         private System.Windows.Forms.Button button1;
     }
 }
