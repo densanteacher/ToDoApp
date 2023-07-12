@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Win32;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using static System.Net.Mime.MediaTypeNames;
+using Npgsql;
 
 namespace ToDoApp2
 {
@@ -29,21 +19,44 @@ namespace ToDoApp2
             {
                 this.Close();
             };
-
+            this.OK.Click += (s, e) =>
+            {
+                this.InsertSQL();
+                this.Close();
+            };
             this.ImageChoose.Click += (s, e) =>
             {
-
+                var ofd = new OpenFileDialog();
+                ofd.ShowDialog();
+                this.OpenImageFile(ofd.FileName);
+            };
+            
+            this.SelectedImage.Drop += (s, e) =>
+            {
+                DropImage(s, e);
             };
         }
 
-        private void image_Drop(object sender, DragEventArgs e)
+        private void DropImage(object sender, DragEventArgs e)
         {
             var fileNames = e.Data.GetData(DataFormats.FileDrop) as string[];
             if (fileNames is null) return;                    // nullなら返す
 
             var fileName = fileNames[0];                      // 画像ファイルのパスを取得
-            var ext = System.IO.Path.GetExtension(fileName).ToLower();  // 拡張子の確認
+            this.OpenImageFile(fileName);
+        }
 
+        /// <summary>
+        /// 画像ファイルを開いてImageコントロールに表示します。
+        /// </summary>
+        /// <param name="fileName">画像ファイルの名前です。</param>
+        private void OpenImageFile(string fileName)
+        {
+            var ext = System.IO.Path.GetExtension(fileName).ToLower();  // 拡張子の確認
+            if(ext == null)
+            {
+                return;
+            }
             // ファイルの拡張子が対応しているか確認する
             if (ext != ".bmp" && ext != ".jpg" && ext != ".jpeg" && ext != ".png" && ext != ".tiff" && ext != ".gif" && ext != ".icon")
             {
@@ -63,6 +76,31 @@ namespace ToDoApp2
             }
 
             SelectedImage.Source = bmpImage;
+        }
+        /// <summary>
+        /// SQLにデータを送信、保存します。
+        /// </summary>
+        private void InsertSQL()
+        {
+            string title = this.Title.Text;
+            string memo = this.Memo.Text;
+            string sql = $"INSERT INTO todo_items(title,date_start,date_end,memo,image) " +
+                $"VALUES('{title}','{StartDate.SelectedDate.Value}','{EndDate.SelectedDate.Value}','{memo}','{SelectedImage.Source}');";
+            string ConnectionString =
+               "Server=127.0.0.1;"
+               + "Port=5432;"
+               + "Database=todoapp_db;"
+               + "User ID=postgres;"
+               + "Password=postgres;";
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
+            conn.Open();
+
+
+            NpgsqlCommand command = new NpgsqlCommand(sql, conn);
+            int result = command.ExecuteNonQuery();
+
+
+            conn.Close();
         }
     }
 }
