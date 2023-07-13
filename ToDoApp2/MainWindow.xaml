@@ -5,20 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ToDoApp2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="ToDoリスト" Height="450" Width="800" FontSize="18">
     <Grid>
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="8*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Button Grid.Row="0" Grid.Column="2" Content="ToDo入力" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="Button_Click"/>
-        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" Text="Todoリスト" FontSize="20"/>
+        <Button Grid.Row="0" Grid.Column="3" Content="ToDo入力" Click="ClickInputToDo"/>
+        <Button Grid.Row="1" Grid.Column="3" Content="編集"/>
+        <Button Grid.Row="3" Grid.Column="3" Content="優先度↑"/>
+        <Button Grid.Row="4" Grid.Column="3" Content="優先度↓"/>
+        <ListBox Grid.Row="0" Grid.Column="2" x:Name="ToDoList"/>
+        <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="4" x:Name="test" Orientation="Vertical"/>
     </Grid>
 </Window>

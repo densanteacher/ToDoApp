@@ -17,14 +17,13 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="3*"/>
             <RowDefinition Height="*"/>
-
             <RowDefinition Height="*"/>
             <RowDefinition Height="3*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Grid.Column="0" Margin="5" TextWrapping="Wrap" Text="タイトル"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Grid.ColumnSpan="2" x:Name="Title" TextWrapping="Wrap" Text=""/>
-        <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" TextWrapping="Wrap" Text="メモ・備考"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Grid.ColumnSpan="2" x:Name="ToDoTitle" TextWrapping="Wrap" Text=""/>
+        <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" Text="メモ・備考"/>
         <TextBox Grid.Row="1" Grid.Column="1" Margin="5" Grid.ColumnSpan="2" x:Name="Memo" TextWrapping="Wrap" Text=""/>
         <TextBlock Grid.Row="2" Grid.Column="0" Margin="5" TextWrapping="Wrap" Text="開始日"/>
         <DatePicker Grid.Row="2" Grid.Column="1" Margin="5" x:Name="StartDate" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>

@@ -30,7 +30,6 @@ namespace ToDoApp2
                 ofd.ShowDialog();
                 this.OpenImageFile(ofd.FileName);
             };
-            
             this.SelectedImage.Drop += (s, e) =>
             {
                 DropImage(s, e);
@@ -82,7 +81,7 @@ namespace ToDoApp2
         /// </summary>
         private void InsertSQL()
         {
-            string title = this.Title.Text;
+            string title = this.ToDoTitle.Text;
             string memo = this.Memo.Text;
             string sql = $"INSERT INTO todo_items(title,date_start,date_end,memo,image) " +
                 $"VALUES('{title}','{StartDate.SelectedDate.Value}','{EndDate.SelectedDate.Value}','{memo}','{SelectedImage.Source}');";
