@@ -23,10 +23,19 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Button Grid.Row="0" Grid.Column="3" Content="ToDo入力" Click="ClickInputToDo"/>
-        <Button Grid.Row="1" Grid.Column="3" Content="編集"/>
+        <Button Grid.Row="1" Grid.Column="3" Content="詳細" Click="DetailButton_Click"/>
         <Button Grid.Row="3" Grid.Column="3" Content="優先度↑"/>
         <Button Grid.Row="4" Grid.Column="3" Content="優先度↓"/>
-        <ListBox Grid.Row="0" Grid.Column="2" x:Name="ToDoList"/>
-        <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="4" x:Name="test" Orientation="Vertical"/>
+        <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="6" x:Name="test" Orientation="Vertical"/>
+        <DataGrid Grid.Row="0" Grid.Column="1" Grid.RowSpan="6" Grid.ColumnSpan="2" x:Name="ToDoList" Margin="10"
+                  AutoGenerateColumns="False">
+           <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding id}" Visibility="Hidden"/>
+                <DataGridCheckBoxColumn Header="実行済み" Binding="{Binding check_done}"/>
+                <DataGridTextColumn Header="タイトル" Binding="{Binding title}" Width="120" IsReadOnly="True"/>
+                <DataGridTextColumn Header="メモ" Binding="{Binding memo}" Width="120" IsReadOnly="True"/>
+                <DataGridTextColumn Header="期限" Binding="{Binding date_end}" Width="160" IsReadOnly="True"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>

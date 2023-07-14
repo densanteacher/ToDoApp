@@ -1,7 +1,9 @@
 ﻿using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,9 +32,9 @@ namespace ToDoApp2
 
         private void ClickInputToDo(object sender, RoutedEventArgs e)
         {
-            ToDoInputWindow tdw = new ToDoInputWindow();
-            tdw.Owner = this;
-            tdw.ShowDialog();
+            var tdiw = new ToDoInputWindow();
+            tdiw.Owner = this;
+            tdiw.ShowDialog();
         }
 
         private void ShowToDoList()
@@ -44,6 +46,7 @@ namespace ToDoApp2
                + "User ID=postgres;"
                + "Password=postgres;";
             string sql = " SELECT * FROM todo_items";
+            List<DataGridItems> items = new List<DataGridItems>();
             var Connection = new NpgsqlConnection(ConnectionString);
             using (var command = new NpgsqlCommand(sql, Connection))
             {
@@ -57,9 +60,9 @@ namespace ToDoApp2
                     {
                         while (reader.Read())
                         {
-                            this.test.Children.Add(new TextBlock() { Text = $"{reader["title"]}" });
-
+                            items.Add(new DataGridItems((int)reader["id"],(bool)reader["check_done"], (string)reader["title"], (string)reader["memo"], (DateTime)reader["date_end"]));
                         }
+                        this.ToDoList.ItemsSource = items;
                     }
                     finally
                     {
@@ -68,6 +71,38 @@ namespace ToDoApp2
                     }
                 }
             }
+
+        }
+        public class DataGridItems
+        {
+            public DataGridItems(int id, bool check_done, string title, string memo, DateTime date_end)
+            {
+                this.id = id;
+                this.check_done = check_done;
+                this.title = title;
+                this.memo = memo;
+                this.date_end = date_end;
+            }
+            public int id { get; set; }
+            public bool check_done { get; set; }
+            public string title { get; set; }
+            public string memo { get; set; }
+            public DateTime date_end { get; set; }
+        }
+
+        private void DetailButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.ToDoList.UpdateLayout();
+            int RowCnt = this.ToDoList.Items.IndexOf(this.ToDoList.SelectedItem);
+            this.ToDoList.ScrollIntoView(ToDoList.SelectedItem);
+            var test = (TextBlock)this.ToDoList.Columns[1].GetCellContent(RowCnt);
+            string selectedRow = test?.Text;
+            bool isSuccess = int.TryParse(selectedRow, out var id);
+            MessageBox.Show(this, id.ToString());
+            if (!isSuccess) return;
+            var tdew = new ToDoEditWindow(id);
+            tdew.Owner = this;
+            tdew.ShowDialog();
         }
     }
 }
