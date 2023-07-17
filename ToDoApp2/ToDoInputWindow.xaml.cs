@@ -21,7 +21,7 @@ namespace ToDoApp2
             };
             this.OK.Click += (s, e) =>
             {
-                this.InsertSQL();
+                this.InsertToDoItem();
                 this.Close();
             };
             this.ImageChoose.Click += (s, e) =>
@@ -77,16 +77,28 @@ namespace ToDoApp2
             SelectedImage.Source = bmpImage;
         }
 
-        // TODO: このメソッドで挿入されるのは、todo_item となります。Insert"SQL" という名前だと、SQLを挿入するという訳のわからない意味になります。
+        // DONE: このメソッドで挿入されるのは、todo_item となります。Insert"SQL" という名前だと、SQLを挿入するという訳のわからない意味になります。
         /// <summary>
         /// SQLにデータを送信、保存します。
         /// </summary>
-        private void InsertSQL()
+        private void InsertToDoItem()
         {
             string title = this.ToDoTitle.Text;
             string memo = this.Memo.Text;
-            string sql = $"INSERT INTO todo_items(title,date_start,date_end,memo,image) " +
-                $"VALUES('{title}','{StartDate.SelectedDate.Value}','{EndDate.SelectedDate.Value}','{memo}','{SelectedImage.Source}');";
+            string sql = $@"INSERT INTO todo_items(
+                                title
+                               ,date_start
+                               ,date_end
+                               ,memo
+                               ,image
+                            ) 
+                            VALUES(
+                                '{title}'
+                               ,'{StartDate.SelectedDate.Value}'
+                               ,'{EndDate.SelectedDate.Value}'
+                               ,'{memo}'
+                               ,'{SelectedImage.Source}'
+                            );";
 
             // INFO: C# には @"" の文字列でエスケープなしで記述できる方法がありますが、これは改行も含めることができます。
             // C# でｈ逐次的文字列リテラルなんて呼び方をしますが、他のプログラミング言語ではヒアドキュメントと呼ばれます。
@@ -112,22 +124,15 @@ VALUES (
 
             // TODO: キャメルケース
             // TODO: Constantsを定義して接続文字列を移しましょう。
-            string ConnectionString =
-               "Server=127.0.0.1;"
-               + "Port=5432;"
-               + "Database=todoapp_db;"
-               + "User ID=postgres;"
-               + "Password=postgres;";
 
             // TODO: ファイルやDBなど外部のリソースを使うときは忘れずにusing句を使いましょう。
             // TODO: IDBConnectionで受けてみましょう。
-            NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
-            conn.Open();
-            NpgsqlCommand command = new NpgsqlCommand(sql, conn);
-            int result = command.ExecuteNonQuery();
-
-
-            conn.Close();
+            using(NpgsqlConnection conn = new NpgsqlConnection(Constants.ConnectionString)){
+                conn.Open();
+                NpgsqlCommand command = new NpgsqlCommand(sql, conn);
+                int result = command.ExecuteNonQuery();
+            }
+            
         }
     }
 }

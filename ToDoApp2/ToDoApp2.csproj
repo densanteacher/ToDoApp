@@ -103,6 +103,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Constants.cs" />
     <Compile Include="ToDoEditWindow.xaml.cs">
       <DependentUpon>ToDoEditWindow.xaml</DependentUpon>
     </Compile>
