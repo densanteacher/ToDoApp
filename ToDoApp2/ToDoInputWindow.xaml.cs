@@ -1,8 +1,12 @@
 ﻿using Microsoft.Win32;
+using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Npgsql;
+using System.Data;
+using System.Data.SqlClient;
+using System.Data.Common;
 
 namespace ToDoApp2
 {
@@ -13,7 +17,7 @@ namespace ToDoApp2
     {
         public ToDoInputWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
             this.Cancel.Click += (s, e) =>
             {
@@ -29,10 +33,6 @@ namespace ToDoApp2
                 var ofd = new OpenFileDialog();
                 ofd.ShowDialog();
                 this.OpenImageFile(ofd.FileName);
-            };
-            this.SelectedImage.Drop += (s, e) =>
-            {
-                DropImage(s, e);
             };
         }
 
@@ -52,7 +52,7 @@ namespace ToDoApp2
         private void OpenImageFile(string fileName)
         {
             var ext = System.IO.Path.GetExtension(fileName).ToLower();  // 拡張子の確認
-            if(ext == null)
+            if (ext == null)
             {
                 return;
             }
@@ -83,15 +83,17 @@ namespace ToDoApp2
         /// </summary>
         private void InsertToDoItem()
         {
-            string title = this.ToDoTitle.Text;
-            string memo = this.Memo.Text;
-            string sql = $@"INSERT INTO todo_items(
+            try
+            {
+                string title = this.ToDoTitle.Text;
+                string memo = this.Memo.Text;
+                string sql = $@"INSERT INTO todo_items(
                                 title
                                ,date_start
                                ,date_end
                                ,memo
                                ,image
-                            ) 
+                            )
                             VALUES(
                                 '{title}'
                                ,'{StartDate.SelectedDate.Value}'
@@ -100,11 +102,11 @@ namespace ToDoApp2
                                ,'{SelectedImage.Source}'
                             );";
 
-            // INFO: C# には @"" の文字列でエスケープなしで記述できる方法がありますが、これは改行も含めることができます。
-            // C# でｈ逐次的文字列リテラルなんて呼び方をしますが、他のプログラミング言語ではヒアドキュメントと呼ばれます。
-            // おそらくヒアドキュメントの方が通りがよいかと思います。
-            // SQL文などの長い文字列を記述したいときに重宝します。
-            string sql2 = $@"
+                // INFO: C# には @"" の文字列でエスケープなしで記述できる方法がありますが、これは改行も含めることができます。
+                // C# でｈ逐次的文字列リテラルなんて呼び方をしますが、他のプログラミング言語ではヒアドキュメントと呼ばれます。
+                // おそらくヒアドキュメントの方が通りがよいかと思います。
+                // SQL文などの長い文字列を記述したいときに重宝します。
+                string sql2 = $@"
 INSERT INTO todo_items (
     title
   , date_start
@@ -122,17 +124,22 @@ VALUES (
 ;
 ";
 
-            // TODO: キャメルケース
-            // TODO: Constantsを定義して接続文字列を移しましょう。
+                // TODO: キャメルケース
+                // DONE: Constantsを定義して接続文字列を移しましょう。
 
-            // TODO: ファイルやDBなど外部のリソースを使うときは忘れずにusing句を使いましょう。
-            // TODO: IDBConnectionで受けてみましょう。
-            using(NpgsqlConnection conn = new NpgsqlConnection(Constants.ConnectionString)){
-                conn.Open();
-                NpgsqlCommand command = new NpgsqlCommand(sql, conn);
-                int result = command.ExecuteNonQuery();
+                // DONE: ファイルやDBなど外部のリソースを使うときは忘れずにusing句を使いましょう。
+                // TODO: IDBConnectionで受けてみましょう。
+                using (var connection = new NpgsqlConnection(Constants.ConnectionString))
+                {
+                    connection.Open();
+                    var command = new NpgsqlCommand(sql, connection);
+                    int result = command.ExecuteNonQuery();
+                }
             }
-            
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
     }
 }

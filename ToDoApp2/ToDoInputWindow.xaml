@@ -23,21 +23,21 @@
         </Grid.RowDefinitions>
 
         <!-- DONE: 場合によりますが、各コントロールのGrid.Rowプロパティの位置を揃えると見やすくなります。Gridレイアウト時には考慮してみるとよいでしょう。 -->
-        <!-- TODO: 個人によりますが、Grid.Row, Grid.Columnの次はx:Name、その次はContentやTextを配置することが多いです。 -->
-        <!-- TODO: Marginは不要と思います。 -->
-        <TextBlock  Grid.Row="0" Grid.Column="0" Margin="5" TextWrapping="Wrap" Text="タイトル"/>
-        <TextBox    Grid.Row="0" Grid.Column="1" Margin="5" Grid.ColumnSpan="2" x:Name="ToDoTitle" TextWrapping="Wrap" Text=""/>
-        <TextBlock  Grid.Row="1" Grid.Column="0" Margin="5" Text="メモ・備考"/>
-        <TextBox    Grid.Row="1" Grid.Column="1" Margin="5" Grid.ColumnSpan="2" x:Name="Memo" TextWrapping="Wrap" Text=""/>
-        <TextBlock  Grid.Row="2" Grid.Column="0" Margin="5" TextWrapping="Wrap" Text="開始日"/>
-        <DatePicker Grid.Row="2" Grid.Column="1" Margin="5" x:Name="StartDate" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>
-        <TextBlock  Grid.Row="2" Grid.Column="2" Margin="5" TextWrapping="Wrap" Text="～"/>
-        <TextBlock  Grid.Row="3" Grid.Column="0" Margin="5" Text="期日"/>
-        <DatePicker Grid.Row="3" Grid.Column="2" Margin="5" x:Name="EndDate" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>
+        <!-- DONE: 個人によりますが、Grid.Row, Grid.Columnの次はx:Name、その次はContentやTextを配置することが多いです。 -->
+        <!-- DONE: Marginは不要と思います。 -->
+        <TextBlock  Grid.Row="0" Grid.Column="0" Text="タイトル"/>
+        <TextBox    Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" x:Name="ToDoTitle" Text="" TextWrapping="Wrap"/>
+        <TextBlock  Grid.Row="1" Grid.Column="0" Text="メモ・備考"/>
+        <TextBox    Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" x:Name="Memo" Text="" TextWrapping="Wrap"/>
+        <TextBlock  Grid.Row="2" Grid.Column="0" Text="開始日"/>
+        <DatePicker Grid.Row="2" Grid.Column="1" x:Name="StartDate" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>
+        <TextBlock  Grid.Row="2" Grid.Column="2" Text="～"/>
+        <TextBlock  Grid.Row="3" Grid.Column="0" Text="期日"/>
+        <DatePicker Grid.Row="3" Grid.Column="2" x:Name="EndDate" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>
         <Button     Grid.Row="5" Grid.Column="2" x:Name="OK" Content="OK"/>
         <Button     Grid.Row="5" Grid.Column="1" x:Name="Cancel" Content="Cancel"/>
 
-        <Button     Grid.Row="4" Grid.Column="0" x:Name="ImageChoose" Margin="20" Content="画像を追加"/>
-        <Image      Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" x:Name="SelectedImage" AllowDrop="True"/>
+        <Button     Grid.Row="4" Grid.Column="0" x:Name="ImageChoose" Content="画像を追加" Margin="20"/>
+        <Image      Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" x:Name="SelectedImage" AllowDrop="True" Drop="DropImage"/>
     </Grid>
 </Window>

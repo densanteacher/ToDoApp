@@ -39,15 +39,9 @@ namespace ToDoApp2
 
         private void ShowToDoList()
         {
-            string ConnectionString =
-               "Server=127.0.0.1;"
-               + "Port=5432;"
-               + "Database=todoapp_db;"
-               + "User ID=postgres;"
-               + "Password=postgres;";
-            string sql = " SELECT * FROM todo_items";
-            List<DataGridItems> items = new List<DataGridItems>();
-            var Connection = new NpgsqlConnection(ConnectionString);
+            var sql = " SELECT * FROM todo_items";
+            var items = new List<DataGridItems>();
+            var Connection = new NpgsqlConnection(Constants.ConnectionString);
             using (var command = new NpgsqlCommand(sql, Connection))
             {
                 // 接続開始
@@ -93,13 +87,15 @@ namespace ToDoApp2
         private void DetailButton_Click(object sender, RoutedEventArgs e)
         {
             this.ToDoList.UpdateLayout();
-            int RowCnt = this.ToDoList.Items.IndexOf(this.ToDoList.SelectedItem);
-            this.ToDoList.ScrollIntoView(ToDoList.SelectedItem);
-            var test = (TextBlock)this.ToDoList.Columns[1].GetCellContent(RowCnt);
-            string selectedRow = test?.Text;
-            bool isSuccess = int.TryParse(selectedRow, out var id);
+            this.ToDoList.ScrollIntoView(ToDoList.Columns[0]);
+
+            var RowCnt = this.ToDoList.Items.IndexOf(this.ToDoList.SelectedItem);
+            var test = (TextBlock)this.ToDoList.Columns[0].GetCellContent(RowCnt);
+            string selectedRow = test?.Text ?? "1";
+            var isSuccess = int.TryParse(selectedRow, out var id);
             MessageBox.Show(this, id.ToString());
             if (!isSuccess) return;
+
             var tdew = new ToDoEditWindow(id);
             tdew.Owner = this;
             tdew.ShowDialog();

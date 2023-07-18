@@ -30,7 +30,7 @@
         <DataGrid Grid.Row="0" Grid.Column="1" Grid.RowSpan="6" Grid.ColumnSpan="2" x:Name="ToDoList" Margin="10"
                   AutoGenerateColumns="False">
            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding id}" Visibility="Hidden"/>
+                <DataGridTextColumn Header="ID" Binding="{Binding id}"/>
                 <DataGridCheckBoxColumn Header="実行済み" Binding="{Binding check_done}"/>
                 <DataGridTextColumn Header="タイトル" Binding="{Binding title}" Width="120" IsReadOnly="True"/>
                 <DataGridTextColumn Header="メモ" Binding="{Binding memo}" Width="120" IsReadOnly="True"/>
