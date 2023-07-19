@@ -42,6 +42,15 @@ namespace ToDoApp2
         private void DropImage(object sender, DragEventArgs e)
         {
             var fileNames = e.Data.GetData(DataFormats.FileDrop) as string[];
+
+            // TODO: 末尾にコメントを残すコメント方法は基本的に禁止しています。
+            // 行コピーがしにくい
+            // インデントを揃えてもズレるので見づらくなる、揃える手間がかかる
+            // 横スクロールは悪なので、横には伸ばさないようにする
+            // このようなコメントが無くても良いように命名や構造を心がける
+            // などの理由が考えられます。
+            // WEBで解説を優先するためにこのような表記をすることはありますが、
+            // コピペしてきた場合はコメントを削除してきれいにしておきましょう。
             if (fileNames is null) return;                    // nullなら返す
 
             var fileName = fileNames[0];                      // 画像ファイルのパスを取得
@@ -59,6 +68,8 @@ namespace ToDoApp2
             {
                 return;
             }
+
+            // TODO: 拡張子の List<T> にして Contains() または Exists() で判定するようにしましょう。
             // ファイルの拡張子が対応しているか確認する
             if (ext != ".bmp" && ext != ".jpg" && ext != ".jpeg" && ext != ".png" && ext != ".tiff" && ext != ".gif" && ext != ".icon")
             {
@@ -80,7 +91,6 @@ namespace ToDoApp2
             SelectedImage.Source = bmpImage;
         }
 
-        // DONE: このメソッドで挿入されるのは、todo_item となります。Insert"SQL" という名前だと、SQLを挿入するという訳のわからない意味になります。
         /// <summary>
         /// SQLにデータを送信、保存します。
         /// </summary>
@@ -90,6 +100,13 @@ namespace ToDoApp2
             {
                 string title = this.ToDoTitle.Text;
                 string memo = this.Memo.Text;
+                // TODO: 英文の場合は , の後ろには基本的にスペースを入れます。
+                // ソースコードは基本的には英語なので、このルールは覚えておくとよいでしょう。
+                // () の前後にもスペースも英文的にあったほうがよいです。
+                // TODO: SQLの記述ルールとして、インデントはスペース2つとされることが多いです。
+                // TODO: 大量のスペースによるインデントはエディタに貼り付けるときに邪魔になります。
+                // 先頭に改行を入れて、参考例(sql2)のように、べったり左寄せにして書いてしまいましょう。
+                //　ソースコード全体として見たときに気になるようであれば region で囲っておくと、折り畳めます。
                 string sql = $@"INSERT INTO todo_items(
                                 title
                                ,date_start
@@ -105,10 +122,6 @@ namespace ToDoApp2
                                ,'{SelectedImage.Source}'
                             );";
 
-                // INFO: C# には @"" の文字列でエスケープなしで記述できる方法がありますが、これは改行も含めることができます。
-                // C# でｈ逐次的文字列リテラルなんて呼び方をしますが、他のプログラミング言語ではヒアドキュメントと呼ばれます。
-                // おそらくヒアドキュメントの方が通りがよいかと思います。
-                // SQL文などの長い文字列を記述したいときに重宝します。
                 string sql2 = $@"
 INSERT INTO todo_items (
     title
@@ -128,13 +141,11 @@ VALUES (
 ";
 
                 // TODO: キャメルケース
-                // DONE: Constantsを定義して接続文字列を移しましょう。
-
-                // DONE: ファイルやDBなど外部のリソースを使うときは忘れずにusing句を使いましょう。
                 // TODO: IDBConnectionで受けてみましょう。
                 using (var connection = new NpgsqlConnection(Constants.ConnectionString))
                 {
                     connection.Open();
+                    // TODO: DbCommandもIDisposableを継承しています。
                     IDbCommand command = new NpgsqlCommand(sql, connection);
                     int result = command.ExecuteNonQuery();
                 }

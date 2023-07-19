@@ -33,14 +33,24 @@ namespace ToDoApp2
 
 
             _id = id;
+
+            // TODO: Getという命名だと、戻り値があるイメージです。
+            // また軽量な処理を想像しますので、DBアクセスするメソッドにGetは使わないほうがよいです。
+            // Readは直接読み出すイメージ、Loadは読み出して乗せるイメージ、Fetchはサーバーから取得してくるイメージ・・・適切なメソッド名を考えてみましょう。
             this.GetRowColumns();
         }
 
+        // TODO: アプリケーションの設計によりますが、ToDoEditWindowを開いた時点でDBから再取得すると、画面上に表示されている間に変更があった場合、差異ができて、あれ？となります。
+        // 一人でアクセスする場合は問題になりませんが、複数人で扱う場合はこの方法だとまずそうです。
+        // RDBMSとしてSQLiteを使うならまだしも、PostgreSQLを使う場合は、複数アクセス前提で考えておきましょう。
+        // また複数人で更新が重なった場合は、後からの人で上書きされてしまうことが予想されます。
+        // 対策方法を考えてみましょう。
         /// <summary>
         /// idに対応する行をSQLから取得し、表示します。
         /// </summary>
         private void GetRowColumns()
         {
+            // TODO: _id はメソッドの引数として渡せるようにしましょう。
             var sql = $@"SELECT * FROM todo_items WHERE id = {_id}";
             var Connection = new NpgsqlConnection(Constants.ConnectionString);
             using (var command = new NpgsqlCommand(sql, Connection))
@@ -75,7 +85,8 @@ namespace ToDoApp2
 
         /// <summary>
         /// 変更を保存ボタンをクリックすると、現在テキストボックスなどに入力されている内容に応じてSQLにUPDATEを実行します。
-        /// その後、ToDoEditWindowを閉じます。        /// </summary>
+        /// その後、ToDoEditWindowを閉じます。
+        /// </summary>
         private void ChangeButton_Click(object sender, RoutedEventArgs e)
         {
             var sql = $@"UPDATE todo_items SET check_done={this.CheckDone.IsChecked},

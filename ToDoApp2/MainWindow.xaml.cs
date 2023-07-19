@@ -90,6 +90,10 @@ namespace ToDoApp2
             }
 
         }
+
+        // TODO: クラス名は基本的には複数形にはしません。
+        // TODO: DataItem と同じなので、どちらかにしましょう。
+        // TODO: 別ファイルに分離しましょう。
         public class DataGridItems
         {
             public DataGridItems(int id, bool check_done, string title, string memo, DateTime date_end)
