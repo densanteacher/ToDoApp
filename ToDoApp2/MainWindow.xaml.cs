@@ -19,6 +19,27 @@ using System.Windows.Shapes;
 namespace ToDoApp2
 {
     /// <summary>
+    /// SQLから取得したデータを保存しておくクラスです。
+    /// </summary>
+    public class DataItem
+    {
+        public int Id { get; set; }
+        public bool CheckDone { get; set; }
+        public int Priority { get; set; }
+        public string ToDoTitle {get; set;}
+        public DateTime DateStart { get; set; }
+        public DateTime DateEnd { get; set;}
+        public string Memo { get; set; }
+        public PngBitmapDecoder image { get; set; }
+        public bool Remind { get; set; }
+        public DateTime RemindDate { get; set; }
+    }
+
+
+
+
+
+    /// <summary>
     /// MainWindow.xaml の相互作用ロジック
     /// </summary>
     public partial class MainWindow : Window
@@ -41,6 +62,8 @@ namespace ToDoApp2
         {
             var sql = " SELECT * FROM todo_items ORDER BY check_done, date_end";
             var items = new List<DataGridItems>();
+
+
             var Connection = new NpgsqlConnection(Constants.ConnectionString);
             using (var command = new NpgsqlCommand(sql, Connection))
             {
@@ -84,16 +107,17 @@ namespace ToDoApp2
             public DateTime date_end { get; set; }
         }
 
+        /// <summary>
+        /// 詳細ボタンをクリックすることで、DataGridで選択している行のToDoEditWindowを呼び出します。
+        /// </summary>
         private void DetailButton_Click(object sender, RoutedEventArgs e)
         {
             this.ToDoList.UpdateLayout();
             this.ToDoList.ScrollIntoView(ToDoList.Columns[0]);
 
-            var RowCnt = this.ToDoList.Items.IndexOf(this.ToDoList.SelectedItem);
             var test = (TextBlock)this.ToDoList.Columns[0].GetCellContent(this.ToDoList.SelectedItem);
-            string selectedRow = test?.Text ?? "1";
+            string selectedRow = test?.Text;
             var isSuccess = int.TryParse(selectedRow, out var id);
-            MessageBox.Show(this, id.ToString());
             if (!isSuccess) return;
 
             var tdew = new ToDoEditWindow(id);

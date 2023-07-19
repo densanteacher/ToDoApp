@@ -18,12 +18,15 @@ using static ToDoApp2.MainWindow;
 
 namespace ToDoApp2
 {
+
+
     /// <summary>
     /// ToDoEditWindow.xaml の相互作用ロジック
     /// </summary>
     public partial class ToDoEditWindow : Window
     {
         private readonly int _id;
+
         public ToDoEditWindow(int id)
         {
             this.InitializeComponent();
@@ -36,7 +39,6 @@ namespace ToDoApp2
         /// <summary>
         /// idに対応する行をSQLから取得し、表示します。
         /// </summary>
-        /// <param name="id">MainWindowから渡されたidです。</param>
         private void GetRowColumns()
         {
             var sql = $@"SELECT * FROM todo_items WHERE id = {_id}";
@@ -54,6 +56,7 @@ namespace ToDoApp2
                     {
                         if (reader.Read())
                         {
+
                             this.CheckDone.IsChecked = (bool)reader["check_done"];
                             this.ToDoTitle.Text = (string)reader["title"];
                             this.DateEnd.Text = reader["date_end"].ToString();
@@ -70,21 +73,9 @@ namespace ToDoApp2
         }
 
 
-        public class ToDoItems
-        {
-            public ToDoItems(bool check_done, string title, string memo, DateTime date_end)
-            {
-                this.check_done = check_done;
-                this.title = title;
-                this.memo = memo;
-                this.date_end = date_end;
-            }
-            public bool check_done { get; set; }
-            public string title { get; set; }
-            public string memo { get; set; }
-            public DateTime date_end { get; set; }
-        }
-
+        /// <summary>
+        /// 変更を保存ボタンをクリックすると、現在テキストボックスなどに入力されている内容に応じてSQLにUPDATEを実行します。
+        /// その後、ToDoEditWindowを閉じます。        /// </summary>
         private void ChangeButton_Click(object sender, RoutedEventArgs e)
         {
             var sql = $@"UPDATE todo_items SET check_done={this.CheckDone.IsChecked},
