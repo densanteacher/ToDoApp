@@ -36,6 +36,9 @@ namespace ToDoApp2
             };
         }
 
+        /// <summary>
+        /// （WIP）Imageにドロップした画像ファイルを取得します。
+        /// </summary>
         private void DropImage(object sender, DragEventArgs e)
         {
             var fileNames = e.Data.GetData(DataFormats.FileDrop) as string[];
@@ -132,7 +135,7 @@ VALUES (
                 using (var connection = new NpgsqlConnection(Constants.ConnectionString))
                 {
                     connection.Open();
-                    var command = new NpgsqlCommand(sql, connection);
+                    IDbCommand command = new NpgsqlCommand(sql, connection);
                     int result = command.ExecuteNonQuery();
                 }
             }

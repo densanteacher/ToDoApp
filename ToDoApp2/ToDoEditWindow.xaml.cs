@@ -1,6 +1,7 @@
 ﻿using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -22,15 +23,23 @@ namespace ToDoApp2
     /// </summary>
     public partial class ToDoEditWindow : Window
     {
+        private readonly int _id;
         public ToDoEditWindow(int id)
         {
             this.InitializeComponent();
 
-            this.GetRowColumns(id);
+
+            _id = id;
+            this.GetRowColumns();
         }
-        private void GetRowColumns(int id)
+
+        /// <summary>
+        /// idに対応する行をSQLから取得し、表示します。
+        /// </summary>
+        /// <param name="id">MainWindowから渡されたidです。</param>
+        private void GetRowColumns()
         {
-            var sql = $@"SELECT * FROM todo_items WHERE id = {id}";
+            var sql = $@"SELECT * FROM todo_items WHERE id = {_id}";
             var Connection = new NpgsqlConnection(Constants.ConnectionString);
             using (var command = new NpgsqlCommand(sql, Connection))
             {
@@ -45,35 +54,57 @@ namespace ToDoApp2
                     {
                         if (reader.Read())
                         {
-                            this.DataContext = new ToDoItems( check_done = true,
-                            title = (string)reader["title"],
-                            memo = (string)reader["memo"],
-                            date_end = (DateTime)reader["date"]
-                            );
+                            this.CheckDone.IsChecked = (bool)reader["check_done"];
+                            this.ToDoTitle.Text = (string)reader["title"];
+                            this.DateEnd.Text = reader["date_end"].ToString();
+                            this.Memo.Text = (string)reader["memo"];
                         }
                     }
                     finally
-                {
+                    {
 
-                    Connection.Close();
+                        Connection.Close();
+                    }
                 }
             }
         }
-    }
 
-    public class ToDoItems
-    {
-        public ToDoItems( bool check_done, string title, string memo, DateTime date_end)
+
+        public class ToDoItems
         {
-            this.check_done = check_done;
-            this.title = title;
-            this.memo = memo;
-            this.date_end = date_end;
+            public ToDoItems(bool check_done, string title, string memo, DateTime date_end)
+            {
+                this.check_done = check_done;
+                this.title = title;
+                this.memo = memo;
+                this.date_end = date_end;
+            }
+            public bool check_done { get; set; }
+            public string title { get; set; }
+            public string memo { get; set; }
+            public DateTime date_end { get; set; }
         }
-        public bool check_done { get; set; }
-        public string title { get; set; }
-        public string memo { get; set; }
-        public DateTime date_end { get; set; }
+
+        private void ChangeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var sql = $@"UPDATE todo_items SET check_done={this.CheckDone.IsChecked},
+                                            title='{this.ToDoTitle.Text}',
+                                            date_end='{this.DateEnd.SelectedDate.Value}',
+                                            memo='{this.Memo.Text}'
+                                            WHERE id = {_id}";
+
+            using (var connection = new NpgsqlConnection(Constants.ConnectionString))
+            {
+                connection.Open();
+                var command = new NpgsqlCommand(sql, connection);
+                var result = command.ExecuteNonQuery();
+            }
+            this.Close();
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
-}
 }

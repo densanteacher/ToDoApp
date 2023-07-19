@@ -30,7 +30,7 @@ namespace ToDoApp2
             this.ShowToDoList();
         }
 
-        private void ClickInputToDo(object sender, RoutedEventArgs e)
+        private void InputToDo_Click(object sender, RoutedEventArgs e)
         {
             var tdiw = new ToDoInputWindow();
             tdiw.Owner = this;
@@ -39,7 +39,7 @@ namespace ToDoApp2
 
         private void ShowToDoList()
         {
-            var sql = " SELECT * FROM todo_items";
+            var sql = " SELECT * FROM todo_items ORDER BY check_done, date_end";
             var items = new List<DataGridItems>();
             var Connection = new NpgsqlConnection(Constants.ConnectionString);
             using (var command = new NpgsqlCommand(sql, Connection))
@@ -90,7 +90,7 @@ namespace ToDoApp2
             this.ToDoList.ScrollIntoView(ToDoList.Columns[0]);
 
             var RowCnt = this.ToDoList.Items.IndexOf(this.ToDoList.SelectedItem);
-            var test = (TextBlock)this.ToDoList.Columns[0].GetCellContent(RowCnt);
+            var test = (TextBlock)this.ToDoList.Columns[0].GetCellContent(this.ToDoList.SelectedItem);
             string selectedRow = test?.Text ?? "1";
             var isSuccess = int.TryParse(selectedRow, out var id);
             MessageBox.Show(this, id.ToString());

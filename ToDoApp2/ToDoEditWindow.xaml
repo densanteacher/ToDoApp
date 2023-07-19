@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="ToDoEditWindow" Height="450" Width="800"
         FontSize="20">
-    
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -24,14 +24,14 @@
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding check_done}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding title}"/>
-        <DatePicker Grid.Row="0" Grid.Column="2" Text="{Binding date_end}"/>
-        <TextBox Grid.Row="1" Grid.Column="0" Grid.RowSpan="3" Grid.ColumnSpan="2" Text="{Binding memo}"/>
-        <Image Grid.Row="1" Grid.Column="2" Grid.RowSpan="3" Grid.ColumnSpan="3" Source="{Binding image}"/>
+        <CheckBox Grid.Row="0" Grid.Column="0" x:Name="CheckDone" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="0" Grid.Column="1" x:Name="ToDoTitle"/>
+        <DatePicker Grid.Row="0" Grid.Column="2" x:Name="DateEnd"/>
+        <TextBox Grid.Row="1" Grid.Column="0" Grid.RowSpan="3" Grid.ColumnSpan="2" x:Name="Memo"/>
+        <Image Grid.Row="1" Grid.Column="2" Grid.RowSpan="3" Grid.ColumnSpan="3" x:Name="Image"/>
         <Button Grid.Row="4" Grid.Column="3" Content="画像削除"/>
         <Button Grid.Row="4" Grid.Column="4" Content="画像変更"/>
-        <Button Grid.Row="5" Grid.Column="3" Content="Cancel"/>
-        <Button Grid.Row="5" Grid.Column="4" Content="変更を保存"/>
+        <Button Grid.Row="5" Grid.Column="3" Content="Cancel" Click="CancelButton_Click"/>
+        <Button Grid.Row="5" Grid.Column="4" Content="変更を保存" Click="ChangeButton_Click"/>
     </Grid>
 </Window>
