@@ -9,7 +9,7 @@ namespace ToDoApp2
 {
     public static class Constants
     {
-        public const string ConnectionString =
+        public const string connectionString =
                @"Server=127.0.0.1;
                Port=5432;
                Database=todoapp_db;

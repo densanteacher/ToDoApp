@@ -104,6 +104,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Constants.cs" />
+    <Compile Include="DataGridItem.cs" />
     <Compile Include="ToDoEditWindow.xaml.cs">
       <DependentUpon>ToDoEditWindow.xaml</DependentUpon>
     </Compile>

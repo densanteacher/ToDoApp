@@ -26,62 +26,58 @@ namespace ToDoApp2
     public partial class ToDoEditWindow : Window
     {
         private readonly int _id;
+        private readonly List<DataItem> _items = new List<DataItem>();
 
-        public ToDoEditWindow(int id)
+        public ToDoEditWindow(int id, List<DataItem> items)
         {
             this.InitializeComponent();
 
-
             _id = id;
+            _items = items;
 
-            // TODO: Getという命名だと、戻り値があるイメージです。
+
+            // DONE: Getという命名だと、戻り値があるイメージです。
             // また軽量な処理を想像しますので、DBアクセスするメソッドにGetは使わないほうがよいです。
             // Readは直接読み出すイメージ、Loadは読み出して乗せるイメージ、Fetchはサーバーから取得してくるイメージ・・・適切なメソッド名を考えてみましょう。
-            this.GetRowColumns();
+            this.LoadRowColumns(_items);
         }
 
-        // TODO: アプリケーションの設計によりますが、ToDoEditWindowを開いた時点でDBから再取得すると、画面上に表示されている間に変更があった場合、差異ができて、あれ？となります。
+        // DONE?: アプリケーションの設計によりますが、ToDoEditWindowを開いた時点でDBから再取得すると、画面上に表示されている間に変更があった場合、差異ができて、あれ？となります。
         // 一人でアクセスする場合は問題になりませんが、複数人で扱う場合はこの方法だとまずそうです。
         // RDBMSとしてSQLiteを使うならまだしも、PostgreSQLを使う場合は、複数アクセス前提で考えておきましょう。
         // また複数人で更新が重なった場合は、後からの人で上書きされてしまうことが予想されます。
         // 対策方法を考えてみましょう。
+
+        // 保持しておいた_itemsリストと内容が一致するか確認して、一致したら更新を行う様に変更しました。
+
         /// <summary>
         /// idに対応する行をSQLから取得し、表示します。
         /// </summary>
-        private void GetRowColumns()
+        private void LoadRowColumns(List<DataItem> _items)
         {
-            // TODO: _id はメソッドの引数として渡せるようにしましょう。
-            var sql = $@"SELECT * FROM todo_items WHERE id = {_id}";
-            var Connection = new NpgsqlConnection(Constants.ConnectionString);
-            using (var command = new NpgsqlCommand(sql, Connection))
-            {
-
-                // 接続開始
-                Connection.Open();
-
-                // sql実行
-                using (var reader = command.ExecuteReader())
-                {
-                    try
-                    {
-                        if (reader.Read())
-                        {
-
-                            this.CheckDone.IsChecked = (bool)reader["check_done"];
-                            this.ToDoTitle.Text = (string)reader["title"];
-                            this.DateEnd.Text = reader["date_end"].ToString();
-                            this.Memo.Text = (string)reader["memo"];
-                        }
-                    }
-                    finally
-                    {
-
-                        Connection.Close();
-                    }
-                }
-            }
+            var i = SearchRowNumber();
+            this.CheckDone.IsChecked = _items[i].CheckDone;
+            this.ToDoTitle.Text = _items[i].ToDoTitle;
+            this.DateEnd.Text = _items[i].DateEnd.ToString();
+            this.Memo.Text = _items[i].Memo;
         }
 
+        private int SearchRowNumber()
+        {
+            int i = 0;
+            foreach (DataItem item in _items)
+            {
+                if (item.Id != _id)
+                {
+                    i++;
+                } else
+                {
+                    return i;
+                }
+            }
+
+            return i;
+        }
 
         /// <summary>
         /// 変更を保存ボタンをクリックすると、現在テキストボックスなどに入力されている内容に応じてSQLにUPDATEを実行します。
@@ -89,23 +85,41 @@ namespace ToDoApp2
         /// </summary>
         private void ChangeButton_Click(object sender, RoutedEventArgs e)
         {
-            var sql = $@"UPDATE todo_items SET check_done={this.CheckDone.IsChecked},
-                                            title='{this.ToDoTitle.Text}',
-                                            date_end='{this.DateEnd.SelectedDate.Value}',
-                                            memo='{this.Memo.Text}'
-                                            WHERE id = {_id}";
-
-            using (var connection = new NpgsqlConnection(Constants.ConnectionString))
+            var i = SearchRowNumber();
+            try
             {
-                connection.Open();
-                var command = new NpgsqlCommand(sql, connection);
-                var result = command.ExecuteNonQuery();
+                var sql = $@"
+UPDATE todo_items SET
+    check_done={this.CheckDone.IsChecked}
+  , title='{this.ToDoTitle.Text}'
+  , date_end='{this.DateEnd.SelectedDate.Value}'
+  , memo='{this.Memo.Text}'
+    WHERE id = {_id}
+  AND  check_done={_items[i].CheckDone}
+  AND  title='{_items[i].ToDoTitle}'
+  AND  date_end='{_items[i].DateEnd.ToString()}'
+  AND  memo='{_items[i].Memo}'
+";
+
+                using (var connection = new NpgsqlConnection(Constants.connectionString))
+                {
+                    connection.Open();
+                    var command = new NpgsqlCommand(sql, connection);
+                    var result = command.ExecuteNonQuery();
+                }
+
+                this.Close();
             }
-            this.Close();
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+
             this.Close();
         }
     }

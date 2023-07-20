@@ -6,40 +6,46 @@
         xmlns:local="clr-namespace:ToDoApp2"
         mc:Ignorable="d"
         Title="ToDoリスト" Height="450" Width="800" FontSize="18">
+    <Window.Resources>
+        <Style TargetType="DataGrid">
+            <Setter Property="IsReadOnly" Value="True"/>
+        </Style>
+    </Window.Resources>
     <Grid>
 
-        <!-- TODO: 全体をGridで配置するのではなく、まずGridの3分割をして、その右端に更にGridを配置するのがよさそうです。なるべく入れ子にしない方針もあるので一概には言えません。 -->
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="8*"/>
-        </Grid.RowDefinitions>
+        <!-- DONE: 全体をGridで配置するのではなく、まずGridの3分割をして、その右端に更にGridを配置するのがよさそうです。なるべく入れ子にしない方針もあるので一概には言えません。 -->
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Button Grid.Row="0" Grid.Column="3" Content="ToDo入力" Click="InputToDo_Click"/>
-        <Button Grid.Row="1" Grid.Column="3" Content="詳細" Click="DetailButton_Click"/>
-        <Button Grid.Row="3" Grid.Column="3" Content="優先度↑"/>
-        <Button Grid.Row="4" Grid.Column="3" Content="優先度↓"/>
+        <Grid Grid.Row="0" Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Button Grid.Row="0" Grid.Column="0" Content="ToDo入力" Click="InputToDo_Click"/>
+            <Button Grid.Row="1" Grid.Column="0" Content="詳細" Click="DetailButton_Click"/>
+            <Button Grid.Row="2" Grid.Column="0" Content="削除" Click="DeleteButton_Click"/>
+            <Button Grid.Row="4" Grid.Column="0" Content="優先度↑"/>
+            <Button Grid.Row="5" Grid.Column="0" Content="優先度↓"/>
+        </Grid>
 
-        <!-- TODO: ？？？ -->
-        <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="6" x:Name="test" Orientation="Vertical"/>
 
-        <!-- TODO: ToDoList という名前だとListViewなどのリスト系のコントロールだと勘違いします。DataGridだとわかるような名前にしましょう。 -->
-        <DataGrid Grid.Row="0" Grid.Column="1" Grid.RowSpan="6" Grid.ColumnSpan="2" x:Name="ToDoList" Margin="10"
+        <!-- DONE: ToDoList という名前だとListViewなどのリスト系のコントロールだと勘違いします。DataGridだとわかるような名前にしましょう。 -->
+        <DataGrid Grid.Row="0" Grid.Column="1" Grid.RowSpan="6" Grid.ColumnSpan="1" x:Name="ToDoDataGrid" ItemsSource="{Binding DataItem}" Margin="10"
                   AutoGenerateColumns="False" SelectionMode="Single">
            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding id}" Visibility="Visible"/>
-                <DataGridCheckBoxColumn Header="実行済み" Binding="{Binding check_done}"/>
-                <DataGridTextColumn Header="タイトル" Binding="{Binding title}" Width="120" IsReadOnly="True"/>
-                <DataGridTextColumn Header="メモ" Binding="{Binding memo}" Width="120" IsReadOnly="True"/>
-                <DataGridTextColumn Header="期限" Binding="{Binding date_end, StringFormat=yyyy/MM/dd}" Width="160" IsReadOnly="True"/>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
+                <DataGridCheckBoxColumn Header="実行済み" Binding="{Binding CheckDone}" IsReadOnly="False"/>
+                <DataGridTextColumn Header="タイトル" Binding="{Binding ToDoTitle}" Width="120"/>
+                <DataGridTextColumn Header="メモ" Binding="{Binding Memo}" Width="120"/>
+                <DataGridTextColumn Header="期限" Binding="{Binding DateEnd, StringFormat=yyyy/MM/dd}" Width="160"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
