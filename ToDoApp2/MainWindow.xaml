@@ -20,8 +20,24 @@
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+
+        <!-- DONE: ToDoList という名前だとListViewなどのリスト系のコントロールだと勘違いします。DataGridだとわかるような名前にしましょう。 -->
+        <DataGrid Grid.Row="0" Grid.Column="1" Grid.RowSpan="6" Grid.ColumnSpan="1" x:Name="ToDoDataGrid" ItemsSource="{Binding DataItem}" Margin="10"
+                  AutoGenerateColumns="False" SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
+                <DataGridCheckBoxColumn Header="実行済み" Binding="{Binding CheckDone}" IsReadOnly="False"/>
+                <DataGridTextColumn Header="タイトル" Binding="{Binding ToDoTitle}" Width="120"/>
+                <DataGridTextColumn Header="メモ" Binding="{Binding Memo}" Width="120"/>
+                <DataGridTextColumn Header="期限" Binding="{Binding DateEnd, StringFormat=yyyy/MM/dd}" Width="160"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
         <Grid Grid.Row="0" Grid.Column="2">
             <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -31,22 +47,13 @@
             </Grid.RowDefinitions>
             <Button Grid.Row="0" Grid.Column="0" Content="ToDo入力" Click="InputToDo_Click"/>
             <Button Grid.Row="1" Grid.Column="0" Content="詳細" Click="DetailButton_Click"/>
-            <Button Grid.Row="2" Grid.Column="0" Content="削除" Click="DeleteButton_Click"/>
-            <Button Grid.Row="4" Grid.Column="0" Content="優先度↑"/>
-            <Button Grid.Row="5" Grid.Column="0" Content="優先度↓"/>
+
+            <Button Grid.Row="3" Grid.Column="0" Content="更新" Click="RefreshButton_Click"/>
+            <Button Grid.Row="4" Grid.Column="0" Content="削除"/>
+            <Button Grid.Row="5" Grid.Column="0" Content="一括削除"/>
+
+            <Button Grid.Row="7" Grid.Column="0" Content="優先度↑"/>
+            <Button Grid.Row="8" Grid.Column="0" Content="優先度↓"/>
         </Grid>
-
-
-        <!-- DONE: ToDoList という名前だとListViewなどのリスト系のコントロールだと勘違いします。DataGridだとわかるような名前にしましょう。 -->
-        <DataGrid Grid.Row="0" Grid.Column="1" Grid.RowSpan="6" Grid.ColumnSpan="1" x:Name="ToDoDataGrid" ItemsSource="{Binding DataItem}" Margin="10"
-                  AutoGenerateColumns="False" SelectionMode="Single">
-           <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
-                <DataGridCheckBoxColumn Header="実行済み" Binding="{Binding CheckDone}" IsReadOnly="False"/>
-                <DataGridTextColumn Header="タイトル" Binding="{Binding ToDoTitle}" Width="120"/>
-                <DataGridTextColumn Header="メモ" Binding="{Binding Memo}" Width="120"/>
-                <DataGridTextColumn Header="期限" Binding="{Binding DateEnd, StringFormat=yyyy/MM/dd}" Width="160"/>
-            </DataGrid.Columns>
-        </DataGrid>
     </Grid>
 </Window>

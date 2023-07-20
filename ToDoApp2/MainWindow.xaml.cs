@@ -28,11 +28,12 @@ namespace ToDoApp2
         {
             InitializeComponent();
 
-
-
             this.ShowToDoList();
         }
 
+        /// <summary>
+        /// ToDo入力ボタンを押すと、ToDoInputWindowを表示します。
+        /// </summary>
         private void InputToDo_Click(object sender, RoutedEventArgs e)
         {
             var tdiw = new ToDoInputWindow();
@@ -40,11 +41,14 @@ namespace ToDoApp2
             tdiw.ShowDialog();
         }
 
+        /// <summary>
+        ///
+        /// </summary>
         private void ShowToDoList()
         {
+
+
             var sql = " SELECT * FROM todo_items ORDER BY check_done, date_end";
-
-
 
             var Connection = new NpgsqlConnection(Constants.connectionString);
             using (var command = new NpgsqlCommand(sql, Connection))
@@ -65,7 +69,8 @@ namespace ToDoApp2
                                                 (string)reader["memo"],
                                                 (DateTime)reader["date_start"],
                                                 (DateTime)reader["date_end"],
-                                                (int)reader["priority"]));
+                                                (int)reader["priority"],
+                                                (DateTime)reader["date_update"]));
                         }
                         this.ToDoDataGrid.ItemsSource = items;
                     }
@@ -100,6 +105,12 @@ namespace ToDoApp2
             var tdew = new ToDoEditWindow(id,items);
             tdew.Owner = this;
             tdew.ShowDialog();
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            ToDoDataGrid.Items.Refresh();
+            this.ToDoDataGrid.UpdateLayout();
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)

@@ -55,14 +55,18 @@ namespace ToDoApp2
         /// </summary>
         private void LoadRowColumns(List<DataItem> _items)
         {
-            var i = SearchRowNumber();
+            var i = SearchElementNumber();
             this.CheckDone.IsChecked = _items[i].CheckDone;
             this.ToDoTitle.Text = _items[i].ToDoTitle;
             this.DateEnd.Text = _items[i].DateEnd.ToString();
             this.Memo.Text = _items[i].Memo;
         }
 
-        private int SearchRowNumber()
+        /// <summary>
+        /// メインウィンドウから渡された<see cref="_id"/>と一致するIdを持つ<see cref="_items">の要素を検索します。
+        /// </summary>
+        /// <returns>_itemsの要素番号です。</returns>
+        private int SearchElementNumber()
         {
             int i = 0;
             foreach (DataItem item in _items)
@@ -85,7 +89,7 @@ namespace ToDoApp2
         /// </summary>
         private void ChangeButton_Click(object sender, RoutedEventArgs e)
         {
-            var i = SearchRowNumber();
+            var i = SearchElementNumber();
             try
             {
                 var sql = $@"
@@ -94,11 +98,9 @@ UPDATE todo_items SET
   , title='{this.ToDoTitle.Text}'
   , date_end='{this.DateEnd.SelectedDate.Value}'
   , memo='{this.Memo.Text}'
+  , date_update=current_timestamp
     WHERE id = {_id}
-  AND  check_done={_items[i].CheckDone}
-  AND  title='{_items[i].ToDoTitle}'
-  AND  date_end='{_items[i].DateEnd.ToString()}'
-  AND  memo='{_items[i].Memo}'
+  AND  date_update > '{_items[i].DateUpdate}'
 ";
 
                 using (var connection = new NpgsqlConnection(Constants.connectionString))
