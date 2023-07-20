@@ -16,60 +16,62 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using static ToDoApp2.MainWindow;
 
+// TODO: namespace の { } を省略する新しい書き方があります。使ってみましょう。
 namespace ToDoApp2
 {
-
-
     /// <summary>
     /// ToDoEditWindow.xaml の相互作用ロジック
     /// </summary>
     public partial class ToDoEditWindow : Window
     {
+        // TODO: コメント
         private readonly int _id;
+
+        // TODO: コメント
+        // TODO: コンストラクタで入れているなら、ここでの new は不要です。
         private readonly List<DataItem> _items = new List<DataItem>();
 
+        // TODO: DataItem を引数に取れるようにしましょう。
         public ToDoEditWindow(int id, List<DataItem> items)
         {
             this.InitializeComponent();
 
+            // TODO: this
             _id = id;
             _items = items;
 
-
-            // DONE: Getという命名だと、戻り値があるイメージです。
-            // また軽量な処理を想像しますので、DBアクセスするメソッドにGetは使わないほうがよいです。
-            // Readは直接読み出すイメージ、Loadは読み出して乗せるイメージ、Fetchはサーバーから取得してくるイメージ・・・適切なメソッド名を考えてみましょう。
             this.LoadRowColumns(_items);
         }
 
-        // DONE?: アプリケーションの設計によりますが、ToDoEditWindowを開いた時点でDBから再取得すると、画面上に表示されている間に変更があった場合、差異ができて、あれ？となります。
-        // 一人でアクセスする場合は問題になりませんが、複数人で扱う場合はこの方法だとまずそうです。
-        // RDBMSとしてSQLiteを使うならまだしも、PostgreSQLを使う場合は、複数アクセス前提で考えておきましょう。
-        // また複数人で更新が重なった場合は、後からの人で上書きされてしまうことが予想されます。
-        // 対策方法を考えてみましょう。
-
-        // 保持しておいた_itemsリストと内容が一致するか確認して、一致したら更新を行う様に変更しました。
-
+        // TODO: Load は呼び出して乗せるイメージなので、この処理では軽すぎます。rowNumber の検索はしていますが、set しかしていません。
+        // TODO: _items のプレフィックスはフィールド変数の場合に使います。
         /// <summary>
         /// idに対応する行をSQLから取得し、表示します。
         /// </summary>
         private void LoadRowColumns(List<DataItem> _items)
         {
+            // TODO: this
             var i = SearchRowNumber();
+            // TODO: items[i] は一度変数に格納しましょう。
             this.CheckDone.IsChecked = _items[i].CheckDone;
             this.ToDoTitle.Text = _items[i].ToDoTitle;
             this.DateEnd.Text = _items[i].DateEnd.ToString();
             this.Memo.Text = _items[i].Memo;
         }
 
+        // TODO: コメント
         private int SearchRowNumber()
         {
+            // TODO: index を取得したい場合は、for の方がよいでしょう。
+            // TODO: LINQとタプルを使う方法もあるので、考えてみましょう。別メソッドとして作ってみてください。
             int i = 0;
+            // TODO: this
             foreach (DataItem item in _items)
             {
                 if (item.Id != _id)
                 {
                     i++;
+                    // TODO: Ctrl + K, D
                 } else
                 {
                     return i;
@@ -85,9 +87,17 @@ namespace ToDoApp2
         /// </summary>
         private void ChangeButton_Click(object sender, RoutedEventArgs e)
         {
+            // TODO: SearchRowNumber は何度も使わないで、一度探してその値を保持しておけばよいでしょう。
+            // TODO: this
             var i = SearchRowNumber();
+
             try
             {
+                // TODO: = の前後にスペースがほしいです。
+                // TODO: WHERE はインデントせず UPDATE の位置に揃えます。
+                // TODO: AND の後のスペースはひとつにしてください。
+                // TODO: this
+                // TODO: 基本的にPK列を使って更新します。
                 var sql = $@"
 UPDATE todo_items SET
     check_done={this.CheckDone.IsChecked}
@@ -101,10 +111,13 @@ UPDATE todo_items SET
   AND  memo='{_items[i].Memo}'
 ";
 
+                // TODO: using declaration
                 using (var connection = new NpgsqlConnection(Constants.connectionString))
                 {
+                    // TODO: try-catch
                     connection.Open();
                     var command = new NpgsqlCommand(sql, connection);
+                    // TODO: 返り値は何になりますか？更新されなかった場合はどうなりますか？
                     var result = command.ExecuteNonQuery();
                 }
 
@@ -112,14 +125,13 @@ UPDATE todo_items SET
             }
             catch (Exception ex)
             {
+                // TODO: 開いた元のインスタンスを指定しておいたほうがよい。
                 MessageBox.Show(ex.ToString());
             }
-
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-
             this.Close();
         }
     }

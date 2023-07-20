@@ -7,15 +7,18 @@ using System.Windows.Media.Imaging;
 
 namespace ToDoApp2
 {
+    // TODO: ファイル名
 
     /// <summary>
     /// SQLから取得したデータを保存しておくクラスです。
     /// </summary>
     public class DataItem
     {
+        // TODO: コメント、PK の場合は明記しましょう。
         public int Id { get; set; }
         public bool CheckDone { get; set; }
         public string ToDoTitle { get; set; }
+        // TODO: null許容なら、nullable にしましょう。
         public DateTime DateStart { get; set; }
         public DateTime DateEnd { get; set; }
         public string Memo { get; set; }
@@ -23,6 +26,8 @@ namespace ToDoApp2
         public PngBitmapDecoder image { get; set; }
         public bool Remind { get; set; }
         public DateTime RemindDate { get; set; }
+
+        // TODO: コンストラクタで全項目を入れる必要はありません。絶対に必要な id だけがよさそうです。
         public DataItem(int id, bool checkDone, string title, string memo, DateTime dateStart, DateTime dateEnd, int priority)
         {
             this.Id = id;

@@ -17,12 +17,19 @@ namespace ToDoApp2
     /// </summary>
     public partial class ToDoInputWindow : Window
     {
+        // TODO: キャメルケース、_ プレフィックス
+        // TODO: Filename は FileName だし、ファイル拡張子は name は不要です。
+        // TODO: webp のピリオド
         private readonly List<string> FilenameExtensions = new List<string>() { ".bmp", ".jpg", ".png", ".tiff", ".gif", ".icon", "webp" };
 
         public ToDoInputWindow()
         {
             this.InitializeComponent();
 
+            // TODO: イベントはxaml側に統一しましょう。
+            // やるならアプリケーション全部で統一した方が迷いません。
+            // 他のWindowではxaml側、他のWindowではコードビハインドと設定する箇所が入り乱れると間違いの元です。
+            // 今までxamlに定義されていたので、このxamlを見て、イベントないねーって判断することが考えられます。
             this.Cancel.Click += (s, e) =>
             {
                 this.Close();
@@ -34,12 +41,16 @@ namespace ToDoApp2
             };
             this.ImageChoose.Click += (s, e) =>
             {
+                // TODO: ofd より dialog と略す方がよいです。
                 var ofd = new OpenFileDialog();
+                // TODO: owner の指定
                 ofd.ShowDialog();
+                // TODO: キャンセルした場合はどうなりますか？
                 this.OpenImageFile(ofd.FileName);
             };
         }
 
+        // TODO: イベントメソッドは、ControlName_EventName() としましょう。
         /// <summary>
         /// （WIP）Imageにドロップした画像ファイルを取得します。
         /// </summary>
@@ -47,41 +58,44 @@ namespace ToDoApp2
         {
             var fileNames = e.Data.GetData(DataFormats.FileDrop) as string[];
 
-            // DONE: 末尾にコメントを残すコメント方法は基本的に禁止しています。
-            // 行コピーがしにくい
-            // インデントを揃えてもズレるので見づらくなる、揃える手間がかかる
-            // 横スクロールは悪なので、横には伸ばさないようにする
-            // このようなコメントが無くても良いように命名や構造を心がける
-            // などの理由が考えられます。
-            // WEBで解説を優先するためにこのような表記をすることはありますが、
-            // コピペしてきた場合はコメントを削除してきれいにしておきましょう。
+            // TODO: { } をつけましょう。
             if (fileNames is null) return;
 
             var fileName = fileNames[0];
             this.OpenImageFile(fileName);
         }
 
+        // TODO: OpenImageFile という名前だと画像を開くという意味だけなので、もっと適切な名前が考えられます。
         /// <summary>
         /// 画像ファイルを開いてImageコントロールに表示します。
         /// </summary>
         /// <param name="fileName">画像ファイルの名前です。</param>
         private void OpenImageFile(string fileName)
         {
+            // TODO: 末尾にコメントを残すコメント方法は基本的に禁止しています。
             var ext = System.IO.Path.GetExtension(fileName).ToLower();  // 拡張子の確認
+            // TODO: null にならなそうです。色々な fileName を渡して確認してみましょう。
             if (ext == null)
             {
                 return;
             }
 
-            // DONE: 拡張子の List<T> にして Contains() または Exists() で判定するようにしましょう。
-            // ファイルの拡張子が対応しているか確認する
+            // TODO: this
             if (!FilenameExtensions.Contains(ext))
             {
-                MessageBox.Show("画像ファイルを選択してください。", "お知らせ", MessageBoxButton.OK, MessageBoxImage.Information);
+                // TODO: 画像ファイルの拡張子は他にも考えられます。対応していない拡張子の場合も下記のメッセージが表示されてしまいます。
+                MessageBox.Show(
+                    "画像ファイルを選択してください。",
+                    "お知らせ",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
                 return;
             }
 
+            // TODO: 外部リソースを使う場合は try-catch は重要です。
+            // TODO: var で受けましょう。
             BitmapImage bmpImage = new BitmapImage();
+            // TODO: using declaration
             using (FileStream stream = File.OpenRead(fileName))
             {
                 bmpImage.BeginInit();
@@ -92,6 +106,7 @@ namespace ToDoApp2
                 bmpImage.EndInit();
             }
 
+            // TODO: this
             SelectedImage.Source = bmpImage;
         }
 
@@ -102,16 +117,14 @@ namespace ToDoApp2
         {
             try
             {
+                // TODO: var
                 string title = this.ToDoTitle.Text;
                 string memo = this.Memo.Text;
-                // DONE: 英文の場合は , の後ろには基本的にスペースを入れます。
-                // ソースコードは基本的には英語なので、このルールは覚えておくとよいでしょう。
-                // () の前後にもスペースも英文的にあったほうがよいです。
-                // DONE: SQLの記述ルールとして、インデントはスペース2つとされることが多いです。
-                // DONE: 大量のスペースによるインデントはエディタに貼り付けるときに邪魔になります。
-                // 先頭に改行を入れて、参考例(sql2)のように、べったり左寄せにして書いてしまいましょう。
-                //　ソースコード全体として見たときに気になるようであれば region で囲っておくと、折り畳めます。
+
                 #region SQL文
+                // TODO: todo_items( の間にスペースがほしいです。
+                // TODO: 閉じカッコの)位置は、はじめの開始カッコ(がある行のインデントに揃える方がよいです。この場合はINSERTの頭に揃えます。
+                // TODO: これは個人的なものですが、最後のセミコロンは別の行にしておいてください。コピペしやすくなります。
                 string sql = $@"
 INSERT INTO todo_items(
     title
@@ -148,14 +161,14 @@ VALUES (
 
                 #endregion SQL文
 
-                // DONE: キャメルケース
-                // DONE？: IDBConnectionで受けてみましょう。
-
+                // TODO: var connection はよく var conn と省略されます。
+                // TODO: using declaration
+                // TODO: 実行時エラーはわかりませんので、再現できたら教えてください。
                 // IDbConnectionでNpgsqlConnectionを受けることはできますが、SQLコマンドの実行時にエラーが出ます。
                 using (var connection = new NpgsqlConnection(Constants.connectionString))
                 {
+                    // TODO: 以下は他の箇所のコメントを参考にしてください。
                     connection.Open();
-                    // DONE: DbCommandもIDisposableを継承しています。
                     using (IDbCommand command = new NpgsqlCommand(sql, connection))
                     {
                         int result = command.ExecuteNonQuery();

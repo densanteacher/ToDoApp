@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:ToDoApp2"
         mc:Ignorable="d"
         Title="ToDoInputWindow" Height="450" Width="800" FontSize="20">
+    <!-- TODO: Windowサイズを変えると隙間が空きそうな配置方法になっています。 -->
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -22,9 +23,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- DONE: 場合によりますが、各コントロールのGrid.Rowプロパティの位置を揃えると見やすくなります。Gridレイアウト時には考慮してみるとよいでしょう。 -->
-        <!-- DONE: 個人によりますが、Grid.Row, Grid.Columnの次はx:Name、その次はContentやTextを配置することが多いです。 -->
-        <!-- DONE: Marginは不要と思います。 -->
         <TextBlock  Grid.Row="0" Grid.Column="0" Text="タイトル"/>
         <TextBox    Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" x:Name="ToDoTitle" Text="" TextWrapping="Wrap"/>
         <TextBlock  Grid.Row="1" Grid.Column="0" Text="メモ・備考"/>
@@ -34,6 +32,7 @@
         <TextBlock  Grid.Row="2" Grid.Column="2" Text="～"/>
         <TextBlock  Grid.Row="3" Grid.Column="0" Text="期日"/>
         <DatePicker Grid.Row="3" Grid.Column="2" x:Name="EndDate" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>
+        <!-- TODO: Buttonコントロールの命名は・・・ -->
         <Button     Grid.Row="5" Grid.Column="2" x:Name="OK" Content="OK"/>
         <Button     Grid.Row="5" Grid.Column="1" x:Name="Cancel" Content="Cancel"/>
 
