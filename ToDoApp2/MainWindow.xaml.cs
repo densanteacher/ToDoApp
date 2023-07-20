@@ -34,15 +34,15 @@ namespace ToDoApp2
             this.ShowToDoList();
         }
 
-<<<<<<< HEAD
+
         // TODO: region と配置
 
         // TODO: コメント
-=======
+
         /// <summary>
         /// ToDo入力ボタンを押すと、ToDoInputWindowを表示します。
         /// </summary>
->>>>>>> ce562f38d28d62a39f0fbbbeeb495756dac1df23
+
         private void InputToDo_Click(object sender, RoutedEventArgs e)
         {
             // TODO: tdiw の略語は何かわからないので、もう少しわかる略語の方がいいです。
@@ -56,7 +56,6 @@ namespace ToDoApp2
             tdiw.ShowDialog();
         }
 
-<<<<<<< HEAD
         // TODO: コメント
         // TODO: Show は Window を表示するときに使われる単語です。より適切なメソッド名を考えましょう。
         private void ShowToDoList()
@@ -71,17 +70,7 @@ namespace ToDoApp2
             // TODO: using
             // TODO: キャメルケース
             // TODO: インターフェースで受けましょう。
-=======
-        /// <summary>
-        ///
-        /// </summary>
-        private void ShowToDoList()
-        {
 
-
-            var sql = " SELECT * FROM todo_items ORDER BY check_done, date_end";
-
->>>>>>> ce562f38d28d62a39f0fbbbeeb495756dac1df23
             var Connection = new NpgsqlConnection(Constants.connectionString);
             // TODO: using declaration
             using (var command = new NpgsqlCommand(sql, Connection))

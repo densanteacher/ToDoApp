@@ -50,29 +50,25 @@ namespace ToDoApp2
         /// </summary>
         private void LoadRowColumns(List<DataItem> _items)
         {
-<<<<<<< HEAD
+
             // TODO: this
             var i = SearchRowNumber();
             // TODO: items[i] は一度変数に格納しましょう。
-=======
-            var i = SearchElementNumber();
->>>>>>> ce562f38d28d62a39f0fbbbeeb495756dac1df23
+
             this.CheckDone.IsChecked = _items[i].CheckDone;
             this.ToDoTitle.Text = _items[i].ToDoTitle;
             this.DateEnd.Text = _items[i].DateEnd.ToString();
             this.Memo.Text = _items[i].Memo;
         }
 
-<<<<<<< HEAD
+
         // TODO: コメント
-        private int SearchRowNumber()
-=======
+
         /// <summary>
         /// メインウィンドウから渡された<see cref="_id"/>と一致するIdを持つ<see cref="_items">の要素を検索します。
         /// </summary>
         /// <returns>_itemsの要素番号です。</returns>
         private int SearchElementNumber()
->>>>>>> ce562f38d28d62a39f0fbbbeeb495756dac1df23
         {
             // TODO: index を取得したい場合は、for の方がよいでしょう。
             // TODO: LINQとタプルを使う方法もあるので、考えてみましょう。別メソッドとして作ってみてください。
@@ -99,14 +95,11 @@ namespace ToDoApp2
         /// </summary>
         private void ChangeButton_Click(object sender, RoutedEventArgs e)
         {
-<<<<<<< HEAD
+
             // TODO: SearchRowNumber は何度も使わないで、一度探してその値を保持しておけばよいでしょう。
             // TODO: this
-            var i = SearchRowNumber();
-
-=======
             var i = SearchElementNumber();
->>>>>>> ce562f38d28d62a39f0fbbbeeb495756dac1df23
+
             try
             {
                 // TODO: = の前後にスペースがほしいです。
