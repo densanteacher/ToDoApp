@@ -17,10 +17,18 @@ namespace ToDoApp2
     /// </summary>
     public partial class ToDoInputWindow : Window
     {
-        // DONE: キャメルケース、_ プレフィックス
-        // DONE: Filename は FileName だし、ファイル拡張子は name は不要です。
-        // DONE: webp のピリオド
-        private readonly List<string> _fileExtensions = new List<string>() { ".bmp", ".jpg", ".png", ".tiff", ".gif", ".icon", ".webp" };
+        // TODO: 固定値だけなのでConstantsにおいたほうがよさそうです。
+        // DONE: リストで固定値を設定するときは、量にもよりますが、縦に並べたほうが追加しやすくなるでしょう。
+        private readonly List<string> _fileExtensions = new List<string>()
+        {
+            ".bmp",
+            ".jpg",
+            ".png",
+            ".tiff",
+            ".gif",
+            ".icon",
+            ".webp"
+        };
 
         public ToDoInputWindow()
         {
@@ -58,7 +66,7 @@ namespace ToDoApp2
         {
             var fileNames = e.Data.GetData(DataFormats.FileDrop) as string[];
 
-            // DONE: { } をつけましょう。
+            // TODO: { } をつけたら改行しましょう。
             if (fileNames is null) { return; }
 
             var fileName = fileNames[0];
@@ -72,7 +80,6 @@ namespace ToDoApp2
         /// <param name="fileName">画像ファイルの名前です。</param>
         private void OpenImageFile(string fileName)
         {
-            // DONE: 末尾にコメントを残すコメント方法は基本的に禁止しています。
             var ext = System.IO.Path.GetExtension(fileName).ToLower();
             // TODO: null にならなそうです。色々な fileName を渡して確認してみましょう。
             if (ext == null)
@@ -80,7 +87,6 @@ namespace ToDoApp2
                 return;
             }
 
-            // DONE: this
             if (!this._fileExtensions.Contains(ext))
             {
                 // TODO: 画像ファイルの拡張子は他にも考えられます。対応していない拡張子の場合も下記のメッセージが表示されてしまいます。
@@ -93,12 +99,10 @@ namespace ToDoApp2
             }
 
             // TODO: 外部リソースを使う場合は try-catch は重要です。
-            // DONE: var で受けましょう。
             try
             {
                 var bmpImage = new BitmapImage();
-                // TODO: using declaration
-                //using (FileStream stream = File.OpenRead(fileName))
+                // TODO: この場合の中カッコはスコープを区切る意味がないので不要です。
                 {
                     using FileStream stream = File.OpenRead(fileName);
                     bmpImage.BeginInit();
@@ -107,12 +111,11 @@ namespace ToDoApp2
                     bmpImage.CacheOption = BitmapCacheOption.OnLoad;
                     bmpImage.CreateOptions = BitmapCreateOptions.None;
                     bmpImage.EndInit();
-
-                    // DONE: this
                     this.SelectedImage.Source = bmpImage;
                 }
 
-            } catch(Exception ex) 
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
@@ -126,14 +129,11 @@ namespace ToDoApp2
         {
             try
             {
-                // DONE: var
                 var title = this.ToDoTitle.Text;
                 var memo = this.Memo.Text;
 
                 #region SQL文
-                // DONE: todo_items( の間にスペースがほしいです。
-                // DONE: 閉じカッコの)位置は、はじめの開始カッコ(がある行のインデントに揃える方がよいです。この場合はINSERTの頭に揃えます。
-                // DONE: これは個人的なものですが、最後のセミコロンは別の行にしておいてください。コピペしやすくなります。
+                // TODO: this
                 string sql = $@"
 INSERT INTO todo_items (
     title
@@ -150,25 +150,6 @@ VALUES (
   , '{SelectedImage.Source}'
 );
 ";
-
-                string sql2 = $@"
-INSERT INTO todo_items (
-    title
-  , date_start
-  , date_end
-  , memo
-  , image
-)
-VALUES (
-    '{title}'
-  , '{StartDate.SelectedDate.Value}'
-  , '{EndDate.SelectedDate.Value}'
-  , '{memo}'
-  , '{SelectedImage.Source}'
-)
-;
-";
-
                 #endregion SQL文
 
                 // TODO: var connection はよく var conn と省略されます。
