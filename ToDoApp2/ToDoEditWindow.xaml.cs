@@ -19,28 +19,36 @@ using static ToDoApp2.MainWindow;
 // TODO: namespace の { } を省略する新しい書き方があります。使ってみましょう。
 namespace ToDoApp2
 {
+    
+
     /// <summary>
     /// ToDoEditWindow.xaml の相互作用ロジック
     /// </summary>
     public partial class ToDoEditWindow : Window
     {
+        private int _rowNumber;
+
         // TODO: コメント
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly int _id;
 
         // TODO: コメント
-        // TODO: コンストラクタで入れているなら、ここでの new は不要です。
-        private readonly List<DataItem> _items = new List<DataItem>();
+        // DONE: コンストラクタで入れているなら、ここでの new は不要です。
+        private readonly List<DataItem> _items;
 
         // TODO: DataItem を引数に取れるようにしましょう。
         public ToDoEditWindow(int id, List<DataItem> items)
         {
             this.InitializeComponent();
 
-            // TODO: this
-            _id = id;
-            _items = items;
+            // DONE: this
+            this._id = id;
+            this._items = items;
 
-            this.LoadRowColumns(_items);
+            this.SearchRowNumber();
+            this.ReadColumns(_items);
         }
 
         // TODO: Load は呼び出して乗せるイメージなので、この処理では軽すぎます。rowNumber の検索はしていますが、set しかしていません。
@@ -48,45 +56,41 @@ namespace ToDoApp2
         /// <summary>
         /// idに対応する行をSQLから取得し、表示します。
         /// </summary>
-        private void LoadRowColumns(List<DataItem> _items)
+        private void ReadColumns(List<DataItem> _items)
         {
 
-            // TODO: this
-            var i = SearchRowNumber();
-            // TODO: items[i] は一度変数に格納しましょう。
+            // DONE: this
+            // DONE: items[i] は一度変数に格納しましょう。
+            var item = _items[_rowNumber];
 
-            this.CheckDone.IsChecked = _items[i].CheckDone;
-            this.ToDoTitle.Text = _items[i].ToDoTitle;
-            this.DateEnd.Text = _items[i].DateEnd.ToString();
-            this.Memo.Text = _items[i].Memo;
+            this.CheckDone.IsChecked = item.CheckDone;
+            this.ToDoTitle.Text = item.ToDoTitle;
+            this.DateEnd.Text = item.DateEnd.ToString();
+            this.Memo.Text = item.Memo;
         }
 
 
-        // TODO: コメント
+        // DONE: コメント
 
         /// <summary>
         /// メインウィンドウから渡された<see cref="_id"/>と一致するIdを持つ<see cref="_items">の要素を検索します。
         /// </summary>
         /// <returns>_itemsの要素番号です。</returns>
-        private int SearchElementNumber()
+        private void SearchRowNumber()
         {
             // TODO: index を取得したい場合は、for の方がよいでしょう。
             // TODO: LINQとタプルを使う方法もあるので、考えてみましょう。別メソッドとして作ってみてください。
-            int i = 0;
-            // TODO: this
-            foreach (DataItem item in _items)
+            
+            for(int i = 0; i < this._items.Count; i++)
             {
-                if (item.Id != _id)
+                var item = this._items[i];
+                if (item.Id == _id)
                 {
-                    i++;
-                    // TODO: Ctrl + K, D
-                } else
-                {
-                    return i;
+                    // DONE: Ctrl + K, D
+                
+                    _rowNumber = i;
                 }
             }
-
-            return i;
         }
 
         /// <summary>
@@ -96,31 +100,31 @@ namespace ToDoApp2
         private void ChangeButton_Click(object sender, RoutedEventArgs e)
         {
 
-            // TODO: SearchRowNumber は何度も使わないで、一度探してその値を保持しておけばよいでしょう。
-            // TODO: this
-            var i = SearchElementNumber();
+            // DONE: SearchRowNumber は何度も使わないで、一度探してその値を保持しておけばよいでしょう。
+            // DONE: this
 
             try
             {
-                // TODO: = の前後にスペースがほしいです。
-                // TODO: WHERE はインデントせず UPDATE の位置に揃えます。
-                // TODO: AND の後のスペースはひとつにしてください。
-                // TODO: this
+                // DONE: = の前後にスペースがほしいです。
+                // DONE: WHERE はインデントせず UPDATE の位置に揃えます。
+                // DONE: AND の後のスペースはひとつにしてください。
+                // DONE: this
                 // TODO: 基本的にPK列を使って更新します。
                 var sql = $@"
 UPDATE todo_items SET
-    check_done={this.CheckDone.IsChecked}
-  , title='{this.ToDoTitle.Text}'
-  , date_end='{this.DateEnd.SelectedDate.Value}'
-  , memo='{this.Memo.Text}'
-  , date_update=current_timestamp
-    WHERE id = {_id}
-  AND  date_update > '{_items[i].DateUpdate}'
+    check_done = {this.CheckDone.IsChecked}
+  , title = '{this.ToDoTitle.Text}'
+  , date_end = '{this.DateEnd.SelectedDate.Value}'
+  , memo = '{this.Memo.Text}'
+  , date_update = current_timestamp
+WHERE id = {this._id}
+ AND  date_update > '{_items[_rowNumber].DateUpdate}'
 ";
 
-                // TODO: using declaration
-                using (var connection = new NpgsqlConnection(Constants.connectionString))
+                // DONE: using declaration
                 {
+                    using var connection = new NpgsqlConnection(Constants.ConnectionString);
+
                     // TODO: try-catch
                     connection.Open();
                     var command = new NpgsqlCommand(sql, connection);
@@ -132,8 +136,8 @@ UPDATE todo_items SET
             }
             catch (Exception ex)
             {
-                // TODO: 開いた元のインスタンスを指定しておいたほうがよい。
-                MessageBox.Show(ex.ToString());
+                // DONE: 開いた元のインスタンスを指定しておいたほうがよい。
+                MessageBox.Show(this, ex.ToString());
             }
         }
 

@@ -17,10 +17,10 @@ namespace ToDoApp2
     /// </summary>
     public partial class ToDoInputWindow : Window
     {
-        // TODO: キャメルケース、_ プレフィックス
-        // TODO: Filename は FileName だし、ファイル拡張子は name は不要です。
-        // TODO: webp のピリオド
-        private readonly List<string> FilenameExtensions = new List<string>() { ".bmp", ".jpg", ".png", ".tiff", ".gif", ".icon", "webp" };
+        // DONE: キャメルケース、_ プレフィックス
+        // DONE: Filename は FileName だし、ファイル拡張子は name は不要です。
+        // DONE: webp のピリオド
+        private readonly List<string> _fileExtensions = new List<string>() { ".bmp", ".jpg", ".png", ".tiff", ".gif", ".icon", ".webp" };
 
         public ToDoInputWindow()
         {
@@ -42,11 +42,11 @@ namespace ToDoApp2
             this.ImageChoose.Click += (s, e) =>
             {
                 // TODO: ofd より dialog と略す方がよいです。
-                var ofd = new OpenFileDialog();
+                var dialog = new OpenFileDialog();
                 // TODO: owner の指定
-                ofd.ShowDialog();
+                dialog.ShowDialog(this);
                 // TODO: キャンセルした場合はどうなりますか？
-                this.OpenImageFile(ofd.FileName);
+                this.OpenImageFile(dialog.FileName);
             };
         }
 
@@ -54,12 +54,12 @@ namespace ToDoApp2
         /// <summary>
         /// （WIP）Imageにドロップした画像ファイルを取得します。
         /// </summary>
-        private void DropImage(object sender, DragEventArgs e)
+        private void Image_Drop(object sender, DragEventArgs e)
         {
             var fileNames = e.Data.GetData(DataFormats.FileDrop) as string[];
 
-            // TODO: { } をつけましょう。
-            if (fileNames is null) return;
+            // DONE: { } をつけましょう。
+            if (fileNames is null) { return; }
 
             var fileName = fileNames[0];
             this.OpenImageFile(fileName);
@@ -72,16 +72,16 @@ namespace ToDoApp2
         /// <param name="fileName">画像ファイルの名前です。</param>
         private void OpenImageFile(string fileName)
         {
-            // TODO: 末尾にコメントを残すコメント方法は基本的に禁止しています。
-            var ext = System.IO.Path.GetExtension(fileName).ToLower();  // 拡張子の確認
+            // DONE: 末尾にコメントを残すコメント方法は基本的に禁止しています。
+            var ext = System.IO.Path.GetExtension(fileName).ToLower();
             // TODO: null にならなそうです。色々な fileName を渡して確認してみましょう。
             if (ext == null)
             {
                 return;
             }
 
-            // TODO: this
-            if (!FilenameExtensions.Contains(ext))
+            // DONE: this
+            if (!this._fileExtensions.Contains(ext))
             {
                 // TODO: 画像ファイルの拡張子は他にも考えられます。対応していない拡張子の場合も下記のメッセージが表示されてしまいます。
                 MessageBox.Show(
@@ -93,21 +93,30 @@ namespace ToDoApp2
             }
 
             // TODO: 外部リソースを使う場合は try-catch は重要です。
-            // TODO: var で受けましょう。
-            BitmapImage bmpImage = new BitmapImage();
-            // TODO: using declaration
-            using (FileStream stream = File.OpenRead(fileName))
+            // DONE: var で受けましょう。
+            try
             {
-                bmpImage.BeginInit();
-                bmpImage.StreamSource = stream;
-                bmpImage.DecodePixelWidth = 500;
-                bmpImage.CacheOption = BitmapCacheOption.OnLoad;
-                bmpImage.CreateOptions = BitmapCreateOptions.None;
-                bmpImage.EndInit();
+                var bmpImage = new BitmapImage();
+                // TODO: using declaration
+                //using (FileStream stream = File.OpenRead(fileName))
+                {
+                    using FileStream stream = File.OpenRead(fileName);
+                    bmpImage.BeginInit();
+                    bmpImage.StreamSource = stream;
+                    bmpImage.DecodePixelWidth = 500;
+                    bmpImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bmpImage.CreateOptions = BitmapCreateOptions.None;
+                    bmpImage.EndInit();
+
+                    // DONE: this
+                    this.SelectedImage.Source = bmpImage;
+                }
+
+            } catch(Exception ex) 
+            {
+                MessageBox.Show(ex.ToString());
             }
 
-            // TODO: this
-            SelectedImage.Source = bmpImage;
         }
 
         /// <summary>
@@ -117,29 +126,30 @@ namespace ToDoApp2
         {
             try
             {
-                // TODO: var
-                string title = this.ToDoTitle.Text;
-                string memo = this.Memo.Text;
+                // DONE: var
+                var title = this.ToDoTitle.Text;
+                var memo = this.Memo.Text;
 
                 #region SQL文
-                // TODO: todo_items( の間にスペースがほしいです。
-                // TODO: 閉じカッコの)位置は、はじめの開始カッコ(がある行のインデントに揃える方がよいです。この場合はINSERTの頭に揃えます。
-                // TODO: これは個人的なものですが、最後のセミコロンは別の行にしておいてください。コピペしやすくなります。
+                // DONE: todo_items( の間にスペースがほしいです。
+                // DONE: 閉じカッコの)位置は、はじめの開始カッコ(がある行のインデントに揃える方がよいです。この場合はINSERTの頭に揃えます。
+                // DONE: これは個人的なものですが、最後のセミコロンは別の行にしておいてください。コピペしやすくなります。
                 string sql = $@"
-INSERT INTO todo_items(
+INSERT INTO todo_items (
     title
   , date_start
   , date_end
   , memo
   , image
-  )
+)
 VALUES (
     '{title}'
   , '{StartDate.SelectedDate.Value}'
   , '{EndDate.SelectedDate.Value}'
   , '{memo}'
   , '{SelectedImage.Source}'
-);";
+);
+";
 
                 string sql2 = $@"
 INSERT INTO todo_items (
@@ -165,11 +175,11 @@ VALUES (
                 // TODO: using declaration
                 // TODO: 実行時エラーはわかりませんので、再現できたら教えてください。
                 // IDbConnectionでNpgsqlConnectionを受けることはできますが、SQLコマンドの実行時にエラーが出ます。
-                using (var connection = new NpgsqlConnection(Constants.connectionString))
+                using (var conn = new NpgsqlConnection(Constants.ConnectionString))
                 {
                     // TODO: 以下は他の箇所のコメントを参考にしてください。
-                    connection.Open();
-                    using (IDbCommand command = new NpgsqlCommand(sql, connection))
+                    conn.Open();
+                    using (IDbCommand command = new NpgsqlCommand(sql, conn))
                     {
                         int result = command.ExecuteNonQuery();
                     }

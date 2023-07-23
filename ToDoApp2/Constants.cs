@@ -9,10 +9,10 @@ namespace ToDoApp2
 {
     public static class Constants
     {
-        // TODO: const → static readonly
+        // DONE: const → static readonly
         // TODO: 命名規則はMSDNを参照するとよいです。
         // https://learn.microsoft.com/ja-jp/dotnet/standard/design-guidelines/naming-guidelines
-        public const string connectionString =
+        public static readonly string ConnectionString =
                @"Server=127.0.0.1;
                Port=5432;
                Database=todoapp_db;

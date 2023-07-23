@@ -71,7 +71,7 @@ namespace ToDoApp2
             // TODO: キャメルケース
             // TODO: インターフェースで受けましょう。
 
-            var Connection = new NpgsqlConnection(Constants.connectionString);
+            var Connection = new NpgsqlConnection(Constants.ConnectionString);
             // TODO: using declaration
             using (var command = new NpgsqlCommand(sql, Connection))
             {
