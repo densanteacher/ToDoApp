@@ -17,48 +17,21 @@ namespace ToDoApp2
     /// </summary>
     public partial class ToDoInputWindow : Window
     {
-        // TODO: 固定値だけなのでConstantsにおいたほうがよさそうです。
+        // DONE: 固定値だけなのでConstantsにおいたほうがよさそうです。
         // DONE: リストで固定値を設定するときは、量にもよりますが、縦に並べたほうが追加しやすくなるでしょう。
-        private readonly List<string> _fileExtensions = new List<string>()
-        {
-            ".bmp",
-            ".jpg",
-            ".png",
-            ".tiff",
-            ".gif",
-            ".icon",
-            ".webp"
-        };
 
         public ToDoInputWindow()
         {
             this.InitializeComponent();
 
-            // TODO: イベントはxaml側に統一しましょう。
+            // DONE: イベントはxaml側に統一しましょう。
             // やるならアプリケーション全部で統一した方が迷いません。
             // 他のWindowではxaml側、他のWindowではコードビハインドと設定する箇所が入り乱れると間違いの元です。
             // 今までxamlに定義されていたので、このxamlを見て、イベントないねーって判断することが考えられます。
-            this.Cancel.Click += (s, e) =>
-            {
-                this.Close();
-            };
-            this.OK.Click += (s, e) =>
-            {
-                this.InsertToDoItem();
-                this.Close();
-            };
-            this.ImageChoose.Click += (s, e) =>
-            {
-                // TODO: ofd より dialog と略す方がよいです。
-                var dialog = new OpenFileDialog();
-                // TODO: owner の指定
-                dialog.ShowDialog(this);
-                // TODO: キャンセルした場合はどうなりますか？
-                this.OpenImageFile(dialog.FileName);
-            };
+
         }
 
-        // TODO: イベントメソッドは、ControlName_EventName() としましょう。
+        // DONE: イベントメソッドは、ControlName_EventName() としましょう。
         /// <summary>
         /// （WIP）Imageにドロップした画像ファイルを取得します。
         /// </summary>
@@ -66,53 +39,50 @@ namespace ToDoApp2
         {
             var fileNames = e.Data.GetData(DataFormats.FileDrop) as string[];
 
-            // TODO: { } をつけたら改行しましょう。
-            if (fileNames is null) { return; }
-
-            var fileName = fileNames[0];
-            this.OpenImageFile(fileName);
-        }
-
-        // TODO: OpenImageFile という名前だと画像を開くという意味だけなので、もっと適切な名前が考えられます。
-        /// <summary>
-        /// 画像ファイルを開いてImageコントロールに表示します。
-        /// </summary>
-        /// <param name="fileName">画像ファイルの名前です。</param>
-        private void OpenImageFile(string fileName)
-        {
-            var ext = System.IO.Path.GetExtension(fileName).ToLower();
-            // TODO: null にならなそうです。色々な fileName を渡して確認してみましょう。
-            if (ext == null)
+            // DONE: { } をつけたら改行しましょう。
+            if (fileNames is null)
             {
                 return;
             }
 
-            if (!this._fileExtensions.Contains(ext))
+            var fileName = fileNames[0];
+            this.ReadImageFile(fileName);
+        }
+
+        // DONE: OpenImageFile という名前だと画像を開くという意味だけなので、もっと適切な名前が考えられます。
+        /// <summary>
+        /// 画像ファイルを開いてImageコントロールに表示します。
+        /// </summary>
+        /// <param name="fileName">画像ファイルの名前です。</param>
+        private void ReadImageFile(string fileName)
+        {
+            var ext = System.IO.Path.GetExtension(fileName).ToLower();
+            // DONE: null にならなそうです。色々な fileName を渡して確認してみましょう。
+
+            if (!Constants.fileExtensions.Contains(ext))
             {
-                // TODO: 画像ファイルの拡張子は他にも考えられます。対応していない拡張子の場合も下記のメッセージが表示されてしまいます。
+                // DONE?: 画像ファイルの拡張子は他にも考えられます。対応していない拡張子の場合も下記のメッセージが表示されてしまいます。
                 MessageBox.Show(
-                    "画像ファイルを選択してください。",
+                    "このファイルには対応していません。",
                     "お知らせ",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
                 return;
             }
 
-            // TODO: 外部リソースを使う場合は try-catch は重要です。
+            // DONE: 外部リソースを使う場合は try-catch は重要です。
             try
             {
                 var bmpImage = new BitmapImage();
-                // TODO: この場合の中カッコはスコープを区切る意味がないので不要です。
-                {
-                    using FileStream stream = File.OpenRead(fileName);
-                    bmpImage.BeginInit();
-                    bmpImage.StreamSource = stream;
-                    bmpImage.DecodePixelWidth = 500;
-                    bmpImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bmpImage.CreateOptions = BitmapCreateOptions.None;
-                    bmpImage.EndInit();
-                    this.SelectedImage.Source = bmpImage;
-                }
+                // DONE: この場合の中カッコはスコープを区切る意味がないので不要です。
+                using FileStream stream = File.OpenRead(fileName);
+                bmpImage.BeginInit();
+                bmpImage.StreamSource = stream;
+                bmpImage.DecodePixelWidth = 500;
+                bmpImage.CacheOption = BitmapCacheOption.OnLoad;
+                bmpImage.CreateOptions = BitmapCreateOptions.None;
+                bmpImage.EndInit();
+                this.SelectedImage.Source = bmpImage;
 
             }
             catch (Exception ex)
@@ -133,7 +103,7 @@ namespace ToDoApp2
                 var memo = this.Memo.Text;
 
                 #region SQL文
-                // TODO: this
+                // DONE: this
                 string sql = $@"
 INSERT INTO todo_items (
     title
@@ -143,33 +113,74 @@ INSERT INTO todo_items (
   , image
 )
 VALUES (
-    '{title}'
-  , '{StartDate.SelectedDate.Value}'
-  , '{EndDate.SelectedDate.Value}'
-  , '{memo}'
-  , '{SelectedImage.Source}'
+    '{this.ToDoTitle}'
+  , '{this.StartDate.SelectedDate.Value}'
+  , '{this.EndDate.SelectedDate.Value}'
+  , '{this.Memo}'
+  , '{this.SelectedImage.Source}'
 );
 ";
                 #endregion SQL文
 
-                // TODO: var connection はよく var conn と省略されます。
-                // TODO: using declaration
-                // TODO: 実行時エラーはわかりませんので、再現できたら教えてください。
-                // IDbConnectionでNpgsqlConnectionを受けることはできますが、SQLコマンドの実行時にエラーが出ます。
-                using (var conn = new NpgsqlConnection(Constants.ConnectionString))
+                // DONE: var connection はよく var conn と省略されます。
+                // DONE: using declaration
+                // DONE: 実行時エラーはわかりませんので、再現できたら教えてください。
+                // キャストすれば実行できました。
                 {
+                    using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
+
                     // TODO: 以下は他の箇所のコメントを参考にしてください。
-                    conn.Open();
-                    using (IDbCommand command = new NpgsqlCommand(sql, conn))
+                    try
                     {
+                        conn.Open();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(this, ex.Message);
+                    }
+
+
+                    try
+                    {
+                        using IDbCommand command = new NpgsqlCommand(sql, (NpgsqlConnection)conn);
                         int result = command.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(this, ex.Message);
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                MessageBox.Show(this, ex.Message);
             }
+        }
+
+        private void ImageChooseButton_Click(object sender, RoutedEventArgs e)
+        {
+            // DONE: ofd より dialog と略す方がよいです。
+            var dialog = new OpenFileDialog();
+            // DONE: owner の指定
+            // DONE: キャンセルした場合はどうなりますか？
+            var dialogResult = dialog.ShowDialog(this) ?? false;
+            if (!dialogResult)
+            {
+                return;
+            }
+            this.ReadImageFile(dialog.FileName);
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void OkButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.InsertToDoItem();
+            this.Close();
         }
     }
 }

@@ -10,6 +10,11 @@
         <Style TargetType="DataGrid">
             <Setter Property="IsReadOnly" Value="True"/>
         </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Tag" Value="{Binding Name, Mode=OneWay}"/>
+            <EventSetter Event="Checked" Handler="CheckBox_Checked"/>
+            <EventSetter Event="Unchecked" Handler="CheckBox_Unchecked"/>
+        </Style>
     </Window.Resources>
     <Grid>
 
@@ -49,11 +54,11 @@
             <Button Grid.Row="1" Grid.Column="0" Content="詳細" Click="DetailButton_Click"/>
 
             <Button Grid.Row="3" Grid.Column="0" Content="更新" Click="RefreshButton_Click"/>
-            <Button Grid.Row="4" Grid.Column="0" Content="削除"/>
-            <Button Grid.Row="5" Grid.Column="0" Content="一括削除"/>
+            <Button Grid.Row="4" Grid.Column="0" Content="削除" Click="DeleteButton_Click"/>
+            <Button Grid.Row="5" Grid.Column="0" Content="一括削除" Click="BulkDeleteButton_Click"/>
 
-            <Button Grid.Row="7" Grid.Column="0" Content="優先度↑"/>
-            <Button Grid.Row="8" Grid.Column="0" Content="優先度↓"/>
+            <Button Grid.Row="7" Grid.Column="0" Content="優先度↑" Click="PriorityUpButton_Click"/>
+            <Button Grid.Row="8" Grid.Column="0" Content="優先度↓" Click="PriorityDownButton_Click"/>
         </Grid>
     </Grid>
 </Window>

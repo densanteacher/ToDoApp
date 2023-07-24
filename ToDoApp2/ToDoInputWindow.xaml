@@ -7,20 +7,20 @@
         xmlns:local="clr-namespace:ToDoApp2"
         mc:Ignorable="d"
         Title="ToDoInputWindow" Height="450" Width="800" FontSize="20">
-    <!-- TODO: Windowサイズを変えると隙間が空きそうな配置方法になっています。 -->
+    <!-- DONE: Windowサイズを変えると隙間が空きそうな配置方法になっています。 -->
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="3*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="3*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
         <TextBlock  Grid.Row="0" Grid.Column="0" Text="タイトル"/>
@@ -32,11 +32,11 @@
         <TextBlock  Grid.Row="2" Grid.Column="2" Text="～"/>
         <TextBlock  Grid.Row="3" Grid.Column="0" Text="期日"/>
         <DatePicker Grid.Row="3" Grid.Column="2" x:Name="EndDate" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>
-        <!-- TODO: Buttonコントロールの命名は・・・ -->
-        <Button     Grid.Row="5" Grid.Column="2" x:Name="OK" Content="OK"/>
-        <Button     Grid.Row="5" Grid.Column="1" x:Name="Cancel" Content="Cancel"/>
+        <!-- DONE: Buttonコントロールの命名は・・・ -->
+        <Button     Grid.Row="5" Grid.Column="2" x:Name="OkButton" Content="OK" Click="OkButton_Click"/>
+        <Button     Grid.Row="5" Grid.Column="1" x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click"/>
 
-        <Button     Grid.Row="4" Grid.Column="0" x:Name="ImageChoose" Content="画像を追加" Margin="20"/>
+        <Button     Grid.Row="4" Grid.Column="0" x:Name="ImageChooseButton" Content="画像を追加" Margin="20" Click="ImageChooseButton_Click"/>
         <Image      Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" x:Name="SelectedImage" AllowDrop="True" Drop="Image_Drop"/>
     </Grid>
 </Window>

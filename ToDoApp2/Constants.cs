@@ -18,5 +18,18 @@ namespace ToDoApp2
                Database=todoapp_db;
                User ID=postgres;
                Password=postgres;";
+
+
+        public static readonly List<string> fileExtensions = new List<string>()
+        {
+            ".bmp",
+            ".jpg",
+            ".png",
+            ".tiff",
+            ".gif",
+            ".icon",
+            ".webp"
+        };
     }
+
 }
