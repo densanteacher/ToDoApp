@@ -23,12 +23,11 @@ namespace ToDoApp2
     /// </summary>
     public partial class MainWindow : Window
     {
-        // DONE: _ のプレフィックス
+        // TODO: コメント
         private readonly List<DataItem> _items = new List<DataItem>();
 
         public MainWindow()
         {
-            // DONE: this
             this.InitializeComponent();
 
             this.ReloadToDoList();
@@ -36,8 +35,8 @@ namespace ToDoApp2
 
 
 
-        // DONE: コメント
         // DONE?: Show は Window を表示するときに使われる単語です。より適切なメソッド名を考えましょう。
+        // TODO: see ではインスタンスを指定できないので、this は使えません。
         /// <summary>
         /// <see cref="this.ToDoDataGrid"/>にToDoリストを表示します。
         /// </summary>
@@ -46,16 +45,14 @@ namespace ToDoApp2
             this.ToDoDataGrid.ItemsSource = null;
             this.ToDoDataGrid.Items.Clear();
 
+            // TODO: this
             _items.Clear();
 
             this.ToDoDataGrid.Items.Refresh();
 
-            // DONE: SQL文の終わりは、;(セミコロン) で終わりましょう。
-            // ただし、Oracleの場合はセミコロンがあるとエラーになります。複数DBMSをターゲットにする場合は考慮します。
-            // DONE: SELECT の列名は * で省略せずに書きましょう。
-            // SELECT * は実務ではあまり使わないほうがよいです。
-            // テーブル変更があった場合、問題となる場合があります。
-
+            // TODO: SELECT, FROM, ORDER BY の箇所で改行してください。
+            // TODO: date_update と todo_items の後ろに不要なスペースが入っています。
+            // TODO: ; (セミコロン) は別行にしてください。
             var sql = $@"
 SELECT id
   , check_done
@@ -69,17 +66,11 @@ FROM todo_items
 ORDER BY check_done
   , date_end;";
 
-            // DONE: using
-            // DONE: キャメルケース
-            // DONE: インターフェースで受けましょう
-
-            // DONE: using declaration
             {
+                // TODO: conn
                 using IDbConnection connection = new NpgsqlConnection(Constants.ConnectionString);
                 using IDbCommand command = new NpgsqlCommand(sql, (NpgsqlConnection)connection);
 
-                // DONE: try-catch
-                // Open だけで try-catch した方がエラー理由がわかりやすくなります。
                 try
                 {
                     connection.Open();
@@ -89,27 +80,16 @@ ORDER BY check_done
                     MessageBox.Show(this, ex.Message);
                 }
 
-                // DONE: try-catch
                 try
                 {
                     using var reader = command.ExecuteReader();
 
-                    // DONE: try-catch
                     try
                     {
                         while (reader.Read())
                         {
-                            // DONE: this
-                            // DONE: 一度 var item に入れましょう。
-                            // DONE: キャストではないデータの取得方法を行ってみましょう。GetXxx
-                            /*var item = new DataItem((int)reader["id"],
-                                                (bool)reader["check_done"],
-                                                (string)reader["title"],
-                                                (string)reader["memo"],
-                                                (DateTime)reader["date_start"],
-                                                (DateTime)reader["date_end"],
-                                                (int)reader["priority"],
-                                                (DateTime)reader["date_update"]);*/
+                            // TODO: できればインデントは、スペース4つに統一しましょう。
+                            // この場合は最初の DataItem( で改行してしまった方が揃うと思います。
                             var item = new DataItem(reader.GetInt32(0),
                                                 reader.GetBoolean(1),
                                                 reader.GetString(2),
@@ -125,7 +105,6 @@ ORDER BY check_done
                     {
                         MessageBox.Show(this, ex.Message);
                     }
-                    // DONE: this
                     this.ToDoDataGrid.ItemsSource = this._items;
                 }
                 catch (Exception ex)
@@ -142,8 +121,6 @@ ORDER BY check_done
 
         private int SearchIdentification()
         {
-            // DONE: この位置の UpdateLayout は不要です。
-            // DONE: 使い方が間違っています。
             if (this.ToDoDataGrid.SelectedItem is null)
             {
                 return -1;
@@ -151,16 +128,16 @@ ORDER BY check_done
 
             this.ToDoDataGrid.ScrollIntoView(this.ToDoDataGrid.SelectedItem);
 
-            // DONE: var a = this.ToDoDataGrid.SelectedItem as DataItem; のようにキャストしてみましょう。as より is のほうが安全です。
             if (!(this.ToDoDataGrid.SelectedItem is DataItem item))
             {
                 return -1;
             }
-            // DONE: Text は Row ではないので、命名がフェイクになっています。
+
+            // TODO: キャストではなく・・・？
             var cell = (TextBlock)this.ToDoDataGrid.Columns[0].GetCellContent(item);
             string selectedId = cell?.Text;
-            // DONE: { } が必要です。
 
+            // TODO: 改行を入れてください。
             if (!(int.TryParse(selectedId, out var id))) { return -1; }
             return id;
         }
@@ -169,20 +146,12 @@ ORDER BY check_done
 
         #region Clickイベント
 
-        // DONE: コメント
-
         /// <summary>
         /// ToDo入力ボタンを押すと、<see cref="ToDoInputWindow"/>を表示します。
         /// </summary>
-
         private void InputToDo_Click(object sender, RoutedEventArgs e)
         {
-            // DONE: tdiw の略語は何かわからないので、もう少しわかる略語の方がいいです。
-            // 変数名の略語として w, win, window で検討してみます。
-            // w だけだと width と見分けがつきません。
-            // win だと windows と見分けが付きません。
-            // window まで書けば、迷うことはありません。
-            // todoInputWindow まで書くとさすがに冗長です。
+            // TODO: tdiWindow → window でよいです。
             var tdiWindow = new ToDoInputWindow();
             tdiWindow.Owner = this;
             tdiWindow.ShowDialog();
@@ -199,7 +168,8 @@ ORDER BY check_done
             {
                 return;
             }
-            // DONE: Ctrl + K, D
+
+            // TODO: this
             var tdeWindow = new ToDoEditWindow(id, _items);
             tdeWindow.Owner = this;
             tdeWindow.ShowDialog();
@@ -219,7 +189,7 @@ ORDER BY check_done
                 return;
             }
 
-            var sql = $@" DELETE FROM todo_items WHERE id = {id};";
+            var sql = $@"DELETE FROM todo_items WHERE id = {id};";
 
             {
                 using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
@@ -254,7 +224,7 @@ ORDER BY check_done
         {
             MessageBox.Show(this, "実行済みのToDoリストを全て削除します。よろしいですか？", "確認", MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
-            var sql = $@" DELETE FROM todo_items WHERE check_done = true;";
+            var sql = $@"DELETE FROM todo_items WHERE check_done = true;";
 
             {
                 using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
@@ -286,7 +256,6 @@ ORDER BY check_done
             this.ReloadToDoList();
         }
 
-
         private void PriorityUpButton_Click(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
@@ -307,6 +276,5 @@ ORDER BY check_done
         }
 
         #endregion Clickイベント
-
     }
 }

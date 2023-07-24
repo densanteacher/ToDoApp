@@ -19,7 +19,7 @@ using static ToDoApp2.MainWindow;
 // TODO: namespace の { } を省略する新しい書き方があります。使ってみましょう。
 namespace ToDoApp2
 {
-    
+
 
     /// <summary>
     /// ToDoEditWindow.xaml の相互作用ロジック
@@ -30,12 +30,11 @@ namespace ToDoApp2
 
         // TODO: コメント
         /// <summary>
-        /// 
+        ///
         /// </summary>
         private readonly int _id;
 
         // TODO: コメント
-        // DONE: コンストラクタで入れているなら、ここでの new は不要です。
         private readonly List<DataItem> _items;
 
         // TODO: DataItem を引数に取れるようにしましょう。
@@ -43,11 +42,11 @@ namespace ToDoApp2
         {
             this.InitializeComponent();
 
-            // DONE: this
             this._id = id;
             this._items = items;
 
             this.SearchRowNumber();
+            // TODO: this
             this.ReadColumns(_items);
         }
 
@@ -59,8 +58,7 @@ namespace ToDoApp2
         private void ReadColumns(List<DataItem> _items)
         {
 
-            // DONE: this
-            // DONE: items[i] は一度変数に格納しましょう。
+            // TODO: this
             var item = _items[_rowNumber];
 
             this.CheckDone.IsChecked = item.CheckDone;
@@ -68,9 +66,6 @@ namespace ToDoApp2
             this.DateEnd.Text = item.DateEnd.ToString();
             this.Memo.Text = item.Memo;
         }
-
-
-        // DONE: コメント
 
         /// <summary>
         /// メインウィンドウから渡された<see cref="_id"/>と一致するIdを持つ<see cref="_items">の要素を検索します。
@@ -80,14 +75,12 @@ namespace ToDoApp2
         {
             // TODO: index を取得したい場合は、for の方がよいでしょう。
             // TODO: LINQとタプルを使う方法もあるので、考えてみましょう。別メソッドとして作ってみてください。
-            
+
             for(int i = 0; i < this._items.Count; i++)
             {
                 var item = this._items[i];
                 if (item.Id == _id)
                 {
-                    // DONE: Ctrl + K, D
-                
                     _rowNumber = i;
                 }
             }
@@ -99,17 +92,16 @@ namespace ToDoApp2
         /// </summary>
         private void ChangeButton_Click(object sender, RoutedEventArgs e)
         {
-
-            // DONE: SearchRowNumber は何度も使わないで、一度探してその値を保持しておけばよいでしょう。
-            // DONE: this
-
+            // TODO: 下記の処理の中で this.Close() があるのは、あまりよくありません。
+            // それ以外をメソッド化してみてください。
             try
             {
-                // DONE: = の前後にスペースがほしいです。
-                // DONE: WHERE はインデントせず UPDATE の位置に揃えます。
-                // DONE: AND の後のスペースはひとつにしてください。
-                // DONE: this
+                // TODO: WHERE のあとは改行してください。
+                // TODO: AND の後のスペースはひとつにしてください。
+                // TODO: WHERE の次の AND のインデントが足りません。
                 // TODO: 基本的にPK列を使って更新します。
+                // TODO: 変数化
+                // TODO: this
                 var sql = $@"
 UPDATE todo_items SET
     check_done = {this.CheckDone.IsChecked}
@@ -121,7 +113,6 @@ WHERE id = {this._id}
  AND  date_update > '{_items[_rowNumber].DateUpdate}'
 ";
 
-                // DONE: using declaration
                 {
                     using var connection = new NpgsqlConnection(Constants.ConnectionString);
 
@@ -136,7 +127,6 @@ WHERE id = {this._id}
             }
             catch (Exception ex)
             {
-                // DONE: 開いた元のインスタンスを指定しておいたほうがよい。
                 MessageBox.Show(this, ex.ToString());
             }
         }

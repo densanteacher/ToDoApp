@@ -18,15 +18,14 @@
     </Window.Resources>
     <Grid>
 
-        <!-- DONE: 全体をGridで配置するのではなく、まずGridの3分割をして、その右端に更にGridを配置するのがよさそうです。なるべく入れ子にしない方針もあるので一概には言えません。 -->
-
+        <!-- TODO: 左端のカラムは不要では？ -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- DONE: ToDoList という名前だとListViewなどのリスト系のコントロールだと勘違いします。DataGridだとわかるような名前にしましょう。 -->
+        <!-- TODO: RowSpanの値 -->
         <DataGrid Grid.Row="0" Grid.Column="1" Grid.RowSpan="6" Grid.ColumnSpan="1" x:Name="ToDoDataGrid" ItemsSource="{Binding DataItem}" Margin="10"
                   AutoGenerateColumns="False" SelectionMode="Single">
             <DataGrid.Columns>

@@ -32,7 +32,6 @@
         <TextBlock  Grid.Row="2" Grid.Column="2" Text="～"/>
         <TextBlock  Grid.Row="3" Grid.Column="0" Text="期日"/>
         <DatePicker Grid.Row="3" Grid.Column="2" x:Name="EndDate" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>
-        <!-- DONE: Buttonコントロールの命名は・・・ -->
         <Button     Grid.Row="5" Grid.Column="2" x:Name="OkButton" Content="OK" Click="OkButton_Click"/>
         <Button     Grid.Row="5" Grid.Column="1" x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click"/>
 
