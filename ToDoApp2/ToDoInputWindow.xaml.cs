@@ -35,7 +35,7 @@ public partial class ToDoInputWindow : Window
     {
         // DONE: as ではなく、is で変換も一緒にできます。
 
-        if (!(e.Data.GetData(DataFormats.FileDrop) is string[] fileNames))
+        if (e.Data.GetData(DataFormats.FileDrop) is not string[] fileNames)
         {
             return;
         }
@@ -103,10 +103,10 @@ INSERT INTO todo_items (
   , image
 )
 VALUES (
-    '{this.ToDoTitle}'
+    '{title}'
   , '{startDate}'
   , '{endDate}'
-  , '{this.Memo}'
+  , '{memo}'
   , '{this.ImageFrame.Source}'
 );
 ";

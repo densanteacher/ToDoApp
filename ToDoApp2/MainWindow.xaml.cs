@@ -26,7 +26,7 @@ public partial class MainWindow : Window
     /// <summary>
     /// <see cref="MainWindow"/>から渡されたSQLの読み取り結果を保持しておくリストです。
     /// </summary>
-    private readonly List<DataItem> _items = new List<DataItem>();
+    private readonly List<DataItem> _items = new();
 
     public MainWindow()
     {
@@ -72,6 +72,7 @@ FROM
     todo_items
 ORDER BY
     check_done
+  , priority
   , date_end
 ;
 ";
@@ -136,13 +137,13 @@ ORDER BY
 
         this.ToDoDataGrid.ScrollIntoView(this.ToDoDataGrid.SelectedItem);
 
-        if (!(this.ToDoDataGrid.SelectedItem is DataItem item))
+        if (this.ToDoDataGrid.SelectedItem is not DataItem item)
         {
             return -1;
         }
 
         // DONE?: キャストではなく・・・？
-        if (!(this.ToDoDataGrid.Columns[0].GetCellContent(item) is TextBlock cell))
+        if (this.ToDoDataGrid.Columns[0].GetCellContent(item) is not TextBlock cell)
         {
             return -1;
         }
@@ -168,9 +169,13 @@ ORDER BY
     private void InputToDo_Click(object sender, RoutedEventArgs e)
     {
         // DONE: tdiWindow → window でよいです。
-        var window = new ToDoInputWindow();
-        window.Owner = this;
+        var window = new ToDoInputWindow
+        {
+            Owner = this
+        };
         window.ShowDialog();
+
+        this.ReloadToDoList();
     }
 
     /// <summary>
@@ -184,11 +189,15 @@ ORDER BY
         {
             return;
         }
-        int row = this.ToDoDataGrid.Items.IndexOf(ToDoDataGrid.SelectedItem);
+        int row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
         // DONE: this
-        var window = new ToDoEditWindow(id, this._items[row]);
-        window.Owner = this;
+        var window = new ToDoEditWindow(id, this._items[row])
+        {
+            Owner = this
+        };
         window.ShowDialog();
+
+        this.ReloadToDoList();
     }
 
 
@@ -274,12 +283,16 @@ ORDER BY
 
     private void PriorityUpButton_Click(object sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        int row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
+        this._items[row].Priority++;
+        this.ReloadToDoList();
     }
 
     private void PriorityDownButton_Click(object obj, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        int row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
+        this._items[row].Priority--;
+        this.ReloadToDoList();
     }
 
     private void CheckBox_Checked(object sender, RoutedEventArgs e)
