@@ -9,8 +9,7 @@ namespace ToDoApp2
 {
     public static class Constants
     {
-        // DONE: 命名規則はMSDNを参照するとよいです。
-        // https://learn.microsoft.com/ja-jp/dotnet/standard/design-guidelines/naming-guidelines
+        // TODO: コメント
         public static readonly string ConnectionString =
                @"Server=127.0.0.1;
                Port=5432;
@@ -18,8 +17,7 @@ namespace ToDoApp2
                User ID=postgres;
                Password=postgres;";
 
-        // DONE: コメント
-        // DONE: static readonly にしたら、パスカルケースです。
+        // TODO: new() という表記にできます。
         /// <summary>
         /// 画像ファイルの拡張子をまとめたリストです。
         /// </summary>
@@ -31,12 +29,12 @@ namespace ToDoApp2
             ".tiff",
             ".gif",
             ".icon",
-            // DONE: ちょっとしたテクニックなのですが、リストの項目を定義する場合は、最後のカンマも記述します。
-            // そうすることで、次の行をコピーして作るときに、追加が楽になります。
-            // 最後のカンマがなければ、次の行を追加して、戻ってカンマを付ける必要があるので、ちょっとだけ手間です。
             ".webp",
         };
 
+        // TODO: コメント
+        // TODO: new() という表記にできます。
+        // TODO: Dataは冗長だと思います。Priorityの複数形でよいのでは？
         public static readonly List<int> PriorityDataList = new List<int>() { 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5 };
     }
 

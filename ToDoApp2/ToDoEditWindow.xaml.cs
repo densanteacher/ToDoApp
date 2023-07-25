@@ -14,31 +14,30 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+
+// TODO: using static 構文はなるべく使わないようにします。static なメソッドを呼ぶときにインスタンスメソッドと見分けがつかなくなってミスの元になります。
 using static ToDoApp2.MainWindow;
 
-// DONE: namespace の { } を省略する新しい書き方があります。使ってみましょう。
 namespace ToDoApp2;
-
-
 
 /// <summary>
 /// ToDoEditWindow.xaml の相互作用ロジック
 /// </summary>
 public partial class ToDoEditWindow : Window
 {
-    // DONE: コメント
+    // TODO: コメントの内容だと、SQLが何を指すのか、IDが何を指すのかわかりません。
     /// <summary>
     /// <see cref="MainWindow"/>から渡されたSQLのIDです。
     /// </summary>
     private readonly int _id;
 
-    // DONE: コメント
+    // TODO: コメントの内容だと、SQLが何を指すのかわかりません。
     /// <summary>
     /// <see cref="MainWindow"/>から渡されたSQLの読み取り結果です。
     /// </summary>
     private readonly DataItem _item;
 
-    // DONE: DataItem を引数に取れるようにしましょう。
+    // TODO: Ctrl + K, D
     public ToDoEditWindow(int id,DataItem item)
     {
         this.InitializeComponent();
@@ -48,55 +47,41 @@ public partial class ToDoEditWindow : Window
 
         this.PriorityList.ItemsSource = Constants.PriorityDataList;
 
-        // DONE: this
         this.SetColumns(this._item);
     }
 
-    // DONE: Load は呼び出して乗せるイメージなので、この処理では軽すぎます。rowNumber の検索はしていますが、set しかしていません。
-    // DONE: _items のプレフィックスはフィールド変数の場合に使います。
     /// <summary>
     /// idに対応する行をSQLから取得し、表示します。
     /// </summary>
     private void SetColumns(DataItem item)
     {
-
-        // DONE: this
-
         this.CheckDone.IsChecked = item.CheckDone;
         this.ToDoTitle.Text = item.ToDoTitle;
         this.DateEnd.Text = item.DateEnd.ToString();
         this.Memo.Text = item.Memo;
     }
 
+    // TODO: /* */ の範囲コメントは使わないほうがよいです。git上での変化は2行だけですので、マージで苦労することになります。
+    // DONE: ドキュメンテーションコメントもコメンアウト内に含めてしまってください。
+    // TODO: LINQ の Select() からメソッドチェーンで記述してみてください。
+    // TODO: ForEach() はすべて処理されますが、この場合はひとつ取れればよいので、First() や FirstOrDefault() を使ってみましょう。Where() を使ってもよいです。
+    /*
     /// <summary>
     /// メインウィンドウから渡された<see cref="_id"/>と一致するIdを持つ<see cref="_item">の要素を検索します。
     /// </summary>
     /// <returns>_itemsの要素番号です。</returns>
-   /* private void SearchRowNumber()
-    {
-        // DONE: index を取得したい場合は、for の方がよいでしょう。
-        // DONE: LINQとタプルを使う方法もあるので、考えてみましょう。別メソッドとして作ってみてください。
-
-        for (int i = 0; i < this._item.Count; i++)
-        {
-            var item = this._item;
-            if (item.Id == _id)
-            {
-                _rowNumber = i;
-            }
-        }
-    }
     private void SearchRowNumber2()
     {
-        var indexList = this._item.Select((item, index) => (item, index)).ToList();
-        indexList.ForEach(tuple =>
+        var indexes = this._items.Select((item, index) => (item, index)).ToList();
+        indexes.ForEach(tuple =>
         {
             if (tuple.item.Id == _id)
             {
-                _rowNumber = tuple.index;
+                this._rowNumber = tuple.index;
             }
         });
-    }*/
+    }
+    */
 
     /// <summary>
     /// 変更を保存ボタンをクリックすると、現在テキストボックスなどに入力されている内容に応じてSQLにUPDATEを実行します。
@@ -104,8 +89,6 @@ public partial class ToDoEditWindow : Window
     /// </summary>
     private void ChangeButton_Click(object sender, RoutedEventArgs e)
     {
-        // DONE: 下記の処理の中で this.Close() があるのは、あまりよくありません。
-        // それ以外をメソッド化してみてください。
         this.UpdateSql();
 
         this.Close();
@@ -115,17 +98,14 @@ public partial class ToDoEditWindow : Window
     {
         this.Close();
     }
+
+    // TODO: UpdateSql() だと、SQLを更新という意味になってしまうので・・・？
     private void UpdateSql()
     {
         try
         {
-            // DONE: WHERE のあとは改行してください。
-            // DONE: AND の後のスペースはひとつにしてください。
-            // DONE: WHERE の次の AND のインデントが足りません。
-            // TODO: 基本的にPK列を使って更新します。
-            // DONE: 変数化
-            // DONE: this
             var dateEnd = this.DateEnd.SelectedDate.Value;
+            // TODO: isChecked は null を取ります。つまり・・・？
             var sql = $@"
 UPDATE todo_items SET
     check_done = {this.CheckDone.IsChecked}
@@ -137,10 +117,10 @@ WHERE
     id = {this._id}
 ";
 
+            // TODO: この中括弧は不要です。変数が生き残るスコープを常に意識しましょう。
             {
                 using var conn = new NpgsqlConnection(Constants.ConnectionString);
 
-                // DONE: try-catch
                 try
                 {
                     conn.Open();
@@ -149,11 +129,8 @@ WHERE
                 {
                     MessageBox.Show(this, ex.Message);
                 }
-                using var command = new NpgsqlCommand(sql, conn);
-                // DONE: 返り値は何になりますか？更新されなかった場合はどうなりますか？
 
-                // UPDATEは何かを読み取るわけではないのでExecuteReaderではなくExecuteNonQueryを使用するべきでした。
-                // 戻り値は更新の影響を受けた行数で、更新されなかった場合は戻り値は０になります。
+                using var command = new NpgsqlCommand(sql, conn);
                 var result = command.ExecuteNonQuery();
             }
         }

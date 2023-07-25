@@ -25,16 +25,12 @@ public partial class ToDoInputWindow : Window
 
     }
 
-    // DONE: イベントメソッドは、ControlName_EventName() としましょう。
-    // DONE: x:Name でつけた方の名前を使ってください。つまり SelectedImage_Drop です。
-    // とはいえ、コントロール自体は、Selectedされていなくても存在しているので、名前は少し変えたほうがよさそうです。
     /// <summary>
     /// Imageにドロップした画像ファイルを取得します。
     /// </summary>
     private void ImageFrame_Drop(object sender, DragEventArgs e)
     {
-        // DONE: as ではなく、is で変換も一緒にできます。
-
+        // TODO: if の条件は肯定的な方が読みやすくなります。not でわかりやすくなる時以外は、not をつけないようにしましょう。
         if (e.Data.GetData(DataFormats.FileDrop) is not string[] fileNames)
         {
             return;
@@ -91,7 +87,6 @@ public partial class ToDoInputWindow : Window
             var memo = this.Memo.Text;
 
             #region SQL文
-            // DONE: SelectedDate は null になる可能背があります。一度変数に格納しておくのがよいでしょう。
             var startDate = this.StartDate.SelectedDate.Value;
             var endDate = this.EndDate.SelectedDate.Value;
             string sql = $@"
@@ -112,9 +107,6 @@ VALUES (
 ";
             #endregion SQL文
 
-            // DONE: 実行時エラーはわかりませんので、再現できたら教えてください。
-            // キャストすれば実行できました。
-            // DONE: スコープは残り全部なので、この中括弧は不要です。
             using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
 
             try
@@ -127,9 +119,9 @@ VALUES (
                 MessageBox.Show(this, ex.Message);
             }
 
-
             try
             {
+                // TODO: conn.CreateCommand() というものがあります。キャストは不要です。
                 using IDbCommand command = new NpgsqlCommand(sql, (NpgsqlConnection)conn);
                 int result = command.ExecuteNonQuery();
             }

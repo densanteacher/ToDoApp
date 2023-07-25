@@ -18,16 +18,13 @@
     </Window.Resources>
     <Grid>
 
-        <!-- DONE: 左端のカラムは不要では？ -->
-        <!-- 今は使用していませんが今後使用する予定なので確保してあるスペースです。カレンダー上にToDoリストを表示する機能などを追加予定です。-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Button Grid.Row="0" Grid.Column="0" Content="カレンダー"/>
-        <!-- DONE: RowSpanの値 -->
+        <!--<Label Grid.Row="0" Grid.Column="0" Content="カレンダー(予定)"/>-->
         <DataGrid Grid.Row="0" Grid.Column="1" x:Name="ToDoDataGrid" ItemsSource="{Binding DataItem}" Margin="10"
                   AutoGenerateColumns="False" SelectionMode="Single">
             <DataGrid.Columns>

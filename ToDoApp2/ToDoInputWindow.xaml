@@ -7,7 +7,6 @@
         xmlns:local="clr-namespace:ToDoApp2"
         mc:Ignorable="d"
         Title="ToDoInputWindow" Height="450" Width="800" FontSize="20">
-    <!-- DONE: Windowサイズを変えると隙間が空きそうな配置方法になっています。 -->
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
@@ -28,6 +27,7 @@
         <TextBlock  Grid.Row="1" Grid.Column="0" Text="メモ・備考"/>
         <TextBox    Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" x:Name="Memo" Text="" TextWrapping="Wrap"/>
         <TextBlock  Grid.Row="2" Grid.Column="0" Text="開始日"/>
+        <!-- TODO: DatePickerにしては横幅が伸びすぎます。工夫してみましょう。 -->
         <DatePicker Grid.Row="2" Grid.Column="1" x:Name="StartDate" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>
         <TextBlock  Grid.Row="2" Grid.Column="2" Text="～"/>
         <TextBlock  Grid.Row="3" Grid.Column="0" Text="期日"/>

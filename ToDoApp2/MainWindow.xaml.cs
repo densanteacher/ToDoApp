@@ -17,12 +17,13 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace ToDoApp2;
+
 /// <summary>
 /// MainWindow.xaml の相互作用ロジック
 /// </summary>
 public partial class MainWindow : Window
 {
-    // DONE: コメント
+    // TODO: コメントだけを読んで何をするか説明されているのが理想です。ここではSQLが何なのか読み取れません。
     /// <summary>
     /// <see cref="MainWindow"/>から渡されたSQLの読み取り結果を保持しておくリストです。
     /// </summary>
@@ -37,8 +38,7 @@ public partial class MainWindow : Window
 
     #region DataGrid関連処理
 
-    // DONE?: Show は Window を表示するときに使われる単語です。より適切なメソッド名を考えましょう。
-    // DONE: see ではインスタンスを指定できないので、this は使えません。
+    // TODO: Reload → Load でいいのでは？ Re は繰り返す処理につけたくなりますが、この場合はなくても伝わりそうです。
     /// <summary>
     /// <see cref="ToDoDataGrid"/>にToDoリストを表示します。
     /// </summary>
@@ -48,14 +48,9 @@ public partial class MainWindow : Window
         this.ToDoDataGrid.ItemsSource = null;
         this.ToDoDataGrid.Items.Clear();
 
-        // DONE: this
         this._items.Clear();
 
         this.ToDoDataGrid.Items.Refresh();
-
-        // DONE: SELECT, FROM, ORDER BY の箇所で改行してください。
-        // DONE: date_update と todo_items の後ろに不要なスペースが入っています。
-        // DONE: ; (セミコロン) は別行にしてください。
 
         #region SQL文
 
@@ -80,9 +75,10 @@ ORDER BY
 
         #endregion SQL文
 
+        // TODO: この中括弧は不要でしょう。
         {
-            // DONE: conn
             using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
+            // TODO: conn.CreateCommand() というものがあります。キャストは不要です。
             using IDbCommand command = new NpgsqlCommand(sql, (NpgsqlConnection)conn);
 
             try
@@ -94,6 +90,7 @@ ORDER BY
                 MessageBox.Show(this, ex.Message);
             }
 
+            // TODO: try-catch の付け方があまり効果的ではありません。もう少し全体を見て、例外のフローを考えてみましょう。
             try
             {
                 using var reader = command.ExecuteReader();
@@ -102,8 +99,6 @@ ORDER BY
                 {
                     while (reader.Read())
                     {
-                        // DONE: できればインデントは、スペース4つに統一しましょう。
-                        // この場合は最初の DataItem( で改行してしまった方が揃うと思います。
                         var item = new DataItem(reader.GetInt32(0));
                         item.SetValues(
                             reader.GetBoolean(1),
@@ -144,14 +139,15 @@ ORDER BY
             return -1;
         }
 
-        // DONE?: キャストではなく・・・？
+        // TODO: item に変換してるので、id は取れるはずです。
         if (this.ToDoDataGrid.Columns[0].GetCellContent(item) is not TextBlock cell)
         {
             return -1;
         }
+
+        // TODO: var
         string selectedId = cell?.Text;
 
-        // DONE: 改行を入れてください。
         if (!(int.TryParse(selectedId, out var id)))
         {
             return -1;
@@ -161,8 +157,6 @@ ORDER BY
 
     #endregion DataGrid関連処理
 
-    // DONE: region と配置
-
     #region Clickイベント
 
     /// <summary>
@@ -170,7 +164,6 @@ ORDER BY
     /// </summary>
     private void InputToDo_Click(object sender, RoutedEventArgs e)
     {
-        // DONE: tdiWindow → window でよいです。
         var window = new ToDoInputWindow
         {
             Owner = this
@@ -192,7 +185,6 @@ ORDER BY
             return;
         }
         int row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
-        // DONE: this
         var window = new ToDoEditWindow(id, this._items[row])
         {
             Owner = this
