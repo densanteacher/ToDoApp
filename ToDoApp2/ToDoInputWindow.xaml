@@ -36,6 +36,6 @@
         <Button     Grid.Row="5" Grid.Column="1" x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click"/>
 
         <Button     Grid.Row="4" Grid.Column="0" x:Name="ImageChooseButton" Content="画像を追加" Margin="20" Click="ImageChooseButton_Click"/>
-        <Image      Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" x:Name="SelectedImage" AllowDrop="True" Drop="Image_Drop"/>
+        <Image      Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" x:Name="ImageFrame" Stretch="Uniform" AllowDrop="True" Drop="ImageFrame_Drop"/>
     </Grid>
 </Window>
