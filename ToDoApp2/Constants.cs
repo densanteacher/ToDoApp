@@ -36,6 +36,8 @@ namespace ToDoApp2
             // 最後のカンマがなければ、次の行を追加して、戻ってカンマを付ける必要があるので、ちょっとだけ手間です。
             ".webp",
         };
+
+        public static readonly List<int> PriorityDataList = new List<int>() { 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5 };
     }
 
 }

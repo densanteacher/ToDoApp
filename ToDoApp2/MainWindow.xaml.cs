@@ -44,6 +44,7 @@ public partial class MainWindow : Window
     /// </summary>
     private void ReloadToDoList()
     {
+        var selectedItem = this.ToDoDataGrid.SelectedItem;
         this.ToDoDataGrid.ItemsSource = null;
         this.ToDoDataGrid.Items.Clear();
 
@@ -72,7 +73,7 @@ FROM
     todo_items
 ORDER BY
     check_done
-  , priority
+  , priority DESC
   , date_end
 ;
 ";
@@ -125,6 +126,7 @@ ORDER BY
             {
                 MessageBox.Show(this, ex.Message);
             }
+
         }
     }
 
@@ -284,14 +286,22 @@ ORDER BY
     private void PriorityUpButton_Click(object sender, RoutedEventArgs e)
     {
         int row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
-        this._items[row].Priority++;
+        var priority = this._items[row].Priority;
+        if (priority < 5)
+        {
+            this._items[row].Priority++;
+        }
         this.ReloadToDoList();
     }
 
     private void PriorityDownButton_Click(object obj, RoutedEventArgs e)
     {
         int row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
-        this._items[row].Priority--;
+        var priority = this._items[row].Priority;
+        if (priority > -5)
+        {
+            this._items[row].Priority--;
+        }
         this.ReloadToDoList();
     }
 

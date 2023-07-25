@@ -26,8 +26,6 @@ namespace ToDoApp2;
 /// </summary>
 public partial class ToDoEditWindow : Window
 {
-    private int _rowNumber;
-
     // DONE: コメント
     /// <summary>
     /// <see cref="MainWindow"/>から渡されたSQLのIDです。
@@ -47,6 +45,8 @@ public partial class ToDoEditWindow : Window
 
         this._id = id;
         this._item = item;
+
+        this.PriorityList.ItemsSource = Constants.PriorityDataList;
 
         // DONE: this
         this.SetColumns(this._item);
@@ -135,7 +135,6 @@ UPDATE todo_items SET
   , date_update = current_timestamp
 WHERE
     id = {this._id}
-  AND date_update > '{this._item.DateUpdate}'
 ";
 
             {
