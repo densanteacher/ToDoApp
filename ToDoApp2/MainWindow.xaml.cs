@@ -23,7 +23,10 @@ namespace ToDoApp2;
 /// </summary>
 public partial class MainWindow : Window
 {
-    // DONE: コメントだけを読んで何をするか説明されているのが理想です。ここではSQLが何なのか読み取れません。
+    // TODO: バックエンドをDBMSからファイルベースに変更した場合、コメントを修正する必要があります。
+    // そのプログラムのコアな部分をコメントできるようになるとよいでしょう。
+    // なお、SQLデータベースという言い方はあまりしません。
+    // TODO: RDBMSやNoSQLについて調べてみてください。
     /// <summary>
     /// SQLデータベースから読み取ったToDoリストを保持しておくリストです。
     /// </summary>
@@ -38,7 +41,6 @@ public partial class MainWindow : Window
 
     #region DataGrid関連処理
 
-    // DONE: Reload → Load でいいのでは？ Re は繰り返す処理につけたくなりますが、この場合はなくても伝わりそうです。
     /// <summary>
     /// <see cref="ToDoDataGrid"/>にToDoリストを表示します。
     /// </summary>
@@ -75,10 +77,7 @@ ORDER BY
 
         #endregion SQL文
 
-        // DONE: この中括弧は不要でしょう。
-
         using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
-        // DONE: conn.CreateCommand() というものがあります。キャストは不要です。
         using IDbCommand command = conn.CreateCommand();
         command.CommandText = sql;
         command.CommandTimeout = 15;
@@ -93,7 +92,6 @@ ORDER BY
             MessageBox.Show(this, ex.Message);
         }
 
-        // DONE: try-catch の付け方があまり効果的ではありません。もう少し全体を見て、例外のフローを考えてみましょう。
         try
         {
             using var reader = command.ExecuteReader();
@@ -118,10 +116,9 @@ ORDER BY
         {
             MessageBox.Show(this, ex.Message);
         }
-
-
     }
 
+    // TODO: コメント。他にもコメントがないメソッドがあります。
     private int SearchIdentification()
     {
         if (this.ToDoDataGrid.SelectedItem is null)
@@ -136,8 +133,6 @@ ORDER BY
             return -1;
         }
 
-        // DONE: item に変換してるので、id は取れるはずです。
-        // DONE: var
         var selectedId = item.Id;
         return selectedId;
     }
@@ -166,11 +161,13 @@ ORDER BY
     private void DetailButton_Click(object sender, RoutedEventArgs e)
     {
         var id = this.SearchIdentification();
-
+        // TODO: -1 に特別な意味をもたせるのはあまりよくありません。
+        // 値が取れないときは、よく null を使います。
         if (id == -1)
         {
             return;
         }
+        // TODO: var
         int row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
         var window = new ToDoEditWindow(id, this._items[row])
         {

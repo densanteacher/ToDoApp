@@ -5,16 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
-// DONE: namespace
 namespace ToDoApp2;
 
-// DONE: SQL とは何かを明示しましょう。
+// TODO: 「DataItem」に対して、「ToDoデータを・・・」というコメントになっています。
+// コメントとソースコード上に差異が現れています。
+// つまり、どちらかに寄せることができます。
+// コメントを直すのか、クラス名を直すのか、どちらがよりコードを読みやすくなるでしょうか？
 /// <summary>
 /// SQLデータベースから取得したToDoデータを保存しておくクラスです。
 /// </summary>
 public class DataItem
 {
-    // DONE: 適切な改行を入れてください。
     /// <summary>
     /// SQLから取得したIDです。プライマリキーです。
     /// </summary>
@@ -35,7 +36,8 @@ public class DataItem
     /// </summary>
     public DateTime? DateStart { get; set; }
 
-    // TODO: DateStart を nullable にしたらこちらも。DB側の日付列も忘れずに null 許容としましょう。
+    // TODO: DateStart を nullable にしたらこちらも。
+    // DB側の日付列も忘れずに null 許容としましょう。
     /// <summary>
     /// ToDoの終了日（期限）です。
     /// </summary>
@@ -51,8 +53,8 @@ public class DataItem
     /// </summary>
     public int Priority { get; set; }
 
-    // DONE: 更新日時を記録しておく列名として、よく updated_at という列名が使われます。日付の場合は updated_on となります。
-    // これはたしかRuby言語の文化だったと思いますが、わかりやすいので是非使ってください。
+    // TODO: スネークケースは DB の命名規則です。ここには C# を適用しましょう。
+    // TODO: テーブル定義を更新したら CREATE文 も更新しておきましょう。
     /// <summary>
     /// ToDoリストが更新された日時を保持しておく値です。
     /// </summary>
@@ -63,7 +65,6 @@ public class DataItem
     /// </summary>
     public PngBitmapDecoder Image { get; set; }
 
-    // DONE: bool 側は is から始めましょう。DB側の列名にも is_ を使ってかまいません。
     /// <summary>
     /// ToDoリストをリマインドするかを指定する値です。
     /// </summary>
@@ -84,8 +85,9 @@ public class DataItem
 
     }
 
-    // DONE: chackタイポ
-    // DONE: 少し横に長いです。( の次と各 , の後ろで改行しましょう。
+    // TODO: Value がたくさんあるので、Values といいたくなりますが、
+    // インスタンスに対する Set なので、
+    // これらの値をまとめてひとつの DataItem となります。
     /// <summary>
     /// id以外の各値を一括で設定します。
     /// </summary>

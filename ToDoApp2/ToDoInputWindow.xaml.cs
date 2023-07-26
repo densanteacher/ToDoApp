@@ -133,11 +133,13 @@ VALUES (
 
             try
             {
-                // DONE: conn.CreateCommand() というものがあります。キャストは不要です。
+                // TODO: ここは var が使えます。
+                // conn が IDbConnection なので、IDbCommand を返すようになっています。
                 using IDbCommand command = conn.CreateCommand();
                 command.CommandText = sql;
                 command.CommandTimeout = 15;
                 command.CommandType = CommandType.Text;
+                // TODO: var
                 int result = command.ExecuteNonQuery();
             }
             catch (Exception ex)

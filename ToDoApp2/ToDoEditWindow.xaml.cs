@@ -15,9 +15,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-// DONE: using static 構文はなるべく使わないようにします。static なメソッドを呼ぶときにインスタンスメソッドと見分けがつかなくなってミスの元になります。
-
-
 namespace ToDoApp2;
 
 /// <summary>
@@ -25,19 +22,20 @@ namespace ToDoApp2;
 /// </summary>
 public partial class ToDoEditWindow : Window
 {
-    // DONE: コメントの内容だと、SQLが何を指すのか、IDが何を指すのかわかりません。
     /// <summary>
     /// <see cref="MainWindow"/>から渡されたToDoリストのSQLデータベースにおけるIDです。
     /// </summary>
     private readonly int _id;
 
-    // DONE: コメントの内容だと、SQLが何を指すのかわかりません。
+    // TODO: 今回の使用ですと MainWindow から渡されますが、他の画面から呼ばれた場合はコメントを直す必要があります。
+    // クラスは独立したものと考えるとよいでしょう。
+    // 各コメントにかかれているSQLという言葉も不適切です。
+    // 全体を通してコメントを見直してみてください。
     /// <summary>
     /// <see cref="MainWindow"/>から渡されたToDoリストの読み取り結果です。
     /// </summary>
     private readonly DataItem _item;
 
-    // DONE: Ctrl + K, D
     public ToDoEditWindow(int id, DataItem item)
     {
         this.InitializeComponent();
@@ -62,28 +60,30 @@ public partial class ToDoEditWindow : Window
         this.PriorityComboBox.Text = item.Priority.ToString();
     }
 
-    // DONE: /* */ の範囲コメントは使わないほうがよいです。git上での変化は2行だけですので、マージで苦労することになります。
-    // DONE: ドキュメンテーションコメントもコメンアウト内に含めてしまってください。
-    // DONE: LINQ の Select() からメソッドチェーンで記述してみてください。
-    // DONE: ForEach() はすべて処理されますが、この場合はひとつ取れればよいので、First() や FirstOrDefault() を使ってみましょう。Where() を使ってもよいです。
-
+    // TODO: コメント部分にも // を追加します。// が多いですがドキュメンテーションコメントもメソッドの一部です。
     /// <summary>
     /// メインウィンドウから渡された<see cref="_id"/>と一致するIdを持つ<see cref="_item">の要素を検索します。
     /// </summary>
     /// <returns>_itemsの要素番号です。</returns>
-    //private void SearchRowNumber2()
-    //{
-    //    this._items.Select((item, index) => (item, index))
-    //    .ToList()
-    //    .First(tuple =>
-    //    {
-    //        if (tuple.item.Id == _id)
-    //        {
-    //            this._rowNumber = tuple.index;
-    //        }
-    //    });
-    //}
+    private void SearchRowNumber2()
+    {
+        // DONE: 書きにくいと思うのでダミーです。
+        var items = new List<DataItem>();
+        var rowNumber = 0;
 
+        // TODO: .ForEach() を使わないので .ToList() は不要になります。
+        // TODO: スペース4つのインデントを入れましょう。
+        // TODO: .First() の使い方が間違っています。最初のひとつを受け取ることができるので・・・？
+        //items.Select((item, index) => (item, index))
+        //.ToList()
+        //.First(tuple =>
+        //{
+        //    if (tuple.item.Id == _id)
+        //    {
+        //        rowNumber = tuple.index;
+        //    }
+        //});
+    }
 
     /// <summary>
     /// 変更を保存ボタンをクリックすると、選択されたToDoの内容を更新します。
@@ -104,7 +104,6 @@ public partial class ToDoEditWindow : Window
         this.Close();
     }
 
-    // DONE: UpdateSql() だと、SQLを更新という意味になってしまうので・・・？
     /// <summary>
     /// UPDATEコマンドを用いて、現在テキストボックスなどに入力されている内容に応じてToDoの内容を更新します。
     /// </summary>
@@ -114,13 +113,13 @@ public partial class ToDoEditWindow : Window
         {
             #region SQL文
 
+            // TODO: bool変数の名前
             var checkDone = this.CheckDone.IsChecked ?? false;
             var dateEnd = this.DateEnd.SelectedDate.Value;
             if (!(int.TryParse(this.PriorityComboBox.Text, out var priority)))
             {
                 return;
             }
-            // DONE: isChecked は null を取ります。つまり・・・？
             var sql = $@"
 UPDATE todo_items SET
     check_done = {checkDone}
@@ -135,7 +134,7 @@ WHERE
 
             #endregion SQL文
 
-            // DONE: この中括弧は不要です。変数が生き残るスコープを常に意識しましょう。
+            // TODO: ここは IDbConnectionで受けましょう。
             using var conn = new NpgsqlConnection(Constants.ConnectionString);
 
             try
@@ -147,6 +146,7 @@ WHERE
                 MessageBox.Show(this, ex.Message);
             }
 
+            // TODO: インターフェースを使ったやり方に変えましょう。
             using var command = new NpgsqlCommand(sql, conn);
             var result = command.ExecuteNonQuery();
         }

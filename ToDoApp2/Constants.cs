@@ -9,7 +9,6 @@ namespace ToDoApp2
 {
     public static class Constants
     {
-        // DONE: コメント
         /// <summary>
         /// SQLサーバーと接続するための情報をまとめた文字列です。
         /// </summary>
@@ -20,7 +19,6 @@ namespace ToDoApp2
                User ID=postgres;
                Password=postgres;";
 
-        // DONE: new() という表記にできます。
         /// <summary>
         /// 画像ファイルの拡張子をまとめたリストです。
         /// </summary>
@@ -35,9 +33,6 @@ namespace ToDoApp2
             ".webp",
         };
 
-        // DONE: コメント
-        // DONE: new() という表記にできます。
-        // DONE: Dataは冗長だと思います。Priorityの複数形でよいのでは？
         /// <summary>
         /// ToDoリストの優先度の範囲を示したリストです。
         /// </summary>
