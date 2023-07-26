@@ -21,6 +21,10 @@ public partial class ToDoInputWindow : Window
     public ToDoInputWindow()
     {
         this.InitializeComponent();
+
+        this.PriorityComboBox.ItemsSource = Constants.Priorities;
+        this.PriorityComboBox.SelectedIndex = 5;
+
         this.ImageFrame.Source = new RenderTargetBitmap(450, 450, 96.0d, 96.0d, PixelFormats.Pbgra32);
 
     }
@@ -30,14 +34,13 @@ public partial class ToDoInputWindow : Window
     /// </summary>
     private void ImageFrame_Drop(object sender, DragEventArgs e)
     {
-        // TODO: if の条件は肯定的な方が読みやすくなります。not でわかりやすくなる時以外は、not をつけないようにしましょう。
-        if (e.Data.GetData(DataFormats.FileDrop) is not string[] fileNames)
+        // DONE: if の条件は肯定的な方が読みやすくなります。not でわかりやすくなる時以外は、not をつけないようにしましょう。
+        if (e.Data.GetData(DataFormats.FileDrop) is string[] fileNames)
         {
-            return;
+            var fileName = fileNames[0];
+            this.ReadImageFile(fileName);
         }
 
-        var fileName = fileNames[0];
-        this.ReadImageFile(fileName);
     }
 
     /// <summary>
@@ -83,18 +86,25 @@ public partial class ToDoInputWindow : Window
     {
         try
         {
-            var title = this.ToDoTitle.Text;
-            var memo = this.Memo.Text;
 
             #region SQL文
+
+            var title = this.ToDoTitle.Text;
+            var memo = this.Memo.Text;
+            if (!(int.TryParse(this.PriorityComboBox.Text, out int priority)))
+            {
+                return;
+            }
             var startDate = this.StartDate.SelectedDate.Value;
             var endDate = this.EndDate.SelectedDate.Value;
+
             string sql = $@"
 INSERT INTO todo_items (
     title
   , date_start
   , date_end
   , memo
+  , priority
   , image
 )
 VALUES (
@@ -102,9 +112,11 @@ VALUES (
   , '{startDate}'
   , '{endDate}'
   , '{memo}'
+  , '{priority}'
   , '{this.ImageFrame.Source}'
 );
 ";
+
             #endregion SQL文
 
             using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
@@ -121,8 +133,11 @@ VALUES (
 
             try
             {
-                // TODO: conn.CreateCommand() というものがあります。キャストは不要です。
-                using IDbCommand command = new NpgsqlCommand(sql, (NpgsqlConnection)conn);
+                // DONE: conn.CreateCommand() というものがあります。キャストは不要です。
+                using IDbCommand command = conn.CreateCommand();
+                command.CommandText = sql;
+                command.CommandTimeout = 15;
+                command.CommandType = CommandType.Text;
                 int result = command.ExecuteNonQuery();
             }
             catch (Exception ex)

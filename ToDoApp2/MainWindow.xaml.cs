@@ -23,9 +23,9 @@ namespace ToDoApp2;
 /// </summary>
 public partial class MainWindow : Window
 {
-    // TODO: コメントだけを読んで何をするか説明されているのが理想です。ここではSQLが何なのか読み取れません。
+    // DONE: コメントだけを読んで何をするか説明されているのが理想です。ここではSQLが何なのか読み取れません。
     /// <summary>
-    /// <see cref="MainWindow"/>から渡されたSQLの読み取り結果を保持しておくリストです。
+    /// SQLデータベースから読み取ったToDoリストを保持しておくリストです。
     /// </summary>
     private readonly List<DataItem> _items = new();
 
@@ -33,16 +33,16 @@ public partial class MainWindow : Window
     {
         this.InitializeComponent();
 
-        this.ReloadToDoList();
+        this.LoadToDoList();
     }
 
     #region DataGrid関連処理
 
-    // TODO: Reload → Load でいいのでは？ Re は繰り返す処理につけたくなりますが、この場合はなくても伝わりそうです。
+    // DONE: Reload → Load でいいのでは？ Re は繰り返す処理につけたくなりますが、この場合はなくても伝わりそうです。
     /// <summary>
     /// <see cref="ToDoDataGrid"/>にToDoリストを表示します。
     /// </summary>
-    private void ReloadToDoList()
+    private void LoadToDoList()
     {
         var selectedItem = this.ToDoDataGrid.SelectedItem;
         this.ToDoDataGrid.ItemsSource = null;
@@ -63,7 +63,7 @@ SELECT
   , date_start
   , date_end
   , priority
-  , date_update
+  , updated_at
 FROM
     todo_items
 ORDER BY
@@ -75,54 +75,51 @@ ORDER BY
 
         #endregion SQL文
 
-        // TODO: この中括弧は不要でしょう。
+        // DONE: この中括弧は不要でしょう。
+
+        using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
+        // DONE: conn.CreateCommand() というものがあります。キャストは不要です。
+        using IDbCommand command = conn.CreateCommand();
+        command.CommandText = sql;
+        command.CommandTimeout = 15;
+        command.CommandType = CommandType.Text;
+
+        try
         {
-            using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
-            // TODO: conn.CreateCommand() というものがあります。キャストは不要です。
-            using IDbCommand command = new NpgsqlCommand(sql, (NpgsqlConnection)conn);
-
-            try
-            {
-                conn.Open();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.Message);
-            }
-
-            // TODO: try-catch の付け方があまり効果的ではありません。もう少し全体を見て、例外のフローを考えてみましょう。
-            try
-            {
-                using var reader = command.ExecuteReader();
-
-                try
-                {
-                    while (reader.Read())
-                    {
-                        var item = new DataItem(reader.GetInt32(0));
-                        item.SetValues(
-                            reader.GetBoolean(1),
-                            reader.GetString(2),
-                            reader.GetString(3),
-                            reader.GetDateTime(4),
-                            reader.GetDateTime(5),
-                            reader.GetInt32(6),
-                            reader.GetDateTime(7));
-                        this._items.Add(item);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(this, ex.Message);
-                }
-                this.ToDoDataGrid.ItemsSource = this._items;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.Message);
-            }
-
+            conn.Open();
         }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, ex.Message);
+        }
+
+        // DONE: try-catch の付け方があまり効果的ではありません。もう少し全体を見て、例外のフローを考えてみましょう。
+        try
+        {
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var item = new DataItem(reader.GetInt32(0));
+                item.SetValues(
+                    reader.GetBoolean(1),
+                    reader.GetString(2),
+                    reader.GetString(3),
+                    reader.GetDateTime(4),
+                    reader.GetDateTime(5),
+                    reader.GetInt32(6),
+                    reader.GetDateTime(7));
+                this._items.Add(item);
+            }
+
+            this.ToDoDataGrid.ItemsSource = this._items;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, ex.Message);
+        }
+
+
     }
 
     private int SearchIdentification()
@@ -139,20 +136,10 @@ ORDER BY
             return -1;
         }
 
-        // TODO: item に変換してるので、id は取れるはずです。
-        if (this.ToDoDataGrid.Columns[0].GetCellContent(item) is not TextBlock cell)
-        {
-            return -1;
-        }
-
-        // TODO: var
-        string selectedId = cell?.Text;
-
-        if (!(int.TryParse(selectedId, out var id)))
-        {
-            return -1;
-        }
-        return id;
+        // DONE: item に変換してるので、id は取れるはずです。
+        // DONE: var
+        var selectedId = item.Id;
+        return selectedId;
     }
 
     #endregion DataGrid関連処理
@@ -170,7 +157,7 @@ ORDER BY
         };
         window.ShowDialog();
 
-        this.ReloadToDoList();
+        this.LoadToDoList();
     }
 
     /// <summary>
@@ -191,13 +178,13 @@ ORDER BY
         };
         window.ShowDialog();
 
-        this.ReloadToDoList();
+        this.LoadToDoList();
     }
 
 
     private void RefreshButton_Click(object sender, RoutedEventArgs e)
     {
-        this.ReloadToDoList();
+        this.LoadToDoList();
     }
 
     private void DeleteButton_Click(object sender, RoutedEventArgs e)
@@ -236,7 +223,7 @@ ORDER BY
             }
         }
 
-        this.ReloadToDoList();
+        this.LoadToDoList();
     }
 
     private void BulkDeleteButton_Click(object sender, RoutedEventArgs e)
@@ -272,7 +259,7 @@ ORDER BY
             }
         }
 
-        this.ReloadToDoList();
+        this.LoadToDoList();
     }
 
     private void PriorityUpButton_Click(object sender, RoutedEventArgs e)
@@ -283,7 +270,7 @@ ORDER BY
         {
             this._items[row].Priority++;
         }
-        this.ReloadToDoList();
+        this.LoadToDoList();
     }
 
     private void PriorityDownButton_Click(object obj, RoutedEventArgs e)
@@ -294,7 +281,7 @@ ORDER BY
         {
             this._items[row].Priority--;
         }
-        this.ReloadToDoList();
+        this.LoadToDoList();
     }
 
     private void CheckBox_Checked(object sender, RoutedEventArgs e)

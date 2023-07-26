@@ -26,12 +26,23 @@
         <TextBox    Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" x:Name="ToDoTitle" Text="" TextWrapping="Wrap"/>
         <TextBlock  Grid.Row="1" Grid.Column="0" Text="メモ・備考"/>
         <TextBox    Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" x:Name="Memo" Text="" TextWrapping="Wrap"/>
-        <TextBlock  Grid.Row="2" Grid.Column="0" Text="開始日"/>
-        <!-- TODO: DatePickerにしては横幅が伸びすぎます。工夫してみましょう。 -->
-        <DatePicker Grid.Row="2" Grid.Column="1" x:Name="StartDate" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>
-        <TextBlock  Grid.Row="2" Grid.Column="2" Text="～"/>
-        <TextBlock  Grid.Row="3" Grid.Column="0" Text="期日"/>
-        <DatePicker Grid.Row="3" Grid.Column="2" x:Name="EndDate" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>
+
+        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <!-- DONE: DatePickerにしては横幅が伸びすぎます。工夫してみましょう。 -->
+            <DatePicker Grid.Row="0" Grid.Column="1" x:Name="StartDate" Width="auto" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>
+            <TextBlock  Grid.Row="0" Grid.Column="2" Text="～"/>
+            <TextBlock  Grid.Row="0" Grid.Column="0" Text="開始日・期日"/>
+            <DatePicker Grid.Row="0" Grid.Column="3" x:Name="EndDate" Width="auto" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>
+        </Grid>
+
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="優先度"/>
+        <ComboBox Grid.Row="3" Grid.Column="2" x:Name="PriorityComboBox"/>
         <Button     Grid.Row="5" Grid.Column="2" x:Name="OkButton" Content="OK" Click="OkButton_Click"/>
         <Button     Grid.Row="5" Grid.Column="1" x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click"/>
 

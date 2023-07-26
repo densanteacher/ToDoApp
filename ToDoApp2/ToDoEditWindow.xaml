@@ -30,7 +30,7 @@
         <TextBox Grid.Row="1" Grid.Column="0" Grid.RowSpan="3" Grid.ColumnSpan="2" x:Name="Memo"/>
         <Image Grid.Row="1" Grid.Column="2" Grid.RowSpan="3" Grid.ColumnSpan="3" x:Name="Image"/>
         <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Text="優先度(高い程優先して表示）"/>
-        <ComboBox Grid.Row="4" Grid.Column="2" x:Name="PriorityList"/>
+        <ComboBox Grid.Row="4" Grid.Column="2" x:Name="PriorityComboBox"/>
         <Button Grid.Row="4" Grid.Column="3" Content="画像削除"/>
         <Button Grid.Row="4" Grid.Column="4" Content="画像変更"/>
         <Button Grid.Row="5" Grid.Column="3" Content="Cancel" Click="CancelButton_Click"/>
