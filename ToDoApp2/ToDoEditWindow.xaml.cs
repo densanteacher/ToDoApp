@@ -23,7 +23,7 @@ namespace ToDoApp2;
 public partial class ToDoEditWindow : Window
 {
     /// <summary>
-    /// <see cref="MainWindow"/>から渡されたToDoリストのSQLデータベースにおけるIDです。
+    /// <see cref="MainWindow"/>から渡されたToDoリストのデータベースにおけるIDです。
     /// </summary>
     private readonly int _id;
 
@@ -32,11 +32,11 @@ public partial class ToDoEditWindow : Window
     // 各コメントにかかれているSQLという言葉も不適切です。
     // 全体を通してコメントを見直してみてください。
     /// <summary>
-    /// <see cref="MainWindow"/>から渡されたToDoリストの読み取り結果です。
+    /// ウィンドウ呼び出し時に渡されたToDoリストの読み取り結果です。
     /// </summary>
-    private readonly DataItem _item;
+    private readonly ToDoDataItem _item;
 
-    public ToDoEditWindow(int id, DataItem item)
+    public ToDoEditWindow(int id, ToDoDataItem item)
     {
         this.InitializeComponent();
 
@@ -49,9 +49,9 @@ public partial class ToDoEditWindow : Window
     }
 
     /// <summary>
-    /// <see cref="MainWindow"/>から渡された値を表示します。
+    /// ウィンドウ呼び出し時に渡された値を表示します。
     /// </summary>
-    private void SetColumns(DataItem item)
+    private void SetColumns(ToDoDataItem item)
     {
         this.CheckDone.IsChecked = item.CheckDone;
         this.ToDoTitle.Text = item.ToDoTitle;
@@ -60,29 +60,22 @@ public partial class ToDoEditWindow : Window
         this.PriorityComboBox.Text = item.Priority.ToString();
     }
 
-    // TODO: コメント部分にも // を追加します。// が多いですがドキュメンテーションコメントもメソッドの一部です。
-    /// <summary>
-    /// メインウィンドウから渡された<see cref="_id"/>と一致するIdを持つ<see cref="_item">の要素を検索します。
-    /// </summary>
-    /// <returns>_itemsの要素番号です。</returns>
+    // DONE: コメント部分にも // を追加します。// が多いですがドキュメンテーションコメントもメソッドの一部です。
+    ///// <summary>
+    ///// メインウィンドウから渡された<see cref="_id"/>と一致するIdを持つ<see cref="_item">の要素を検索します。
+    ///// </summary>
+    ///// <returns>_itemsの要素番号です。</returns>
     private void SearchRowNumber2()
     {
         // DONE: 書きにくいと思うのでダミーです。
-        var items = new List<DataItem>();
+        var items = new List<ToDoDataItem>();
         var rowNumber = 0;
 
-        // TODO: .ForEach() を使わないので .ToList() は不要になります。
-        // TODO: スペース4つのインデントを入れましょう。
-        // TODO: .First() の使い方が間違っています。最初のひとつを受け取ることができるので・・・？
-        //items.Select((item, index) => (item, index))
-        //.ToList()
-        //.First(tuple =>
-        //{
-        //    if (tuple.item.Id == _id)
-        //    {
-        //        rowNumber = tuple.index;
-        //    }
-        //});
+        // DONE: .ForEach() を使わないので .ToList() は不要になります。
+        // DONE: スペース4つのインデントを入れましょう。
+        // DONE: .First() の使い方が間違っています。最初のひとつを受け取ることができるので・・・？
+        rowNumber = items.Select((item, index) => (item, index))
+            .FirstOrDefault(tuple => tuple.item.Id == _id).index;
     }
 
     /// <summary>
@@ -113,8 +106,8 @@ public partial class ToDoEditWindow : Window
         {
             #region SQL文
 
-            // TODO: bool変数の名前
-            var checkDone = this.CheckDone.IsChecked ?? false;
+            // DONE: bool変数の名前
+            var isCheckDone = this.CheckDone.IsChecked ?? false;
             var dateEnd = this.DateEnd.SelectedDate.Value;
             if (!(int.TryParse(this.PriorityComboBox.Text, out var priority)))
             {
@@ -122,7 +115,7 @@ public partial class ToDoEditWindow : Window
             }
             var sql = $@"
 UPDATE todo_items SET
-    check_done = {checkDone}
+    check_done = {isCheckDone}
   , title = '{this.ToDoTitle.Text}'
   , date_end = '{dateEnd}'
   , memo = '{this.Memo.Text}'
@@ -134,8 +127,8 @@ WHERE
 
             #endregion SQL文
 
-            // TODO: ここは IDbConnectionで受けましょう。
-            using var conn = new NpgsqlConnection(Constants.ConnectionString);
+            // DONE: ここは IDbConnectionで受けましょう。
+            using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
 
             try
             {
@@ -146,8 +139,11 @@ WHERE
                 MessageBox.Show(this, ex.Message);
             }
 
-            // TODO: インターフェースを使ったやり方に変えましょう。
-            using var command = new NpgsqlCommand(sql, conn);
+            // DONE: インターフェースを使ったやり方に変えましょう。
+            using var command = conn.CreateCommand();
+            command.CommandText = sql;
+            command.CommandTimeout = 15;
+            command.CommandType = CommandType.Text;
             var result = command.ExecuteNonQuery();
         }
         catch (Exception ex)

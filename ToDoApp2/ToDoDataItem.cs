@@ -14,7 +14,7 @@ namespace ToDoApp2;
 /// <summary>
 /// SQLデータベースから取得したToDoデータを保存しておくクラスです。
 /// </summary>
-public class DataItem
+public class ToDoDataItem
 {
     /// <summary>
     /// SQLから取得したIDです。プライマリキーです。
@@ -36,12 +36,12 @@ public class DataItem
     /// </summary>
     public DateTime? DateStart { get; set; }
 
-    // TODO: DateStart を nullable にしたらこちらも。
+    // DONE: DateStart を nullable にしたらこちらも。
     // DB側の日付列も忘れずに null 許容としましょう。
     /// <summary>
     /// ToDoの終了日（期限）です。
     /// </summary>
-    public DateTime DateEnd { get; set; }
+    public DateTime? DateEnd { get; set; }
 
     /// <summary>
     /// ToDoに関するメモ、備考欄です。
@@ -53,12 +53,12 @@ public class DataItem
     /// </summary>
     public int Priority { get; set; }
 
-    // TODO: スネークケースは DB の命名規則です。ここには C# を適用しましょう。
-    // TODO: テーブル定義を更新したら CREATE文 も更新しておきましょう。
+    // DONE: スネークケースは DB の命名規則です。ここには C# を適用しましょう。
+    // DONE: テーブル定義を更新したら CREATE文 も更新しておきましょう。
     /// <summary>
     /// ToDoリストが更新された日時を保持しておく値です。
     /// </summary>
-    public DateTime Update_at { get; set; }
+    public DateTime UpdateAt { get; set; }
 
     /// <summary>
     /// 画像ファイルです。
@@ -79,19 +79,19 @@ public class DataItem
     /// インスタンスです。IDが必須項目です。
     /// </summary>
     /// <param name="id"></param>
-    public DataItem(int id)
+    public ToDoDataItem(int id)
     {
         this.Id = id;
 
     }
 
-    // TODO: Value がたくさんあるので、Values といいたくなりますが、
+    // DONE: Value がたくさんあるので、Values といいたくなりますが、
     // インスタンスに対する Set なので、
     // これらの値をまとめてひとつの DataItem となります。
     /// <summary>
     /// id以外の各値を一括で設定します。
     /// </summary>
-    public void SetValues(
+    public void SetDataItem(
         bool checkDone,
         string title,
         string memo,
@@ -106,7 +106,7 @@ public class DataItem
         this.DateStart = dateStart;
         this.DateEnd = dateEnd;
         this.Priority = priority;
-        this.Update_at = updatedAt;
+        this.UpdateAt = updatedAt;
     }
 
     /// <summary>

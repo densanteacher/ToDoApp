@@ -10,13 +10,14 @@ CREATE TABLE IF NOT EXISTS public.todo_items
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( CYCLE INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 999 CACHE 1 ),
     title text COLLATE pg_catalog."default" NOT NULL,
     date_start timestamp without time zone,
-    date_end timestamp without time zone NOT NULL,
+    date_end timestamp without time zone,
     memo text COLLATE pg_catalog."default",
     image bytea,
     check_done boolean DEFAULT false,
     priority integer NOT NULL DEFAULT 0,
     remind boolean NOT NULL DEFAULT false,
     remind_date date,
+    updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT todo_items_pkey PRIMARY KEY (id)
 )
 

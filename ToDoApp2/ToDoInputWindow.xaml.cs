@@ -133,14 +133,14 @@ VALUES (
 
             try
             {
-                // TODO: ここは var が使えます。
+                // DONE: ここは var が使えます。
                 // conn が IDbConnection なので、IDbCommand を返すようになっています。
-                using IDbCommand command = conn.CreateCommand();
+                using var command = conn.CreateCommand();
                 command.CommandText = sql;
                 command.CommandTimeout = 15;
                 command.CommandType = CommandType.Text;
                 // TODO: var
-                int result = command.ExecuteNonQuery();
+                var result = command.ExecuteNonQuery();
             }
             catch (Exception ex)
             {

@@ -23,14 +23,18 @@ namespace ToDoApp2;
 /// </summary>
 public partial class MainWindow : Window
 {
-    // TODO: バックエンドをDBMSからファイルベースに変更した場合、コメントを修正する必要があります。
+    // DONE: バックエンドをDBMSからファイルベースに変更した場合、コメントを修正する必要があります。
     // そのプログラムのコアな部分をコメントできるようになるとよいでしょう。
     // なお、SQLデータベースという言い方はあまりしません。
-    // TODO: RDBMSやNoSQLについて調べてみてください。
+    // DONE: RDBMSやNoSQLについて調べてみてください。
+
+    // RDBMS(リレーショナルデータベースマネジメントシステム）は、SQLに代表されるRDBを操作するためのシステムです。
+    // NoSQLはnot only SQLの略とされ、非リレーショナルなデータベースです。
+    // RDBの方が検索性は高いですが、NoSQLの方が高速であることが多く膨大なデータを扱う場合に使われるようです。
     /// <summary>
-    /// SQLデータベースから読み取ったToDoリストを保持しておくリストです。
+    /// 読み取ったToDoリストを保持しておくリストです。
     /// </summary>
-    private readonly List<DataItem> _items = new();
+    private readonly List<ToDoDataItem> _items = new();
 
     public MainWindow()
     {
@@ -46,7 +50,6 @@ public partial class MainWindow : Window
     /// </summary>
     private void LoadToDoList()
     {
-        var selectedItem = this.ToDoDataGrid.SelectedItem;
         this.ToDoDataGrid.ItemsSource = null;
         this.ToDoDataGrid.Items.Clear();
 
@@ -98,8 +101,8 @@ ORDER BY
 
             while (reader.Read())
             {
-                var item = new DataItem(reader.GetInt32(0));
-                item.SetValues(
+                var item = new ToDoDataItem(reader.GetInt32(0));
+                item.SetDataItem(
                     reader.GetBoolean(1),
                     reader.GetString(2),
                     reader.GetString(3),
@@ -118,23 +121,25 @@ ORDER BY
         }
     }
 
-    // TODO: コメント。他にもコメントがないメソッドがあります。
-    private int SearchIdentification()
+    // DONE: コメント。他にもコメントがないメソッドがあります。
+    /// <summary>
+    /// <see cref="ToDoDataGrid"/>にて選択された行のIDの値を取得します。
+    /// </summary>
+    private int? SearchIdentification()
     {
         if (this.ToDoDataGrid.SelectedItem is null)
         {
-            return -1;
+            return null;
         }
 
         this.ToDoDataGrid.ScrollIntoView(this.ToDoDataGrid.SelectedItem);
 
-        if (this.ToDoDataGrid.SelectedItem is not DataItem item)
+        if (this.ToDoDataGrid.SelectedItem is not ToDoDataItem item)
         {
-            return -1;
+            return null;
         }
 
-        var selectedId = item.Id;
-        return selectedId;
+        return item.Id;
     }
 
     #endregion DataGrid関連処理
@@ -161,15 +166,15 @@ ORDER BY
     private void DetailButton_Click(object sender, RoutedEventArgs e)
     {
         var id = this.SearchIdentification();
-        // TODO: -1 に特別な意味をもたせるのはあまりよくありません。
+        // DONE: -1 に特別な意味をもたせるのはあまりよくありません。
         // 値が取れないときは、よく null を使います。
-        if (id == -1)
+        if (id is null)
         {
             return;
         }
-        // TODO: var
-        int row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
-        var window = new ToDoEditWindow(id, this._items[row])
+        // DONE: var
+        var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
+        var window = new ToDoEditWindow((int)id, this._items[row])
         {
             Owner = this
         };
@@ -179,15 +184,21 @@ ORDER BY
     }
 
 
+    /// <summary>
+    /// 更新ボタンを押すと、ToDoリストを再読み込みします。
+    /// </summary>
     private void RefreshButton_Click(object sender, RoutedEventArgs e)
     {
         this.LoadToDoList();
     }
 
+    /// <summary>
+    /// 削除ボタンを押すと、<see cref="ToDoDataGrid"/>で選択されているToDoを削除します。
+    /// </summary>
     private void DeleteButton_Click(object sender, RoutedEventArgs e)
     {
         var id = this.SearchIdentification();
-        if (id == -1)
+        if (id is null)
         {
             return;
         }
@@ -196,7 +207,10 @@ ORDER BY
 
         {
             using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
-            using IDbCommand command = new NpgsqlCommand(sql, (NpgsqlConnection)conn);
+            using var command = conn.CreateCommand();
+            command.CommandText = sql;
+            command.CommandTimeout = 15;
+            command.CommandType = CommandType.Text;
             try
             {
                 conn.Open();
@@ -223,6 +237,9 @@ ORDER BY
         this.LoadToDoList();
     }
 
+    /// <summary>
+    /// 一括削除ボタンを押すと、実行済みのToDoリストを全て削除します。
+    /// </summary>
     private void BulkDeleteButton_Click(object sender, RoutedEventArgs e)
     {
         MessageBox.Show(this, "実行済みのToDoリストを全て削除します。よろしいですか？", "確認", MessageBoxButton.OKCancel, MessageBoxImage.Question);
@@ -231,7 +248,10 @@ ORDER BY
 
         {
             using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
-            using IDbCommand command = new NpgsqlCommand(sql, (NpgsqlConnection)conn);
+            using var command = conn.CreateCommand();
+            command.CommandText = sql;
+            command.CommandTimeout = 15;
+            command.CommandType = CommandType.Text;
 
             try
             {
@@ -259,24 +279,99 @@ ORDER BY
         this.LoadToDoList();
     }
 
+    /// <summary>
+    /// 優先度↑ボタンを押すと、<see cref="ToDoDataGrid"/>で選択されている行の優先度を上げます。
+    /// </summary>
     private void PriorityUpButton_Click(object sender, RoutedEventArgs e)
     {
         int row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
         var priority = this._items[row].Priority;
         if (priority < 5)
         {
-            this._items[row].Priority++;
+            priority++;
+        }
+        var sql = $@"
+UPDATE todo_items SET
+    priority = {priority}
+  , updated_at = current_timestamp
+WHERE
+    id = {this._items[row].Id}
+";
+        using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
+        using var command = conn.CreateCommand();
+        command.CommandText = sql;
+        command.CommandTimeout = 15;
+        command.CommandType = CommandType.Text;
+
+        try
+        {
+            conn.Open();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+
+        try
+        {
+            command.ExecuteNonQuery();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+        finally
+        {
+            conn.Close();
         }
         this.LoadToDoList();
     }
 
+    /// <summary>
+    /// 優先度↓ボタンを押すと、<see cref="ToDoDataGrid"/>で選択されている行の優先度を下げます。
+    /// </summary>
     private void PriorityDownButton_Click(object obj, RoutedEventArgs e)
     {
         int row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
         var priority = this._items[row].Priority;
         if (priority > -5)
         {
-            this._items[row].Priority--;
+            priority--;
+        }
+        var sql = $@"
+UPDATE todo_items SET
+    priority = {priority}
+  , updated_at = current_timestamp
+WHERE
+    id = {this._items[row].Id}
+";
+
+        using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
+        using var command = conn.CreateCommand();
+        command.CommandText = sql;
+        command.CommandTimeout = 15;
+        command.CommandType = CommandType.Text;
+
+        try
+        {
+            conn.Open();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+
+        try
+        {
+            command.ExecuteNonQuery();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+        finally
+        {
+            conn.Close();
         }
         this.LoadToDoList();
     }

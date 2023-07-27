@@ -27,27 +27,27 @@
         <TextBlock  Grid.Row="1" Grid.Column="0" Text="メモ・備考"/>
         <TextBox    Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" x:Name="Memo" Text="" TextWrapping="Wrap"/>
 
-        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
+
+        <TextBlock  Grid.Row="2" Grid.Column="0" Text="開始日・期日"/>
+        <Grid       Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <DatePicker Grid.Row="0" Grid.Column="1" x:Name="StartDate" Width="auto" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>
-            <TextBlock  Grid.Row="0" Grid.Column="2" Text="～"/>
-            <!-- TODO: 開始日の並び順。ただ、ここではタイトルやメモと同じように配置した方がよさそうです。 -->
-            <TextBlock  Grid.Row="0" Grid.Column="0" Text="開始日・期日"/>
-            <DatePicker Grid.Row="0" Grid.Column="3" x:Name="EndDate" Width="auto" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>
+            <DatePicker Grid.Row="0" Grid.Column="0" x:Name="StartDate" Width="auto" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>
+            <TextBlock  Grid.Row="0" Grid.Column="1" Text="～"/>
+            <!-- DONE: 開始日の並び順。ただ、ここではタイトルやメモと同じように配置した方がよさそうです。 -->
+            <DatePicker Grid.Row="0" Grid.Column="2" x:Name="EndDate" Width="auto" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>
         </Grid>
 
         <TextBlock Grid.Row="3" Grid.Column="0" Text="優先度"/>
-        <!-- TODO: Windowを大きくすると左端の説明文と離れ離れになって、分かりにくそうです。左寄せの方がよいでしょう。あとスペースの調整。 -->
-        <ComboBox Grid.Row="3" Grid.Column="2" x:Name="PriorityComboBox"/>
-        <Button     Grid.Row="5" Grid.Column="2" x:Name="OkButton" Content="OK" Click="OkButton_Click"/>
-        <Button     Grid.Row="5" Grid.Column="1" x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click"/>
+        <!-- DONE: Windowを大きくすると左端の説明文と離れ離れになって、分かりにくそうです。左寄せの方がよいでしょう。あとスペースの調整。 -->
+        <ComboBox  Grid.Row="3" Grid.Column="1" x:Name="PriorityComboBox"/>
+        <Button    Grid.Row="5" Grid.Column="2" x:Name="OkButton" Content="OK" Click="OkButton_Click"/>
+        <Button    Grid.Row="5" Grid.Column="1" x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click"/>
 
-        <Button     Grid.Row="4" Grid.Column="0" x:Name="ImageChooseButton" Content="画像を追加" Margin="20" Click="ImageChooseButton_Click"/>
-        <Image      Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" x:Name="ImageFrame" Stretch="Uniform" AllowDrop="True" Drop="ImageFrame_Drop"/>
+        <Button    Grid.Row="4" Grid.Column="0" x:Name="ImageChooseButton" Content="画像を追加" Margin="20" Click="ImageChooseButton_Click"/>
+        <Image     Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" x:Name="ImageFrame" Stretch="Uniform" AllowDrop="True" Drop="ImageFrame_Drop"/>
     </Grid>
 </Window>
