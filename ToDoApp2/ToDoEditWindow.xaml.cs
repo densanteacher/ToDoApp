@@ -17,10 +17,10 @@ using System.Windows.Shapes;
 
 namespace ToDoApp2;
 
-// TODO: このWindowは何をするWindowなのかをコメントで説明してみてください。
+// DONE: このWindowは何をするWindowなのかをコメントで説明してみてください。
 // summary は要約です。詳しく書く場合は remarks に記述できます。
 /// <summary>
-/// ToDoEditWindow.xaml の相互作用ロジック
+/// ToDoタスクの詳細表示・編集を行うウィンドウです。
 /// </summary>
 public partial class ToDoEditWindow : Window
 {
@@ -29,7 +29,7 @@ public partial class ToDoEditWindow : Window
     /// </summary>
     private readonly int _id;
 
-    // TODO: 今回の使用ですと MainWindow から渡されますが、他の画面から呼ばれた場合はコメントを直す必要があります。
+    // DONE: 今回の使用ですと MainWindow から渡されますが、他の画面から呼ばれた場合はコメントを直す必要があります。
     // クラスは独立したものと考えるとよいでしょう。
     // 各コメントにかかれているSQLという言葉も不適切です。
     // 全体を通してコメントを見直してみてください。
@@ -55,31 +55,31 @@ public partial class ToDoEditWindow : Window
     /// </summary>
     private void SetColumns(ToDoDataItem item)
     {
-        this.CheckDone.IsChecked = item.CheckDone;
+        this.IsFinished.IsChecked = item.IsFinished;
         this.ToDoTitle.Text = item.ToDoTitle;
         this.DateEnd.Text = item.DateEnd.ToString();
         this.Memo.Text = item.Memo;
         this.PriorityComboBox.Text = item.Priority.ToString();
     }
 
-    // TODO: rowNumber を取得するのは以下のような感じでよいでしょう。では、下記メソッド全体をコメントアウトしてください。
+    // DONE: rowNumber を取得するのは以下のような感じでよいでしょう。では、下記メソッド全体をコメントアウトしてください。
+    ///// <summary>
+    ///// メインウィンドウから渡された<see cref="_id"/>と一致するIdを持つ<see cref="_item">の要素を検索します。
+    ///// </summary>
+    ///// <returns>_itemsの要素番号です。</returns>
+    //private void SearchRowNumber2()
+    //{
+    //    var items = new List<ToDoDataItem>();
+
+    //    var item = items
+    //        .Select((item, index) => (item, index))
+    //        .FirstOrDefault(tuple => tuple.item.Id == this._id);
+
+    //    var rowNumber = item.index;
+    //}
+
     /// <summary>
-    /// メインウィンドウから渡された<see cref="_id"/>と一致するIdを持つ<see cref="_item">の要素を検索します。
-    /// </summary>
-    /// <returns>_itemsの要素番号です。</returns>
-    private void SearchRowNumber2()
-    {
-        var items = new List<ToDoDataItem>();
-
-        var item = items
-            .Select((item, index) => (item, index))
-            .FirstOrDefault(tuple => tuple.item.Id == this._id);
-
-        var rowNumber = item.index;
-    }
-
-    /// <summary>
-    /// 変更を保存ボタンをクリックすると、選択されたToDoの内容を更新します。
+    /// 「変更を保存」ボタンをクリックすると、選択されたToDoの内容を更新します。
     /// その後、ToDoEditWindowを閉じます。
     /// </summary>
     private void ChangeButton_Click(object sender, RoutedEventArgs e)
@@ -106,11 +106,11 @@ public partial class ToDoEditWindow : Window
         {
             #region SQL文
 
-            // TODO: チェックされたという意味だと isChecked となりますが、
+            // DONE: チェックされたという意味だと isChecked となりますが、
             // CheckBox とかぶるので名前として判別できなくなります。
             // ここはタスクの完了を表すものなので、DBの列名を is_finished にして、
             // コントロール名も IsFinished にするのがよさそうです。
-            var isCheckDone = this.CheckDone.IsChecked ?? false;
+            var isFinished = this.IsFinished.IsChecked ?? false;
             var dateEnd = this.DateEnd.SelectedDate.Value;
             if (!(int.TryParse(this.PriorityComboBox.Text, out var priority)))
             {
@@ -118,7 +118,7 @@ public partial class ToDoEditWindow : Window
             }
             var sql = $@"
 UPDATE todo_items SET
-    check_done = {isCheckDone}
+    is_finished = {isFinished}
   , title = '{this.ToDoTitle.Text}'
   , date_end = '{dateEnd}'
   , memo = '{this.Memo.Text}'
@@ -144,7 +144,6 @@ WHERE
             using var command = conn.CreateCommand();
             command.CommandText = sql;
             command.CommandTimeout = 15;
-            command.CommandType = CommandType.Text;
             var result = command.ExecuteNonQuery();
         }
         catch (Exception ex)

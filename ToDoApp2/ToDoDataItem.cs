@@ -7,10 +7,12 @@ using System.Windows.Media.Imaging;
 
 namespace ToDoApp2;
 
-// TODO: 「DataItem」に対して、「ToDoデータを・・・」というコメントになっています。
+// DONE: 「DataItem」に対して、「ToDoデータを・・・」というコメントになっています。
 // コメントとソースコード上に差異が現れています。
 // つまり、どちらかに寄せることができます。
 // コメントを直すのか、クラス名を直すのか、どちらがよりコードを読みやすくなるでしょうか？
+
+// コードの方を変更しました。
 /// <summary>
 /// SQLデータベースから取得したToDoデータを保存しておくクラスです。
 /// </summary>
@@ -24,7 +26,7 @@ public class ToDoDataItem
     /// <summary>
     /// ToDoリストが実行済みであるかどうかを判定する値です。
     /// </summary>
-    public bool CheckDone { get; set; }
+    public bool IsFinished { get; set; }
 
     /// <summary>
     /// ToDoのタイトルです。
@@ -71,22 +73,28 @@ public class ToDoDataItem
     /// </summary>
     public DateTime RemindDate { get; set; }
 
-    // TODO: インスタンスは、new された後の変数の中身を指します。
+    /// <summary>
+    /// ToDoDataItemの各値が変更された場合true、変更されていない場合falseの値をとります。
+    /// </summary>
+    public bool IsChanged { get; set; }
+
+    // DONE: インスタンスは、new された後の変数の中身を指します。
     // この new するための特殊なメソッドはコンストラクタと呼びます。
     // Constructor 省略は ctor. と書きます。
     /// <summary>
-    /// インスタンスです。IDが必須項目です。
+    /// コンストラクタです。IDが必須項目です。IsChangedの初期化も行います。
     /// </summary>
     public ToDoDataItem(int id)
     {
         this.Id = id;
+        this.IsChanged = false;
     }
 
     /// <summary>
     /// id以外の各値を一括で設定します。
     /// </summary>
     public void SetDataItem(
-        bool checkDone,
+        bool isFinished,
         string title,
         string memo,
         DateTime dateStart,
@@ -94,7 +102,7 @@ public class ToDoDataItem
         int priority,
         DateTime updatedAt)
     {
-        this.CheckDone = checkDone;
+        this.IsFinished = isFinished;
         this.ToDoTitle = title;
         this.Memo = memo;
         this.DateStart = dateStart;

@@ -34,11 +34,13 @@ public partial class ToDoInputWindow : Window
     /// </summary>
     private void ImageFrame_Drop(object sender, DragEventArgs e)
     {
-        // TODO: e.Data.GetData(DataFormats.FileDrop) はちょっと長いです。
+        // DONE: e.Data.GetData(DataFormats.FileDrop) はちょっと長いです。
         // コードを読むときに、コードを読み解くよりも、名前で判断する方が早く読めます。
         // 記述のしやすさよりも読みやすさを優先します。
         // 説明変数に一度格納して名前をつけてみてください。
-        if (e.Data.GetData(DataFormats.FileDrop) is string[] fileNames)
+        var dropedData = e.Data;
+        var format = DataFormats.FileDrop;
+        if (dropedData.GetData(format) is string[] fileNames)
         {
             var fileName = fileNames[0];
             this.ReadImageFile(fileName);
@@ -82,7 +84,7 @@ public partial class ToDoInputWindow : Window
     }
 
     /// <summary>
-    /// SQLにデータを送信、保存します。
+    /// データベースにデータを送信、保存します。
     /// </summary>
     private void InsertToDoItem()
     {
@@ -137,9 +139,10 @@ VALUES (
             {
                 using var command = conn.CreateCommand();
                 command.CommandText = sql;
-                // TODO: CommandTimeout と CommandType の既定値について調べてみましょう。
+                // DONE: CommandTimeout と CommandType の既定値について調べてみましょう。
+
+                // CommandTimeout は30秒、CommandTypeはTextが既定値でした。
                 command.CommandTimeout = 15;
-                command.CommandType = CommandType.Text;
                 var result = command.ExecuteNonQuery();
             }
             catch (Exception ex)
@@ -153,22 +156,32 @@ VALUES (
         }
     }
 
+    /// <summary>
+    /// 「画像を追加」ボタンを押したとき、ダイアログを開いて読み込む画像をユーザーに選択させます。
+    /// </summary>
     private void ImageChooseButton_Click(object sender, RoutedEventArgs e)
     {
         var dialog = new OpenFileDialog();
         var dialogResult = dialog.ShowDialog(this) ?? false;
-        if (!dialogResult)
+        if (dialogResult)
         {
-            return;
+            this.ReadImageFile(dialog.FileName);
         }
-        this.ReadImageFile(dialog.FileName);
     }
 
+    /// <summary>
+    /// Cancelボタンを押したとき、ウィンドウを閉じます。
+    /// </summary>
     private void CancelButton_Click(object sender, RoutedEventArgs e)
     {
         this.Close();
     }
 
+    /// <summary>
+    /// OKボタンを押したとき、内容を保存してからウィンドウを閉じます。
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void OkButton_Click(object sender, RoutedEventArgs e)
     {
         this.InsertToDoItem();

@@ -28,6 +28,7 @@ public partial class MainWindow : Window
     /// </summary>
     private readonly List<ToDoDataItem> _items = new();
 
+
     public MainWindow()
     {
         this.InitializeComponent();
@@ -42,6 +43,10 @@ public partial class MainWindow : Window
     /// </summary>
     private void LoadToDoList()
     {
+        if (_isChanged)
+        {
+            UpdateToDoItems();
+        }
         this.ToDoDataGrid.ItemsSource = null;
         this.ToDoDataGrid.Items.Clear();
 
@@ -54,7 +59,7 @@ public partial class MainWindow : Window
         var sql = $@"
 SELECT
     id
-  , check_done
+  , is_finished
   , title
   , memo
   , date_start
@@ -64,7 +69,7 @@ SELECT
 FROM
     todo_items
 ORDER BY
-    check_done
+    is_finished
   , priority DESC
   , date_end
 ;
@@ -76,7 +81,6 @@ ORDER BY
         using IDbCommand command = conn.CreateCommand();
         command.CommandText = sql;
         command.CommandTimeout = 15;
-        command.CommandType = CommandType.Text;
 
         try
         {
@@ -113,15 +117,15 @@ ORDER BY
         }
     }
 
-    // TODO: Identification は、省略形の Id の方が通りがよいでしょう。
+    // DONE: Identification は、省略形の Id の方が通りがよいでしょう。
     // Id はすでに一般的に使われていますので問題ありません。
     // Db も大丈夫です。
-    // IO はも大丈夫です。Input/Output で IO ですが、2文字の省略形として Io とされることもあります。
+    // IO も大丈夫です。Input/Output で IO ですが、2文字の省略形として Io とされることもあります。
     // 表記に迷ったらプロジェクト内で多く使われている方に寄せましょう。
     /// <summary>
     /// <see cref="ToDoDataGrid"/>にて選択された行のIDの値を取得します。
     /// </summary>
-    private int? SearchIdentification()
+    private int? SearchId()
     {
         if (this.ToDoDataGrid.SelectedItem is null)
         {
@@ -136,6 +140,48 @@ ORDER BY
         }
 
         return item.Id;
+    }
+
+
+    /// <summary>
+    /// (WIP)<see cref="_items"/>の内容を元にデータベースの更新を行います。
+    /// </summary>
+    private void UpdateToDoItems()
+    {
+        var sql = $@"
+UPDATE todo_items SET
+    is_finished = {}
+  , priority = {}
+  , updated_at = current_timestamp
+WHERE
+    id = {}
+";
+        using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
+        using var command = conn.CreateCommand();
+        command.CommandText = sql;
+        command.CommandTimeout = 15;
+
+        try
+        {
+            conn.Open();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+
+        try
+        {
+            command.ExecuteNonQuery();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+        finally
+        {
+            conn.Close();
+        }
     }
 
     #endregion DataGrid関連処理
@@ -161,7 +207,7 @@ ORDER BY
     /// </summary>
     private void DetailButton_Click(object sender, RoutedEventArgs e)
     {
-        var id = this.SearchIdentification();
+        var id = this.SearchId();
         if (id is null)
         {
             return;
@@ -191,7 +237,7 @@ ORDER BY
     /// </summary>
     private void DeleteButton_Click(object sender, RoutedEventArgs e)
     {
-        var id = this.SearchIdentification();
+        var id = this.SearchId();
         if (id is null)
         {
             return;
@@ -204,7 +250,6 @@ ORDER BY
             using var command = conn.CreateCommand();
             command.CommandText = sql;
             command.CommandTimeout = 15;
-            command.CommandType = CommandType.Text;
             try
             {
                 conn.Open();
@@ -238,14 +283,13 @@ ORDER BY
     {
         MessageBox.Show(this, "実行済みのToDoリストを全て削除します。よろしいですか？", "確認", MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
-        var sql = $@"DELETE FROM todo_items WHERE check_done = true;";
+        var sql = $@"DELETE FROM todo_items WHERE is_finished = true;";
 
         {
             using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
             using var command = conn.CreateCommand();
             command.CommandText = sql;
             command.CommandTimeout = 15;
-            command.CommandType = CommandType.Text;
 
             try
             {
@@ -278,7 +322,7 @@ ORDER BY
     /// </summary>
     private void PriorityUpButton_Click(object sender, RoutedEventArgs e)
     {
-        int row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
+        var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
         var priority = this._items[row].Priority;
         if (priority < 5)
         {
@@ -295,7 +339,6 @@ WHERE
         using var command = conn.CreateCommand();
         command.CommandText = sql;
         command.CommandTimeout = 15;
-        command.CommandType = CommandType.Text;
 
         try
         {
@@ -319,6 +362,8 @@ WHERE
             conn.Close();
         }
         this.LoadToDoList();
+        this.ToDoDataGrid.SelectedIndex = row;
+
     }
 
     /// <summary>
@@ -326,7 +371,8 @@ WHERE
     /// </summary>
     private void PriorityDownButton_Click(object obj, RoutedEventArgs e)
     {
-        int row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
+        var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
+        
         var priority = this._items[row].Priority;
         if (priority > -5)
         {
@@ -344,7 +390,6 @@ WHERE
         using var command = conn.CreateCommand();
         command.CommandText = sql;
         command.CommandTimeout = 15;
-        command.CommandType = CommandType.Text;
 
         try
         {
@@ -368,11 +413,14 @@ WHERE
             conn.Close();
         }
         this.LoadToDoList();
+        this.ToDoDataGrid.SelectedIndex = row;
     }
 
     private void CheckBox_Checked(object sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
+
+        _items[row].IsFinished = 
     }
     private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
