@@ -7,12 +7,7 @@ using System.Windows.Media.Imaging;
 
 namespace ToDoApp2;
 
-// DONE: 「DataItem」に対して、「ToDoデータを・・・」というコメントになっています。
-// コメントとソースコード上に差異が現れています。
-// つまり、どちらかに寄せることができます。
-// コメントを直すのか、クラス名を直すのか、どちらがよりコードを読みやすくなるでしょうか？
-
-// コードの方を変更しました。
+// TODO: Data も Item も抽象的な用語です。どちらかなくても表現できていそうです。
 /// <summary>
 /// SQLデータベースから取得したToDoデータを保存しておくクラスです。
 /// </summary>
@@ -78,15 +73,14 @@ public class ToDoDataItem
     /// </summary>
     public bool IsChanged { get; set; }
 
-    // DONE: インスタンスは、new された後の変数の中身を指します。
-    // この new するための特殊なメソッドはコンストラクタと呼びます。
-    // Constructor 省略は ctor. と書きます。
     /// <summary>
     /// コンストラクタです。IDが必須項目です。IsChangedの初期化も行います。
     /// </summary>
     public ToDoDataItem(int id)
     {
         this.Id = id;
+
+        // TODO: プロパティの初期値という形で表現した方がよいでしょう。
         this.IsChanged = false;
     }
 

@@ -43,6 +43,7 @@ public partial class MainWindow : Window
     /// </summary>
     private void LoadToDoList()
     {
+        // TODO: ???
         if (_isChanged)
         {
             UpdateToDoItems();
@@ -117,11 +118,6 @@ ORDER BY
         }
     }
 
-    // DONE: Identification は、省略形の Id の方が通りがよいでしょう。
-    // Id はすでに一般的に使われていますので問題ありません。
-    // Db も大丈夫です。
-    // IO も大丈夫です。Input/Output で IO ですが、2文字の省略形として Io とされることもあります。
-    // 表記に迷ったらプロジェクト内で多く使われている方に寄せましょう。
     /// <summary>
     /// <see cref="ToDoDataGrid"/>にて選択された行のIDの値を取得します。
     /// </summary>
@@ -148,6 +144,7 @@ ORDER BY
     /// </summary>
     private void UpdateToDoItems()
     {
+        // TODO: ???
         var sql = $@"
 UPDATE todo_items SET
     is_finished = {}
@@ -372,7 +369,7 @@ WHERE
     private void PriorityDownButton_Click(object obj, RoutedEventArgs e)
     {
         var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
-        
+
         var priority = this._items[row].Priority;
         if (priority > -5)
         {
@@ -420,7 +417,8 @@ WHERE
     {
         var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
 
-        _items[row].IsFinished = 
+        // TODO: ???
+        _items[row].IsFinished =
     }
     private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
     {

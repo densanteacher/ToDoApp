@@ -9,6 +9,7 @@
         FontSize="20">
 
     <Grid Margin="10">
+        <!-- TODO: Gridの区分けが雑です。 -->
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>

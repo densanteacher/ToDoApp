@@ -38,9 +38,10 @@ public partial class ToDoInputWindow : Window
         // コードを読むときに、コードを読み解くよりも、名前で判断する方が早く読めます。
         // 記述のしやすさよりも読みやすさを優先します。
         // 説明変数に一度格納して名前をつけてみてください。
-        var dropedData = e.Data;
-        var format = DataFormats.FileDrop;
-        if (dropedData.GetData(format) is string[] fileNames)
+        // DONE: if の中にあるのが長いという意味でした。このくらいでよいでしょう。
+        // TODO: dropedタイポ
+        var dropedData = e.Data.GetData(DataFormats.FileDrop);
+        if (dropedData is string[] fileNames)
         {
             var fileName = fileNames[0];
             this.ReadImageFile(fileName);
@@ -139,9 +140,8 @@ VALUES (
             {
                 using var command = conn.CreateCommand();
                 command.CommandText = sql;
-                // DONE: CommandTimeout と CommandType の既定値について調べてみましょう。
-
-                // CommandTimeout は30秒、CommandTypeはTextが既定値でした。
+                // TODO: ちょうどよい秒数を指定してみましょう。
+                // 30s を 15s　にしたくらいではあまり意味はなさそうです。
                 command.CommandTimeout = 15;
                 var result = command.ExecuteNonQuery();
             }

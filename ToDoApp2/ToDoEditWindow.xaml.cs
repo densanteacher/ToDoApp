@@ -17,22 +17,17 @@ using System.Windows.Shapes;
 
 namespace ToDoApp2;
 
-// DONE: このWindowは何をするWindowなのかをコメントで説明してみてください。
-// summary は要約です。詳しく書く場合は remarks に記述できます。
 /// <summary>
 /// ToDoタスクの詳細表示・編集を行うウィンドウです。
 /// </summary>
 public partial class ToDoEditWindow : Window
 {
+    // TODO: MainWindow以外から渡される可能性もあります。
     /// <summary>
     /// <see cref="MainWindow"/>から渡されたToDoリストのデータベースにおけるIDです。
     /// </summary>
     private readonly int _id;
 
-    // DONE: 今回の使用ですと MainWindow から渡されますが、他の画面から呼ばれた場合はコメントを直す必要があります。
-    // クラスは独立したものと考えるとよいでしょう。
-    // 各コメントにかかれているSQLという言葉も不適切です。
-    // 全体を通してコメントを見直してみてください。
     /// <summary>
     /// ウィンドウ呼び出し時に渡されたToDoリストの読み取り結果です。
     /// </summary>
@@ -50,6 +45,7 @@ public partial class ToDoEditWindow : Window
         this.SetColumns(this._item);
     }
 
+    // TODO: Column には入れていませんので、適切な表現に変える必要があります。
     /// <summary>
     /// ウィンドウ呼び出し時に渡された値を表示します。
     /// </summary>
@@ -61,22 +57,6 @@ public partial class ToDoEditWindow : Window
         this.Memo.Text = item.Memo;
         this.PriorityComboBox.Text = item.Priority.ToString();
     }
-
-    // DONE: rowNumber を取得するのは以下のような感じでよいでしょう。では、下記メソッド全体をコメントアウトしてください。
-    ///// <summary>
-    ///// メインウィンドウから渡された<see cref="_id"/>と一致するIdを持つ<see cref="_item">の要素を検索します。
-    ///// </summary>
-    ///// <returns>_itemsの要素番号です。</returns>
-    //private void SearchRowNumber2()
-    //{
-    //    var items = new List<ToDoDataItem>();
-
-    //    var item = items
-    //        .Select((item, index) => (item, index))
-    //        .FirstOrDefault(tuple => tuple.item.Id == this._id);
-
-    //    var rowNumber = item.index;
-    //}
 
     /// <summary>
     /// 「変更を保存」ボタンをクリックすると、選択されたToDoの内容を更新します。
@@ -106,10 +86,6 @@ public partial class ToDoEditWindow : Window
         {
             #region SQL文
 
-            // DONE: チェックされたという意味だと isChecked となりますが、
-            // CheckBox とかぶるので名前として判別できなくなります。
-            // ここはタスクの完了を表すものなので、DBの列名を is_finished にして、
-            // コントロール名も IsFinished にするのがよさそうです。
             var isFinished = this.IsFinished.IsChecked ?? false;
             var dateEnd = this.DateEnd.SelectedDate.Value;
             if (!(int.TryParse(this.PriorityComboBox.Text, out var priority)))
