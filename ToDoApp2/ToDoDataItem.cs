@@ -36,8 +36,6 @@ public class ToDoDataItem
     /// </summary>
     public DateTime? DateStart { get; set; }
 
-    // DONE: DateStart を nullable にしたらこちらも。
-    // DB側の日付列も忘れずに null 許容としましょう。
     /// <summary>
     /// ToDoの終了日（期限）です。
     /// </summary>
@@ -53,8 +51,6 @@ public class ToDoDataItem
     /// </summary>
     public int Priority { get; set; }
 
-    // DONE: スネークケースは DB の命名規則です。ここには C# を適用しましょう。
-    // DONE: テーブル定義を更新したら CREATE文 も更新しておきましょう。
     /// <summary>
     /// ToDoリストが更新された日時を保持しておく値です。
     /// </summary>
@@ -75,19 +71,17 @@ public class ToDoDataItem
     /// </summary>
     public DateTime RemindDate { get; set; }
 
+    // TODO: インスタンスは、new された後の変数の中身を指します。
+    // この new するための特殊なメソッドはコンストラクタと呼びます。
+    // Constructor 省略は ctor. と書きます。
     /// <summary>
     /// インスタンスです。IDが必須項目です。
     /// </summary>
-    /// <param name="id"></param>
     public ToDoDataItem(int id)
     {
         this.Id = id;
-
     }
 
-    // DONE: Value がたくさんあるので、Values といいたくなりますが、
-    // インスタンスに対する Set なので、
-    // これらの値をまとめてひとつの DataItem となります。
     /// <summary>
     /// id以外の各値を一括で設定します。
     /// </summary>

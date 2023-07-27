@@ -34,13 +34,15 @@ public partial class ToDoInputWindow : Window
     /// </summary>
     private void ImageFrame_Drop(object sender, DragEventArgs e)
     {
-        // DONE: if の条件は肯定的な方が読みやすくなります。not でわかりやすくなる時以外は、not をつけないようにしましょう。
+        // TODO: e.Data.GetData(DataFormats.FileDrop) はちょっと長いです。
+        // コードを読むときに、コードを読み解くよりも、名前で判断する方が早く読めます。
+        // 記述のしやすさよりも読みやすさを優先します。
+        // 説明変数に一度格納して名前をつけてみてください。
         if (e.Data.GetData(DataFormats.FileDrop) is string[] fileNames)
         {
             var fileName = fileNames[0];
             this.ReadImageFile(fileName);
         }
-
     }
 
     /// <summary>
@@ -133,13 +135,11 @@ VALUES (
 
             try
             {
-                // DONE: ここは var が使えます。
-                // conn が IDbConnection なので、IDbCommand を返すようになっています。
                 using var command = conn.CreateCommand();
                 command.CommandText = sql;
+                // TODO: CommandTimeout と CommandType の既定値について調べてみましょう。
                 command.CommandTimeout = 15;
                 command.CommandType = CommandType.Text;
-                // TODO: var
                 var result = command.ExecuteNonQuery();
             }
             catch (Exception ex)

@@ -23,14 +23,6 @@ namespace ToDoApp2;
 /// </summary>
 public partial class MainWindow : Window
 {
-    // DONE: バックエンドをDBMSからファイルベースに変更した場合、コメントを修正する必要があります。
-    // そのプログラムのコアな部分をコメントできるようになるとよいでしょう。
-    // なお、SQLデータベースという言い方はあまりしません。
-    // DONE: RDBMSやNoSQLについて調べてみてください。
-
-    // RDBMS(リレーショナルデータベースマネジメントシステム）は、SQLに代表されるRDBを操作するためのシステムです。
-    // NoSQLはnot only SQLの略とされ、非リレーショナルなデータベースです。
-    // RDBの方が検索性は高いですが、NoSQLの方が高速であることが多く膨大なデータを扱う場合に使われるようです。
     /// <summary>
     /// 読み取ったToDoリストを保持しておくリストです。
     /// </summary>
@@ -121,7 +113,11 @@ ORDER BY
         }
     }
 
-    // DONE: コメント。他にもコメントがないメソッドがあります。
+    // TODO: Identification は、省略形の Id の方が通りがよいでしょう。
+    // Id はすでに一般的に使われていますので問題ありません。
+    // Db も大丈夫です。
+    // IO はも大丈夫です。Input/Output で IO ですが、2文字の省略形として Io とされることもあります。
+    // 表記に迷ったらプロジェクト内で多く使われている方に寄せましょう。
     /// <summary>
     /// <see cref="ToDoDataGrid"/>にて選択された行のIDの値を取得します。
     /// </summary>
@@ -166,13 +162,11 @@ ORDER BY
     private void DetailButton_Click(object sender, RoutedEventArgs e)
     {
         var id = this.SearchIdentification();
-        // DONE: -1 に特別な意味をもたせるのはあまりよくありません。
-        // 値が取れないときは、よく null を使います。
         if (id is null)
         {
             return;
         }
-        // DONE: var
+
         var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
         var window = new ToDoEditWindow((int)id, this._items[row])
         {

@@ -17,6 +17,8 @@ using System.Windows.Shapes;
 
 namespace ToDoApp2;
 
+// TODO: このWindowは何をするWindowなのかをコメントで説明してみてください。
+// summary は要約です。詳しく書く場合は remarks に記述できます。
 /// <summary>
 /// ToDoEditWindow.xaml の相互作用ロジック
 /// </summary>
@@ -60,22 +62,20 @@ public partial class ToDoEditWindow : Window
         this.PriorityComboBox.Text = item.Priority.ToString();
     }
 
-    // DONE: コメント部分にも // を追加します。// が多いですがドキュメンテーションコメントもメソッドの一部です。
-    ///// <summary>
-    ///// メインウィンドウから渡された<see cref="_id"/>と一致するIdを持つ<see cref="_item">の要素を検索します。
-    ///// </summary>
-    ///// <returns>_itemsの要素番号です。</returns>
+    // TODO: rowNumber を取得するのは以下のような感じでよいでしょう。では、下記メソッド全体をコメントアウトしてください。
+    /// <summary>
+    /// メインウィンドウから渡された<see cref="_id"/>と一致するIdを持つ<see cref="_item">の要素を検索します。
+    /// </summary>
+    /// <returns>_itemsの要素番号です。</returns>
     private void SearchRowNumber2()
     {
-        // DONE: 書きにくいと思うのでダミーです。
         var items = new List<ToDoDataItem>();
-        var rowNumber = 0;
 
-        // DONE: .ForEach() を使わないので .ToList() は不要になります。
-        // DONE: スペース4つのインデントを入れましょう。
-        // DONE: .First() の使い方が間違っています。最初のひとつを受け取ることができるので・・・？
-        rowNumber = items.Select((item, index) => (item, index))
-            .FirstOrDefault(tuple => tuple.item.Id == _id).index;
+        var item = items
+            .Select((item, index) => (item, index))
+            .FirstOrDefault(tuple => tuple.item.Id == this._id);
+
+        var rowNumber = item.index;
     }
 
     /// <summary>
@@ -106,7 +106,10 @@ public partial class ToDoEditWindow : Window
         {
             #region SQL文
 
-            // DONE: bool変数の名前
+            // TODO: チェックされたという意味だと isChecked となりますが、
+            // CheckBox とかぶるので名前として判別できなくなります。
+            // ここはタスクの完了を表すものなので、DBの列名を is_finished にして、
+            // コントロール名も IsFinished にするのがよさそうです。
             var isCheckDone = this.CheckDone.IsChecked ?? false;
             var dateEnd = this.DateEnd.SelectedDate.Value;
             if (!(int.TryParse(this.PriorityComboBox.Text, out var priority)))
@@ -127,7 +130,6 @@ WHERE
 
             #endregion SQL文
 
-            // DONE: ここは IDbConnectionで受けましょう。
             using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
 
             try
@@ -139,7 +141,6 @@ WHERE
                 MessageBox.Show(this, ex.Message);
             }
 
-            // DONE: インターフェースを使ったやり方に変えましょう。
             using var command = conn.CreateCommand();
             command.CommandText = sql;
             command.CommandTimeout = 15;

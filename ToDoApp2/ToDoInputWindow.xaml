@@ -37,12 +37,10 @@
             </Grid.ColumnDefinitions>
             <DatePicker Grid.Row="0" Grid.Column="0" x:Name="StartDate" Width="auto" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>
             <TextBlock  Grid.Row="0" Grid.Column="1" Text="～"/>
-            <!-- DONE: 開始日の並び順。ただ、ここではタイトルやメモと同じように配置した方がよさそうです。 -->
             <DatePicker Grid.Row="0" Grid.Column="2" x:Name="EndDate" Width="auto" SelectedDate="{Binding Mode=OneTime, Source={x:Static System:DateTime.Today}}"/>
         </Grid>
 
         <TextBlock Grid.Row="3" Grid.Column="0" Text="優先度"/>
-        <!-- DONE: Windowを大きくすると左端の説明文と離れ離れになって、分かりにくそうです。左寄せの方がよいでしょう。あとスペースの調整。 -->
         <ComboBox  Grid.Row="3" Grid.Column="1" x:Name="PriorityComboBox"/>
         <Button    Grid.Row="5" Grid.Column="2" x:Name="OkButton" Content="OK" Click="OkButton_Click"/>
         <Button    Grid.Row="5" Grid.Column="1" x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click"/>
