@@ -34,12 +34,6 @@ public partial class ToDoInputWindow : Window
     /// </summary>
     private void ImageFrame_Drop(object sender, DragEventArgs e)
     {
-        // DONE: e.Data.GetData(DataFormats.FileDrop) はちょっと長いです。
-        // コードを読むときに、コードを読み解くよりも、名前で判断する方が早く読めます。
-        // 記述のしやすさよりも読みやすさを優先します。
-        // 説明変数に一度格納して名前をつけてみてください。
-        // DONE: if の中にあるのが長いという意味でした。このくらいでよいでしょう。
-        // DONE: dropedタイポ
         var droppedData = e.Data.GetData(DataFormats.FileDrop);
         if (droppedData is string[] fileNames)
         {
@@ -140,8 +134,6 @@ VALUES (
             {
                 using var command = conn.CreateCommand();
                 command.CommandText = sql;
-                // DONE: ちょうどよい秒数を指定してみましょう。
-                // 30s を 15s　にしたくらいではあまり意味はなさそうです。
                 command.CommandTimeout = 5;
                 var result = command.ExecuteNonQuery();
             }

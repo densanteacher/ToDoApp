@@ -7,7 +7,9 @@ using System.Windows.Media.Imaging;
 
 namespace ToDoApp2;
 
-// DONE: Data も Item も抽象的な用語です。どちらかなくても表現できていそうです。
+
+// TODO: テーブルはひとつだけですが、A5:Mk-2 でER図を書いてみましょう。
+// TODO: IS NOT NULL 制約について考えてみましょう。
 /// <summary>
 /// データベースから取得したToDoデータを保存しておくクラスです。
 /// </summary>
@@ -73,16 +75,18 @@ public class ToDoData
     /// </summary>
     public bool IsChanged { get; set; } = false;
 
+    // TODO: コードを直したらコメントも忘れずに修正しましょう。
     /// <summary>
     /// コンストラクタです。IDが必須項目です。IsChangedの初期化も行います。
     /// </summary>
     public ToDoData(int id)
     {
         this.Id = id;
-
-        // DONE: プロパティの初期値という形で表現した方がよいでしょう。
     }
 
+    // TODO: DataとItemは・・・？
+    // このインスタンスにセットするだけなので、目的語はなくても通じます。
+    // todoData.Set(a, b, c) みたいな感じになります。
     /// <summary>
     /// id以外の各値を一括で設定します。
     /// </summary>

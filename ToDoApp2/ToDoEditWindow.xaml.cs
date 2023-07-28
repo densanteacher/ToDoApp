@@ -22,7 +22,6 @@ namespace ToDoApp2;
 /// </summary>
 public partial class ToDoEditWindow : Window
 {
-    // DONE: MainWindow以外から渡される可能性もあります。
     /// <summary>
     /// 表示する際に渡されたToDoリストのデータベースにおけるIDです。
     /// </summary>
@@ -37,6 +36,7 @@ public partial class ToDoEditWindow : Window
     {
         this.InitializeComponent();
 
+        // TODO: ToDoData は既にidを持っているはずです。
         this._id = id;
         this._item = item;
 
@@ -45,7 +45,6 @@ public partial class ToDoEditWindow : Window
         this.SetValues(this._item);
     }
 
-    // DONE: Column には入れていませんので、適切な表現に変える必要があります。
     /// <summary>
     /// ウィンドウ呼び出し時に渡された値を表示します。
     /// </summary>
@@ -119,6 +118,9 @@ WHERE
 
             using var command = conn.CreateCommand();
             command.CommandText = sql;
+            // TODO: 同じ値を変更するのに複数箇所を変えたはずです。Constantsに変数を定義してみましょう。
+            // 自分で同じコードを書いてるな、同じものを変更しているなって思ったら共通化を検討してみましょう。
+            // 必ず共通化しなければならないわけではありません。しないほうがよい場合もあります。
             command.CommandTimeout = 5;
             var result = command.ExecuteNonQuery();
         }

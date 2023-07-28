@@ -43,7 +43,7 @@ public partial class MainWindow : Window
     /// </summary>
     private void LoadToDoList()
     {
-        // DONE: ???
+        // TODO: Loadという処理の中にSave(Update)という動作が入っているのはよくありません。
         UpdateIsChanged();
 
         this.ToDoDataGrid.ItemsSource = null;
@@ -142,7 +142,7 @@ ORDER BY
     /// </summary>
     private void UpdateToDoItem(int row)
     {
-        // DONE: ???
+        // TODO: this
         var sql = $@"
 UPDATE todo_items SET
     is_finished = {_items[row].IsFinished}
@@ -428,7 +428,7 @@ WHERE
     {
         var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
 
-        // DONE: ???
+        // TODO: this
         _items[row].IsFinished = true;
         _items[row].IsChanged = true;
     }
