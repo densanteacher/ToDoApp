@@ -26,7 +26,7 @@ public partial class MainWindow : Window
     /// <summary>
     /// 読み取ったToDoリストを保持しておくリストです。
     /// </summary>
-    private readonly List<ToDoDataItem> _items = new();
+    private readonly List<ToDoData> _items = new();
 
 
     public MainWindow()
@@ -43,11 +43,9 @@ public partial class MainWindow : Window
     /// </summary>
     private void LoadToDoList()
     {
-        // TODO: ???
-        if (_isChanged)
-        {
-            UpdateToDoItems();
-        }
+        // DONE: ???
+        UpdateIsChanged();
+
         this.ToDoDataGrid.ItemsSource = null;
         this.ToDoDataGrid.Items.Clear();
 
@@ -81,7 +79,7 @@ ORDER BY
         using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
         using IDbCommand command = conn.CreateCommand();
         command.CommandText = sql;
-        command.CommandTimeout = 15;
+        command.CommandTimeout = 5;
 
         try
         {
@@ -98,7 +96,7 @@ ORDER BY
 
             while (reader.Read())
             {
-                var item = new ToDoDataItem(reader.GetInt32(0));
+                var item = new ToDoData(reader.GetInt32(0));
                 item.SetDataItem(
                     reader.GetBoolean(1),
                     reader.GetString(2),
@@ -130,7 +128,7 @@ ORDER BY
 
         this.ToDoDataGrid.ScrollIntoView(this.ToDoDataGrid.SelectedItem);
 
-        if (this.ToDoDataGrid.SelectedItem is not ToDoDataItem item)
+        if (this.ToDoDataGrid.SelectedItem is not ToDoData item)
         {
             return null;
         }
@@ -140,23 +138,22 @@ ORDER BY
 
 
     /// <summary>
-    /// (WIP)<see cref="_items"/>の内容を元にデータベースの更新を行います。
+    /// <see cref="_items"/>の内容を元にデータベースの更新を行います。
     /// </summary>
-    private void UpdateToDoItems()
+    private void UpdateToDoItem(int row)
     {
-        // TODO: ???
+        // DONE: ???
         var sql = $@"
 UPDATE todo_items SET
-    is_finished = {}
-  , priority = {}
+    is_finished = {_items[row].IsFinished}
   , updated_at = current_timestamp
 WHERE
-    id = {}
+    id = {_items[row].IsFinished}
 ";
         using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
         using var command = conn.CreateCommand();
         command.CommandText = sql;
-        command.CommandTimeout = 15;
+        command.CommandTimeout = 5;
 
         try
         {
@@ -178,6 +175,18 @@ WHERE
         finally
         {
             conn.Close();
+        }
+    }
+
+    /// <summary>
+    /// (WIP)<see cref="_items"/>の中で内容が変更されているものを、データベース上で更新します。
+    /// </summary>
+    private void UpdateIsChanged()
+    {
+        var changedItem = _items.Where(x => x.IsChanged == true);
+        foreach (var item in changedItem)
+        {
+            UpdateToDoItem(item.Id);
         }
     }
 
@@ -204,6 +213,8 @@ WHERE
     /// </summary>
     private void DetailButton_Click(object sender, RoutedEventArgs e)
     {
+        UpdateIsChanged();
+
         var id = this.SearchId();
         if (id is null)
         {
@@ -246,7 +257,7 @@ WHERE
             using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
             using var command = conn.CreateCommand();
             command.CommandText = sql;
-            command.CommandTimeout = 15;
+            command.CommandTimeout = 5;
             try
             {
                 conn.Open();
@@ -286,7 +297,7 @@ WHERE
             using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
             using var command = conn.CreateCommand();
             command.CommandText = sql;
-            command.CommandTimeout = 15;
+            command.CommandTimeout = 5;
 
             try
             {
@@ -335,7 +346,7 @@ WHERE
         using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
         using var command = conn.CreateCommand();
         command.CommandText = sql;
-        command.CommandTimeout = 15;
+        command.CommandTimeout = 5;
 
         try
         {
@@ -386,7 +397,7 @@ WHERE
         using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
         using var command = conn.CreateCommand();
         command.CommandText = sql;
-        command.CommandTimeout = 15;
+        command.CommandTimeout = 5;
 
         try
         {
@@ -417,12 +428,16 @@ WHERE
     {
         var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
 
-        // TODO: ???
-        _items[row].IsFinished =
+        // DONE: ???
+        _items[row].IsFinished = true;
+        _items[row].IsChanged = true;
     }
     private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
+
+        _items[row].IsFinished = false;
+        _items[row].IsChanged = true;
     }
 
     #endregion Clickイベント

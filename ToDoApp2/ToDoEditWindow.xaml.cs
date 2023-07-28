@@ -22,18 +22,18 @@ namespace ToDoApp2;
 /// </summary>
 public partial class ToDoEditWindow : Window
 {
-    // TODO: MainWindow以外から渡される可能性もあります。
+    // DONE: MainWindow以外から渡される可能性もあります。
     /// <summary>
-    /// <see cref="MainWindow"/>から渡されたToDoリストのデータベースにおけるIDです。
+    /// 表示する際に渡されたToDoリストのデータベースにおけるIDです。
     /// </summary>
     private readonly int _id;
 
     /// <summary>
     /// ウィンドウ呼び出し時に渡されたToDoリストの読み取り結果です。
     /// </summary>
-    private readonly ToDoDataItem _item;
+    private readonly ToDoData _item;
 
-    public ToDoEditWindow(int id, ToDoDataItem item)
+    public ToDoEditWindow(int id, ToDoData item)
     {
         this.InitializeComponent();
 
@@ -42,14 +42,14 @@ public partial class ToDoEditWindow : Window
 
         this.PriorityComboBox.ItemsSource = Constants.Priorities;
 
-        this.SetColumns(this._item);
+        this.SetValues(this._item);
     }
 
-    // TODO: Column には入れていませんので、適切な表現に変える必要があります。
+    // DONE: Column には入れていませんので、適切な表現に変える必要があります。
     /// <summary>
     /// ウィンドウ呼び出し時に渡された値を表示します。
     /// </summary>
-    private void SetColumns(ToDoDataItem item)
+    private void SetValues(ToDoData item)
     {
         this.IsFinished.IsChecked = item.IsFinished;
         this.ToDoTitle.Text = item.ToDoTitle;
@@ -119,7 +119,7 @@ WHERE
 
             using var command = conn.CreateCommand();
             command.CommandText = sql;
-            command.CommandTimeout = 15;
+            command.CommandTimeout = 5;
             var result = command.ExecuteNonQuery();
         }
         catch (Exception ex)

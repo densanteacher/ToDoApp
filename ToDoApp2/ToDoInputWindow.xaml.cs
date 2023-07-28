@@ -39,9 +39,9 @@ public partial class ToDoInputWindow : Window
         // 記述のしやすさよりも読みやすさを優先します。
         // 説明変数に一度格納して名前をつけてみてください。
         // DONE: if の中にあるのが長いという意味でした。このくらいでよいでしょう。
-        // TODO: dropedタイポ
-        var dropedData = e.Data.GetData(DataFormats.FileDrop);
-        if (dropedData is string[] fileNames)
+        // DONE: dropedタイポ
+        var droppedData = e.Data.GetData(DataFormats.FileDrop);
+        if (droppedData is string[] fileNames)
         {
             var fileName = fileNames[0];
             this.ReadImageFile(fileName);
@@ -140,9 +140,9 @@ VALUES (
             {
                 using var command = conn.CreateCommand();
                 command.CommandText = sql;
-                // TODO: ちょうどよい秒数を指定してみましょう。
+                // DONE: ちょうどよい秒数を指定してみましょう。
                 // 30s を 15s　にしたくらいではあまり意味はなさそうです。
-                command.CommandTimeout = 15;
+                command.CommandTimeout = 5;
                 var result = command.ExecuteNonQuery();
             }
             catch (Exception ex)

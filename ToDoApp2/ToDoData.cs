@@ -7,11 +7,11 @@ using System.Windows.Media.Imaging;
 
 namespace ToDoApp2;
 
-// TODO: Data も Item も抽象的な用語です。どちらかなくても表現できていそうです。
+// DONE: Data も Item も抽象的な用語です。どちらかなくても表現できていそうです。
 /// <summary>
-/// SQLデータベースから取得したToDoデータを保存しておくクラスです。
+/// データベースから取得したToDoデータを保存しておくクラスです。
 /// </summary>
-public class ToDoDataItem
+public class ToDoData
 {
     /// <summary>
     /// SQLから取得したIDです。プライマリキーです。
@@ -71,17 +71,16 @@ public class ToDoDataItem
     /// <summary>
     /// ToDoDataItemの各値が変更された場合true、変更されていない場合falseの値をとります。
     /// </summary>
-    public bool IsChanged { get; set; }
+    public bool IsChanged { get; set; } = false;
 
     /// <summary>
     /// コンストラクタです。IDが必須項目です。IsChangedの初期化も行います。
     /// </summary>
-    public ToDoDataItem(int id)
+    public ToDoData(int id)
     {
         this.Id = id;
 
-        // TODO: プロパティの初期値という形で表現した方がよいでしょう。
-        this.IsChanged = false;
+        // DONE: プロパティの初期値という形で表現した方がよいでしょう。
     }
 
     /// <summary>
