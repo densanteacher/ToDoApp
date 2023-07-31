@@ -19,6 +19,8 @@ namespace ToDoApp2
                User ID=postgres;
                Password=postgres;";
 
+        public static readonly int timeout = 5;
+
         /// <summary>
         /// 画像ファイルの拡張子をまとめたリストです。
         /// </summary>

@@ -79,7 +79,7 @@ ORDER BY
         using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
         using IDbCommand command = conn.CreateCommand();
         command.CommandText = sql;
-        command.CommandTimeout = 5;
+        command.CommandTimeout = Constants.timeout;
 
         try
         {
@@ -153,7 +153,7 @@ WHERE
         using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
         using var command = conn.CreateCommand();
         command.CommandText = sql;
-        command.CommandTimeout = 5;
+        command.CommandTimeout = Constants.timeout;
 
         try
         {
@@ -257,7 +257,7 @@ WHERE
             using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
             using var command = conn.CreateCommand();
             command.CommandText = sql;
-            command.CommandTimeout = 5;
+            command.CommandTimeout = Constants.timeout;
             try
             {
                 conn.Open();
@@ -297,7 +297,7 @@ WHERE
             using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
             using var command = conn.CreateCommand();
             command.CommandText = sql;
-            command.CommandTimeout = 5;
+            command.CommandTimeout = Constants.timeout;
 
             try
             {
@@ -346,7 +346,7 @@ WHERE
         using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
         using var command = conn.CreateCommand();
         command.CommandText = sql;
-        command.CommandTimeout = 5;
+        command.CommandTimeout = Constants.timeout;
 
         try
         {
@@ -397,7 +397,7 @@ WHERE
         using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
         using var command = conn.CreateCommand();
         command.CommandText = sql;
-        command.CommandTimeout = 5;
+        command.CommandTimeout = Constants.timeout;
 
         try
         {
@@ -428,16 +428,16 @@ WHERE
     {
         var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
 
-        // TODO: this
-        _items[row].IsFinished = true;
-        _items[row].IsChanged = true;
+        // DONE: this
+        this._items[row].IsFinished = true;
+        this._items[row].IsChanged = true;
     }
     private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
         var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
 
-        _items[row].IsFinished = false;
-        _items[row].IsChanged = true;
+        this._items[row].IsFinished = false;
+        this._items[row].IsChanged = true;
     }
 
     #endregion Clickイベント

@@ -134,7 +134,7 @@ VALUES (
             {
                 using var command = conn.CreateCommand();
                 command.CommandText = sql;
-                command.CommandTimeout = 5;
+                command.CommandTimeout = Constants.timeout;
                 var result = command.ExecuteNonQuery();
             }
             catch (Exception ex)
