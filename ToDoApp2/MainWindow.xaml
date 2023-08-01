@@ -21,7 +21,7 @@
 
         <!--<Label Grid.Row="0" Grid.Column="0" Content="カレンダー(予定)"/>-->
         <DataGrid Grid.Row="0" Grid.Column="1" x:Name="ToDoDataGrid" ItemsSource="{Binding DataItem}" Margin="10"
-                  AutoGenerateColumns="False" SelectionMode="Single">
+                  AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" IsReadOnly="True"/>
                 <DataGridCheckBoxColumn Header="実行済み" Binding="{Binding IsFinished}"/>
@@ -33,15 +33,18 @@
 
         <!-- TODO: StackPanelの使い方を調べてみましょう。。 -->
         <StackPanel Grid.Column="2">
-            <Button Grid.Row="0" Grid.Column="0" Content="作成" Click="InputToDo_Click"/>
-            <Button Grid.Row="1" Grid.Column="0" Content="編集" Click="DetailButton_Click"/>
+            <Button Content="作成" Click="InputToDo_Click"/>
+            <Button Grid.Column="0" Content="編集" Click="DetailButton_Click"/>
             <!-- TODO: 完了/未完了 ボタンをそれぞれ作ってしまいましょう。複数選択を許可し、選択されているものを一括で完了できるようにしてみましょう。 -->
-            <Button Grid.Row="2" Grid.Column="0" Content="削除" Click="DeleteButton_Click"/>
-            <Button Grid.Row="3" Grid.Column="0" Content="一括削除" Click="BulkDeleteButton_Click"/>
+            <Button Content="完了" Click="FinishButton_Click"/>
+            <Button Content="一括完了" Click="BulkFinishButton_Click"/>
 
-            <Button Grid.Row="4" Grid.Column="0" Content="優先度↑" Click="PriorityUpButton_Click"/>
-            <Button Grid.Row="5" Grid.Column="0" Content="優先度↓" Click="PriorityDownButton_Click"/>
-            <Button Grid.Row="6" Grid.Column="0" Content="リロード" Click="RefreshButton_Click"/>
+            <Button Content="削除" Click="DeleteButton_Click"/>
+            <Button Content="一括削除" Click="BulkDeleteButton_Click"/>
+
+            <Button Content="優先度↑" Click="PriorityUpButton_Click"/>
+            <Button Content="優先度↓" Click="PriorityDownButton_Click"/>
+            <Button Content="リロード" Click="RefreshButton_Click"/>
         </StackPanel>
     </Grid>
 </Window>
