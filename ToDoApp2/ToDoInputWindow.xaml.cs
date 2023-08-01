@@ -134,7 +134,7 @@ VALUES (
             {
                 using var command = conn.CreateCommand();
                 command.CommandText = sql;
-                command.CommandTimeout = Constants.timeout;
+                command.CommandTimeout = Constants.TimeoutSecond;
                 var result = command.ExecuteNonQuery();
             }
             catch (Exception ex)
@@ -172,8 +172,6 @@ VALUES (
     /// <summary>
     /// OKボタンを押したとき、内容を保存してからウィンドウを閉じます。
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
     private void OkButton_Click(object sender, RoutedEventArgs e)
     {
         this.InsertToDoItem();

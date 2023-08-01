@@ -111,7 +111,7 @@ WHERE
 
             using var command = conn.CreateCommand();
             command.CommandText = sql;
-            command.CommandTimeout = Constants.timeout;
+            command.CommandTimeout = Constants.TimeoutSecond;
             var result = command.ExecuteNonQuery();
         }
         catch (Exception ex)
