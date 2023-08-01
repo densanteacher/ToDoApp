@@ -19,6 +19,11 @@ namespace ToDoApp2
                User ID=postgres;
                Password=postgres;";
 
+        // TODO: コメント
+        // TODO: パスカルケース
+        // TODO: 変数名に単位を含めるとわかりやすくなります。
+        // sec, ms, min なのか迷うので、明示してあげるとよいでしょう。
+        // 合わせてコメントにも単位を記述してあげてください。
         public static readonly int timeout = 5;
 
         /// <summary>

@@ -31,7 +31,6 @@ public partial class ToDoEditWindow : Window
     {
         this.InitializeComponent();
 
-        // DONE: ToDoData は既にidを持っているはずです。
         this._item = item;
 
         this.PriorityComboBox.ItemsSource = Constants.Priorities;
@@ -112,9 +111,6 @@ WHERE
 
             using var command = conn.CreateCommand();
             command.CommandText = sql;
-            // DONE: 同じ値を変更するのに複数箇所を変えたはずです。Constantsに変数を定義してみましょう。
-            // 自分で同じコードを書いてるな、同じものを変更しているなって思ったら共通化を検討してみましょう。
-            // 必ず共通化しなければならないわけではありません。しないほうがよい場合もあります。
             command.CommandTimeout = Constants.timeout;
             var result = command.ExecuteNonQuery();
         }
