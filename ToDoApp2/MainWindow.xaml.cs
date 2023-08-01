@@ -42,8 +42,7 @@ public partial class MainWindow : Window
     /// </summary>
     private void LoadToDoList()
     {
-        // TODO: Loadという処理の中にSave(Update)という動作が入っているのはよくありません。
-        UpdateIsChanged();
+        // DONE: Loadという処理の中にSave(Update)という動作が入っているのはよくありません。
 
         this.ToDoDataGrid.ItemsSource = null;
         this.ToDoDataGrid.Items.Clear();
@@ -98,7 +97,7 @@ ORDER BY
                 // TODO: 少し冗長になりますが、reader.GetXxx() したものは
                 // 一度変数に入れて名前をつけた方が読む人に優しいです。
                 var item = new ToDoData(reader.GetInt32(0));
-                item.SetDataItem(
+                item.SetToDoData(
                     reader.GetBoolean(1),
                     reader.GetString(2),
                     reader.GetString(3),
@@ -138,7 +137,6 @@ ORDER BY
         return item.Id;
     }
 
-
     /// <summary>
     /// <see cref="_items"/>の内容を元にデータベースの更新を行います。
     /// </summary>
@@ -154,8 +152,9 @@ WHERE
     id = {this._items[row].IsFinished}
 ";
 
-        this.ExecuteSqlCommand(sql);
-    }
+
+//        this.ExecuteSqlCommand(sql);
+//    }
 
     /// <summary>
     /// (WIP)<see cref="_items"/>の中で内容が変更されているものを、データベース上で更新します。
@@ -172,6 +171,7 @@ WHERE
             UpdateToDoItem(item.Id);
         }
     }
+
 
     #endregion DataGrid関連処理
 
@@ -324,6 +324,11 @@ WHERE
 
         this.LoadToDoList();
         this.ToDoDataGrid.SelectedIndex = row;
+    }
+
+    private void BulkFinishButton_Click(object sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
     }
 
     private void ExecuteSqlCommand(string sql)

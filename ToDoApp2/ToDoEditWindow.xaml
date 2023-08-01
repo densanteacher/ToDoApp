@@ -42,14 +42,20 @@
             <ComboBox Grid.Row="2" Grid.Column="2" x:Name="PriorityComboBox" MinWidth="50"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="画像削除"/>
-            <Button Content="画像変更"/>
-        </StackPanel>
+        <Grid Grid.Row="2" Grid.Column="3" Grid.RowSpan="2" Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Row="0" Grid.Column="0" Content="画像削除"/>
+            <Button Grid.Row="0" Grid.Column="1" Content="画像変更"/>
+            <Button Grid.Row="1" Grid.Column="0" Content="Cancel" Click="CancelButton_Click"/>
+            <Button Grid.Row="1" Grid.Column="1" Content="変更を保存" Click="ChangeButton_Click"/>
+        </Grid>
 
-        <StackPanel Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Cancel" Click="CancelButton_Click"/>
-            <Button Content="変更を保存" Click="ChangeButton_Click"/>
-        </StackPanel>
     </Grid>
 </Window>

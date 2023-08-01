@@ -6,12 +6,6 @@
         xmlns:local="clr-namespace:ToDoApp2"
         mc:Ignorable="d"
         Title="ToDoリスト" Height="450" Width="800" FontSize="18">
-    <Window.Resources>
-        <Style TargetType="CheckBox">
-            <EventSetter Event="Checked" Handler="CheckBox_Checked"/>
-            <EventSetter Event="Unchecked" Handler="CheckBox_Unchecked"/>
-        </Style>
-    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
