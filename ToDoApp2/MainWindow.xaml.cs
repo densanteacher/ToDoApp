@@ -79,7 +79,7 @@ ORDER BY
         using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
         using IDbCommand command = conn.CreateCommand();
         command.CommandText = sql;
-        command.CommandTimeout = Constants.timeout;
+        command.CommandTimeout = Constants.TimeoutSecond;
 
         try
         {
@@ -142,40 +142,16 @@ ORDER BY
     /// </summary>
     private void UpdateToDoItem(int row)
     {
-        // TODO: this
+        // DONE: this
         var sql = $@"
 UPDATE todo_items SET
-    is_finished = {_items[row].IsFinished}
+    is_finished = {this._items[row].IsFinished}
   , updated_at = current_timestamp
 WHERE
-    id = {_items[row].IsFinished}
+    id = {this._items[row].IsFinished}
 ";
-        using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
-        using var command = conn.CreateCommand();
-        command.CommandText = sql;
-        command.CommandTimeout = Constants.timeout;
 
-        try
-        {
-            conn.Open();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.ToString());
-        }
-
-        try
-        {
-            command.ExecuteNonQuery();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.ToString());
-        }
-        finally
-        {
-            conn.Close();
-        }
+        this.ExecuteSqlCommand(sql);
     }
 
     /// <summary>
@@ -222,7 +198,7 @@ WHERE
         }
 
         var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
-        var window = new ToDoEditWindow((int)id, this._items[row])
+        var window = new ToDoEditWindow(this._items[row])
         {
             Owner = this
         };
@@ -253,33 +229,7 @@ WHERE
 
         var sql = $@"DELETE FROM todo_items WHERE id = {id};";
 
-        {
-            using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
-            using var command = conn.CreateCommand();
-            command.CommandText = sql;
-            command.CommandTimeout = Constants.timeout;
-            try
-            {
-                conn.Open();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-
-            try
-            {
-                command.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-            finally
-            {
-                conn.Close();
-            }
-        }
+        this.ExecuteSqlCommand(sql);
 
         this.LoadToDoList();
     }
@@ -293,34 +243,7 @@ WHERE
 
         var sql = $@"DELETE FROM todo_items WHERE is_finished = true;";
 
-        {
-            using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
-            using var command = conn.CreateCommand();
-            command.CommandText = sql;
-            command.CommandTimeout = Constants.timeout;
-
-            try
-            {
-                conn.Open();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-
-            try
-            {
-                command.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-            finally
-            {
-                conn.Close();
-            }
-        }
+        this.ExecuteSqlCommand(sql);
 
         this.LoadToDoList();
     }
@@ -332,7 +255,7 @@ WHERE
     {
         var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
         var priority = this._items[row].Priority;
-        if (priority < 5)
+        if (priority < Constants.Priorities.Max())
         {
             priority++;
         }
@@ -343,32 +266,9 @@ UPDATE todo_items SET
 WHERE
     id = {this._items[row].Id}
 ";
-        using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
-        using var command = conn.CreateCommand();
-        command.CommandText = sql;
-        command.CommandTimeout = Constants.timeout;
 
-        try
-        {
-            conn.Open();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.ToString());
-        }
+        this.ExecuteSqlCommand(sql);
 
-        try
-        {
-            command.ExecuteNonQuery();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.ToString());
-        }
-        finally
-        {
-            conn.Close();
-        }
         this.LoadToDoList();
         this.ToDoDataGrid.SelectedIndex = row;
 
@@ -382,7 +282,7 @@ WHERE
         var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
 
         var priority = this._items[row].Priority;
-        if (priority > -5)
+        if (priority > Constants.Priorities.Min())
         {
             priority--;
         }
@@ -394,10 +294,36 @@ WHERE
     id = {this._items[row].Id}
 ";
 
+        this.ExecuteSqlCommand(sql);
+        this.LoadToDoList();
+        this.ToDoDataGrid.SelectedIndex = row;
+    }
+
+    #endregion Clickイベント
+
+    private void FinishButton_Click(object sender, RoutedEventArgs e)
+    {
+        var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
+
+        var sql = $@"
+UPDATE todo_items SET
+    is_finished = true
+  , updated_at = current_timestamp
+WHERE
+    id = {this._items[row].Id}
+";
+        this.ExecuteSqlCommand(sql);
+
+        this.LoadToDoList();
+        this.ToDoDataGrid.SelectedIndex = row;
+    }
+
+    private void ExecuteSqlCommand(string sql)
+    {
         using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
         using var command = conn.CreateCommand();
         command.CommandText = sql;
-        command.CommandTimeout = Constants.timeout;
+        command.CommandTimeout = Constants.TimeoutSecond;
 
         try
         {
@@ -405,7 +331,7 @@ WHERE
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            MessageBox.Show(this, ex.Message);
         }
 
         try
@@ -414,32 +340,12 @@ WHERE
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            MessageBox.Show(this, ex.Message);
         }
         finally
         {
             conn.Close();
         }
-        this.LoadToDoList();
-        this.ToDoDataGrid.SelectedIndex = row;
     }
-
-    private void CheckBox_Checked(object sender, RoutedEventArgs e)
-    {
-        var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
-
-        // DONE: this
-        this._items[row].IsFinished = true;
-        this._items[row].IsChanged = true;
-    }
-    private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
-    {
-        var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
-
-        this._items[row].IsFinished = false;
-        this._items[row].IsChanged = true;
-    }
-
-    #endregion Clickイベント
 }
 
