@@ -1,0 +1,65 @@
+﻿# A5:ER FORMAT:17
+# A5:ER ENCODING:UTF8
+# A5:ER Mk-1 Copyright © 2007 m.matsubara
+# A5:SQL Mk-2 Version 2.18.3 Copyright © 1997 - 2023 m.matsubara
+#  https://a5m2.mmatsubara.com
+
+[Manager]
+ProjectName=
+Author=
+MaxEntityRowShow=1000
+ReadOnlyRecommend=0
+Page=Main
+PageInfo="Main",2,"A3Landscape",$FFFFFF
+LogicalView=1
+DecodeDomain=0
+ViewModePageIndividually=1
+ViewMode=2
+ViewFormat=0
+UseNondependenceDashLine=0
+FontName=Tahoma
+FontSize=20
+PaperSize=A4Landscape
+HeaderLeft=
+HeaderCenter=
+HeaderRight=
+FooterLeft=
+FooterCenter=
+FooterRight=
+ShowPageoutRelation=1
+RDBMSTypeName=Oracle Database
+DefaultPkName=%0:s_PKC
+DefaultPkIndexName=%0:s_PKI
+DefaultIndexName=%0:s_IX%1:d
+DefaultFkName=%0:s_FK%1:d
+SqlSeparator=0
+UpperCaseKeyword=0
+ShowTag=1
+ShowCommonAttributes=0
+BugFixEntityWidth=1
+
+[Entity]
+PName=todo_items
+LName=todo_items
+Comment=
+TableOption=
+Page=Main
+Left=100
+Top=150
+Field="id","id","integer","NOT NULL",0,"","",$FFFFFFFF,""
+Field="title","title","text","NOT NULL",,"","",$FFFFFFFF,""
+Field="date_start","date_start","timestamp(6) without time zone",,,"","",$FFFFFFFF,""
+Field="date_end","date_end","timestamp(6) without time zone",,,"","",$FFFFFFFF,""
+Field="memo","memo","text",,,"","",$FFFFFFFF,""
+Field="image","image","bytea",,,"","",$FFFFFFFF,""
+Field="is_finished","is_finished","boolean",,,"false","",$FFFFFFFF,""
+Field="priority","priority","integer","NOT NULL",,"0","",$FFFFFFFF,""
+Field="remind","remind","boolean",,,"false","",$FFFFFFFF,""
+Field="remind_date","remind_date","date",,,"","",$FFFFFFFF,""
+Field="updated_at","updated_at","timestamp(6) without time zone","NOT NULL",,"CURRENT_TIMESTAMP","",$FFFFFFFF,""
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20230801152827
+Position="Main",100,150,573,978
+ZOrder=-1
