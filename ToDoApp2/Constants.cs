@@ -19,11 +19,6 @@ namespace ToDoApp2
                User ID=postgres;
                Password=postgres;";
 
-        // DONE: コメント
-        // DONE: パスカルケース
-        // DONE: 変数名に単位を含めるとわかりやすくなります。
-        // sec, ms, min なのか迷うので、明示してあげるとよいでしょう。
-        // 合わせてコメントにも単位を記述してあげてください。
         /// <summary>
         /// データベースと接続する際のタイムアウトまでの時間（秒）です。
         /// </summary>

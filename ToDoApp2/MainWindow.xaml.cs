@@ -28,7 +28,6 @@ public partial class MainWindow : Window
     /// </summary>
     private readonly List<ToDoData> _items = new();
 
-
     public MainWindow()
     {
         this.InitializeComponent();
@@ -96,6 +95,8 @@ ORDER BY
 
             while (reader.Read())
             {
+                // TODO: 少し冗長になりますが、reader.GetXxx() したものは
+                // 一度変数に入れて名前をつけた方が読む人に優しいです。
                 var item = new ToDoData(reader.GetInt32(0));
                 item.SetDataItem(
                     reader.GetBoolean(1),
@@ -121,6 +122,7 @@ ORDER BY
     /// </summary>
     private int? SearchId()
     {
+        // TODO: このメソッドの表記はもっとシンプルにできます。
         if (this.ToDoDataGrid.SelectedItem is null)
         {
             return null;
@@ -142,7 +144,8 @@ ORDER BY
     /// </summary>
     private void UpdateToDoItem(int row)
     {
-        // DONE: this
+        // TODO: _items[row] は変数にしてしまいましょう。
+        // TODO: id の参照が違います。
         var sql = $@"
 UPDATE todo_items SET
     is_finished = {this._items[row].IsFinished}
@@ -159,9 +162,13 @@ WHERE
     /// </summary>
     private void UpdateIsChanged()
     {
+        // TODO: this
+        // TODO: bool 型は true と比較しない
+        // TODO: 配列の命名は複数形を用いる
         var changedItem = _items.Where(x => x.IsChanged == true);
         foreach (var item in changedItem)
         {
+            // TODO: this
             UpdateToDoItem(item.Id);
         }
     }
@@ -189,6 +196,7 @@ WHERE
     /// </summary>
     private void DetailButton_Click(object sender, RoutedEventArgs e)
     {
+        // TODO: this
         UpdateIsChanged();
 
         var id = this.SearchId();
