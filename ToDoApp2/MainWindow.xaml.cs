@@ -153,8 +153,8 @@ WHERE
 ";
 
 
-//        this.ExecuteSqlCommand(sql);
-//    }
+        this.ExecuteSqlCommand(sql);
+    }
 
     /// <summary>
     /// (WIP)<see cref="_items"/>の中で内容が変更されているものを、データベース上で更新します。
