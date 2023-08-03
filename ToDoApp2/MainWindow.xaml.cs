@@ -131,14 +131,16 @@ ORDER BY
     private int? SearchId()
     {
         // TODO: このメソッドの表記はもっとシンプルにできます。
-        if (this.ToDoDataGrid.SelectedItem is null)
+        var selectedItem = this.ToDoDataGrid.SelectedItem;
+        if (selectedItem is null)
         {
             return null;
         }
 
-        this.ToDoDataGrid.ScrollIntoView(this.ToDoDataGrid.SelectedItem);
 
-        if (this.ToDoDataGrid.SelectedItem is not ToDoData item)
+        this.ToDoDataGrid.ScrollIntoView(selectedItem);
+
+        if (selectedItem is not ToDoData item)
         {
             return null;
         }
@@ -151,14 +153,15 @@ ORDER BY
     /// </summary>
     private void UpdateToDoItem(int row)
     {
-        // TODO: _items[row] は変数にしてしまいましょう。
-        // TODO: id の参照が違います。
+        var item = this._items[row];
+        // DONE: _items[row] は変数にしてしまいましょう。
+        // DONE: id の参照が違います。
         var sql = $@"
 UPDATE todo_items SET
-    is_finished = {this._items[row].IsFinished}
+    is_finished = {item.IsFinished}
   , updated_at = current_timestamp
 WHERE
-    id = {this._items[row].IsFinished}
+    id = {item.Id}
 ";
 
 
@@ -170,14 +173,14 @@ WHERE
     /// </summary>
     private void UpdateIsChanged()
     {
-        // TODO: this
+        // DONE: this
         // TODO: bool 型は true と比較しない
-        // TODO: 配列の命名は複数形を用いる
-        var changedItem = _items.Where(x => x.IsChanged == true);
-        foreach (var item in changedItem)
+        // DONE: 配列の命名は複数形を用いる
+        var changedItems = this._items.Where(x => x.IsChanged);
+        foreach (var item in changedItems)
         {
-            // TODO: this
-            UpdateToDoItem(item.Id);
+            // DONE: this
+            this.UpdateToDoItem(item.Id);
         }
     }
 
@@ -205,8 +208,8 @@ WHERE
     /// </summary>
     private void DetailButton_Click(object sender, RoutedEventArgs e)
     {
-        // TODO: this
-        UpdateIsChanged();
+        // DONE: this
+        this.UpdateIsChanged();
 
         var id = this.SearchId();
         if (id is null)
