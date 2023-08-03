@@ -94,17 +94,26 @@ ORDER BY
 
             while (reader.Read())
             {
-                // TODO: 少し冗長になりますが、reader.GetXxx() したものは
+                // DONE: 少し冗長になりますが、reader.GetXxx() したものは
                 // 一度変数に入れて名前をつけた方が読む人に優しいです。
-                var item = new ToDoData(reader.GetInt32(0));
+                var id         = reader.GetInt32(0);
+                var isFinished = reader.GetBoolean(1);
+                var title      = reader.GetString(2);
+                var memo       = reader.GetString(3);
+                var dateStart  = reader.GetDateTime(4);
+                var dateEnd    = reader.GetDateTime(5);
+                var priority   = reader.GetInt32(6);
+                var updateAt   = reader.GetDateTime(7);
+
+                var item = new ToDoData(id);
                 item.SetToDoData(
-                    reader.GetBoolean(1),
-                    reader.GetString(2),
-                    reader.GetString(3),
-                    reader.GetDateTime(4),
-                    reader.GetDateTime(5),
-                    reader.GetInt32(6),
-                    reader.GetDateTime(7));
+                    isFinished,
+                    title,
+                    memo,
+                    dateStart,
+                    dateEnd,
+                    priority,
+                    updateAt);
                 this._items.Add(item);
             }
 
