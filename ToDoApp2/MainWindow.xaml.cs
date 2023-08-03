@@ -318,6 +318,9 @@ WHERE
 
     #endregion Clickイベント
 
+    /// <summary>
+    /// 完了ボタンを押すと、<see cref="ToDoDataGrid"/>で選択した値が完了状態になります。
+    /// </summary>
     private void FinishButton_Click(object sender, RoutedEventArgs e)
     {
         var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
@@ -340,6 +343,10 @@ WHERE
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// SQLコマンドを実行します。
+    /// </summary>
+    /// <param name="sql">SQLコマンドです。</param>
     private void ExecuteSqlCommand(string sql)
     {
         using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
