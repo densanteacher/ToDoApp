@@ -7,8 +7,6 @@ using System.Windows.Media.Imaging;
 
 namespace ToDoApp2;
 
-
-// DONE: テーブルはひとつだけですが、A5:Mk-2 でER図を書いてみましょう。
 // TODO: IS NOT NULL 制約について考えてみましょう。
 /// <summary>
 /// データベースから取得したToDoデータを保存しておくクラスです。
@@ -75,7 +73,6 @@ public class ToDoData
     /// </summary>
     public bool IsChanged { get; set; } = false;
 
-    // DONE: コードを直したらコメントも忘れずに修正しましょう。
     /// <summary>
     /// コンストラクタです。IDが必須項目です。
     /// </summary>
@@ -84,13 +81,10 @@ public class ToDoData
         this.Id = id;
     }
 
-    // DONE: DataとItemは・・・？
-    // このインスタンスにセットするだけなので、目的語はなくても通じます。
-    // todoData.Set(a, b, c) みたいな感じになります。
     /// <summary>
     /// 各値を一括で設定します。
     /// </summary>
-    public void SetToDoData(
+    public void Set(
         bool isFinished,
         string title,
         string memo,

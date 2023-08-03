@@ -42,8 +42,6 @@ public partial class MainWindow : Window
     /// </summary>
     private void LoadToDoList()
     {
-        // DONE: Loadという処理の中にSave(Update)という動作が入っているのはよくありません。
-
         this.ToDoDataGrid.ItemsSource = null;
         this.ToDoDataGrid.Items.Clear();
 
@@ -74,6 +72,9 @@ ORDER BY
 
         #endregion SQL文
 
+        // TODO: this.ExecuteSqlCommand(); というメソッドがあったはず。
+        // NonQueryとQueryの違いがあるので、似たようなメソッドを用意して使うのがよさそう。
+
         using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
         using IDbCommand command = conn.CreateCommand();
         command.CommandText = sql;
@@ -94,8 +95,8 @@ ORDER BY
 
             while (reader.Read())
             {
-                // DONE: 少し冗長になりますが、reader.GetXxx() したものは
-                // 一度変数に入れて名前をつけた方が読む人に優しいです。
+                // TODO: xamlと違い、こちらでは間にインデントは入れない方がよいです。
+                // もしいれるならきちんとやりましょう。
                 var id         = reader.GetInt32(0);
                 var isFinished = reader.GetBoolean(1);
                 var title      = reader.GetString(2);
@@ -106,7 +107,7 @@ ORDER BY
                 var updateAt   = reader.GetDateTime(7);
 
                 var item = new ToDoData(id);
-                item.SetToDoData(
+                item.Set(
                     isFinished,
                     title,
                     memo,
@@ -154,8 +155,6 @@ ORDER BY
     private void UpdateToDoItem(int row)
     {
         var item = this._items[row];
-        // DONE: _items[row] は変数にしてしまいましょう。
-        // DONE: id の参照が違います。
         var sql = $@"
 UPDATE todo_items SET
     is_finished = {item.IsFinished}
@@ -163,7 +162,6 @@ UPDATE todo_items SET
 WHERE
     id = {item.Id}
 ";
-
 
         this.ExecuteSqlCommand(sql);
     }
@@ -173,13 +171,9 @@ WHERE
     /// </summary>
     private void UpdateIsChanged()
     {
-        // DONE: this
-        // TODO: bool 型は true と比較しない
-        // DONE: 配列の命名は複数形を用いる
         var changedItems = this._items.Where(x => x.IsChanged);
         foreach (var item in changedItems)
         {
-            // DONE: this
             this.UpdateToDoItem(item.Id);
         }
     }
@@ -208,7 +202,6 @@ WHERE
     /// </summary>
     private void DetailButton_Click(object sender, RoutedEventArgs e)
     {
-        // DONE: this
         this.UpdateIsChanged();
 
         var id = this.SearchId();
