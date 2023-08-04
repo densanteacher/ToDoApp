@@ -75,17 +75,12 @@ ORDER BY
 
         #endregion SQL文
 
-        // DONE: this.ExecuteSqlCommand(); というメソッドがあったはず。
-        // NonQueryとQueryの違いがあるので、似たようなメソッドを用意して使うのがよさそう。
-
         try
         {
             using var reader = this.ExecuteSqlReader(sql);
 
             while (reader.Read())
             {
-                // DONE: xamlと違い、こちらでは間にインデントは入れない方がよいです。
-                // もしいれるならきちんとやりましょう。
                 var id = reader.GetInt32(0);
                 var isFinished = reader.GetBoolean(1);
                 var title = reader.GetString(2);
@@ -122,17 +117,15 @@ ORDER BY
     /// </summary>
     private int? SearchId()
     {
-        // DONE: このメソッドの表記はもっとシンプルにできます。
+        // DONE: is を有効に使ってみました。
         var selectedItem = this.ToDoDataGrid.SelectedItem;
-        if (selectedItem is null)
+        if (selectedItem is not ToDoData todoData)
         {
             return null;
         }
 
-
-        this.ToDoDataGrid.ScrollIntoView(selectedItem);
-
-        return selectedItem is ToDoData item ? item.Id : null;
+        this.ToDoDataGrid.ScrollIntoView(todoData);
+        return todoData.Id;
     }
 
     /// <summary>

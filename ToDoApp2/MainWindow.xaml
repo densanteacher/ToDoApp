@@ -25,11 +25,9 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <!-- DONE: StackPanelの使い方を調べてみましょう。。 -->
         <StackPanel Grid.Column="2">
             <Button Content="作成" Click="InputToDo_Click"/>
             <Button Grid.Column="0" Content="編集" Click="DetailButton_Click"/>
-            <!-- DONE: 完了/未完了 ボタンをそれぞれ作ってしまいましょう。複数選択を許可し、選択されているものを一括で完了できるようにしてみましょう。 -->
             <Button Content="完了" Click="FinishButton_Click"/>
             <Button Content="一括完了" Click="BulkFinishButton_Click"/>
 
