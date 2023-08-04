@@ -63,6 +63,8 @@ SELECT
   , updated_at
 FROM
     todo_items
+WHERE
+    is_deleted = false
 ORDER BY
     is_finished
   , priority DESC
@@ -142,7 +144,7 @@ UPDATE todo_items SET
   , updated_at = current_timestamp
 WHERE
     id = {item.Id}
-";
+;";
 
         this.ExecuteSqlCommand(sql);
     }
@@ -221,7 +223,7 @@ WHERE
             return;
         }
 
-        var sql = $@"DELETE FROM todo_items WHERE id = {id};";
+        var sql = $@"UPDATE todo_items SET is_deleted = true WHERE id = {id};";
 
         this.ExecuteSqlCommand(sql);
 
@@ -235,7 +237,7 @@ WHERE
     {
         MessageBox.Show(this, "実行済みのToDoリストを全て削除します。よろしいですか？", "確認", MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
-        var sql = $@"DELETE FROM todo_items WHERE is_finished = true;";
+        var sql = $@"UPDATE todo_items SET is_deleted = true WHERE is_finished = true";
 
         this.ExecuteSqlCommand(sql);
 
