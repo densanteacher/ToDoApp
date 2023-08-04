@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -14,6 +15,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Windows.Interop;
+using System.Runtime.InteropServices;
 
 namespace ToDoApp2;
 
@@ -48,6 +53,7 @@ public partial class ToDoEditWindow : Window
         this.DateEnd.Text = item.DateEnd.ToString();
         this.Memo.Text = item.Memo;
         this.PriorityComboBox.Text = item.Priority.ToString();
+        this.ToBitmap(item.Image);
     }
 
     /// <summary>
@@ -119,4 +125,42 @@ WHERE
             MessageBox.Show(this, ex.Message);
         }
     }
+    private void ToBitmap(byte[] image)
+    {
+        using var ms = new MemoryStream(image);
+        using var bmp = new Bitmap(ms);
+        ms.Close();
+        var source = this.ToImageSource(bmp);
+        this.ImageFrame.Source = source;
+    }
+
+    private ImageSource ToImageSource(Bitmap bmp)
+    {
+        if (bmp == null) return null;
+
+        var hBitmap = bmp.GetHbitmap();
+        try
+        {
+            return Imaging.CreateBitmapSourceFromHBitmap(
+                hBitmap,
+                IntPtr.Zero,
+                Int32Rect.Empty,
+                BitmapSizeOptions.FromEmptyOptions());
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+        finally
+        {
+            NativeMethods.DeleteObject(hBitmap);
+        }
+    }
+}
+
+class NativeMethods
+{
+    [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool DeleteObject([In] IntPtr hObject);
 }

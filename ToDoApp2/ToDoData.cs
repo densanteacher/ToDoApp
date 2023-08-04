@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Drawing;
+using System.Windows.Media;
+using System.Windows;
 
 namespace ToDoApp2;
 
@@ -60,7 +64,7 @@ public class ToDoData
     /// <summary>
     /// 画像ファイルです。
     /// </summary>
-    public PngBitmapDecoder Image { get; set; }
+    public Byte[] Image { get; set; }
 
     /// <summary>
     /// ToDoリストをリマインドするかを指定する値です。
@@ -95,7 +99,8 @@ public class ToDoData
         DateTime dateStart,
         DateTime dateEnd,
         int priority,
-        DateTime updatedAt)
+        DateTime updatedAt,
+        byte[] image)
     {
         this.IsFinished = isFinished;
         this.ToDoTitle = title;
@@ -104,6 +109,7 @@ public class ToDoData
         this.DateEnd = dateEnd;
         this.Priority = priority;
         this.UpdateAt = updatedAt;
+        this.Image = image;
     }
 
     /// <summary>
