@@ -13,8 +13,9 @@ CREATE TABLE IF NOT EXISTS public.todo_items
     is_finished boolean DEFAULT false,
     priority integer NOT NULL DEFAULT 0,
     remind boolean NOT NULL DEFAULT false,
-    remind_date date,
+    remind_date timestamp without time zone,
     updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    is_deleted boolean DEFAULT false,
     CONSTRAINT todo_items_pkey PRIMARY KEY (id)
 )
 
