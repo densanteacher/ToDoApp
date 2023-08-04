@@ -315,6 +315,9 @@ WHERE
         this.ToDoDataGrid.SelectedIndex = row;
     }
 
+    /// <summary>
+    /// 一括完了ボタンを押すと、<see cref="ToDoDataGrid"/>で選択した複数の行を一括で完了状態にします。
+    /// </summary>
     private void BulkFinishButton_Click(object sender, RoutedEventArgs e)
     {
         foreach (var selectedItem in this.ToDoDataGrid.SelectedItems)
