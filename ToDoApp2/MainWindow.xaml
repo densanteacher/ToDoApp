@@ -25,7 +25,7 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <!-- TODO: StackPanelの使い方を調べてみましょう。。 -->
+        <!-- DONE: StackPanelの使い方を調べてみましょう。。 -->
         <StackPanel Grid.Column="2">
             <Button Content="作成" Click="InputToDo_Click"/>
             <Button Grid.Column="0" Content="編集" Click="DetailButton_Click"/>

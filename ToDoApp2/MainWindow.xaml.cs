@@ -72,39 +72,25 @@ ORDER BY
 
         #endregion SQL文
 
-        // TODO: this.ExecuteSqlCommand(); というメソッドがあったはず。
+        // DONE: this.ExecuteSqlCommand(); というメソッドがあったはず。
         // NonQueryとQueryの違いがあるので、似たようなメソッドを用意して使うのがよさそう。
 
-        using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
-        using IDbCommand command = conn.CreateCommand();
-        command.CommandText = sql;
-        command.CommandTimeout = Constants.TimeoutSecond;
-
         try
         {
-            conn.Open();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(this, ex.Message);
-        }
-
-        try
-        {
-            using var reader = command.ExecuteReader();
+            using var reader = this.ExecuteSqlReader(sql);
 
             while (reader.Read())
             {
-                // TODO: xamlと違い、こちらでは間にインデントは入れない方がよいです。
+                // DONE: xamlと違い、こちらでは間にインデントは入れない方がよいです。
                 // もしいれるならきちんとやりましょう。
-                var id         = reader.GetInt32(0);
+                var id = reader.GetInt32(0);
                 var isFinished = reader.GetBoolean(1);
-                var title      = reader.GetString(2);
-                var memo       = reader.GetString(3);
-                var dateStart  = reader.GetDateTime(4);
-                var dateEnd    = reader.GetDateTime(5);
-                var priority   = reader.GetInt32(6);
-                var updateAt   = reader.GetDateTime(7);
+                var title = reader.GetString(2);
+                var memo = reader.GetString(3);
+                var dateStart = reader.GetDateTime(4);
+                var dateEnd = reader.GetDateTime(5);
+                var priority = reader.GetInt32(6);
+                var updateAt = reader.GetDateTime(7);
 
                 var item = new ToDoData(id);
                 item.Set(
@@ -131,7 +117,7 @@ ORDER BY
     /// </summary>
     private int? SearchId()
     {
-        // TODO: このメソッドの表記はもっとシンプルにできます。
+        // DONE: このメソッドの表記はもっとシンプルにできます。
         var selectedItem = this.ToDoDataGrid.SelectedItem;
         if (selectedItem is null)
         {
@@ -141,12 +127,7 @@ ORDER BY
 
         this.ToDoDataGrid.ScrollIntoView(selectedItem);
 
-        if (selectedItem is not ToDoData item)
-        {
-            return null;
-        }
-
-        return item.Id;
+        return selectedItem is ToDoData item ? item.Id : null;
     }
 
     /// <summary>
@@ -336,7 +317,21 @@ WHERE
 
     private void BulkFinishButton_Click(object sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        foreach (var selectedItem in this.ToDoDataGrid.SelectedItems)
+        {
+            var row = this.ToDoDataGrid.Items.IndexOf(selectedItem);
+
+            var sql = $@"
+UPDATE todo_items SET
+    is_finished = true
+  , updated_at = current_timestamp
+WHERE
+    id = {this._items[row].Id}
+";
+            this.ExecuteSqlCommand(sql);
+        }
+
+        this.LoadToDoList();
     }
 
     /// <summary>
@@ -371,6 +366,38 @@ WHERE
         {
             conn.Close();
         }
+    }
+
+    /// <summary>
+    /// SQLコマンドを実行し、データベースからデータを読み取ります。
+    /// </summary>
+    /// <param name="sql">SQLコマンドです。</param>
+    /// <returns>読み取ったデータです。</returns>
+    private System.Data.IDataReader ExecuteSqlReader(string sql)
+    {
+        IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
+        IDbCommand command = conn.CreateCommand();
+        command.CommandText = sql;
+        command.CommandTimeout = Constants.TimeoutSecond;
+
+        try
+        {
+            conn.Open();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, ex.Message);
+        }
+
+        try
+        {
+            return command.ExecuteReader();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, ex.Message);
+        }
+        return null;
     }
 }
 

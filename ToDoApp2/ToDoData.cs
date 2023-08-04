@@ -7,7 +7,11 @@ using System.Windows.Media.Imaging;
 
 namespace ToDoApp2;
 
-// TODO: IS NOT NULL 制約について考えてみましょう。
+// DONE: IS NOT NULL 制約について考えてみましょう。
+
+// NULLによりデータの整合性が取れなくなる可能性があるため基本的にはあった方がいいと考えられます。
+// しかし、一時的に制約が崩れるような操作が必要な時に困ったり、意図せずNULLを登録しようとした際即エラーが起こるなどの問題も起こりうるようです。
+
 /// <summary>
 /// データベースから取得したToDoデータを保存しておくクラスです。
 /// </summary>
@@ -105,7 +109,7 @@ public class ToDoData
     /// <summary>
     /// string型の値を一括で設定します。
     /// </summary>
-    public void SetValueString(string title, string memo)
+    public void SetString(string title, string memo)
     {
         this.ToDoTitle = title;
         this.Memo = memo;
