@@ -97,6 +97,15 @@ public partial class ToDoInputWindow : Window
             var startDate = this.StartDate.SelectedDate.Value;
             var endDate = this.EndDate.SelectedDate.Value;
 
+            // TODO: データベースに画像を保存する方法を解説します。
+            // this.ImageFrame.Sourceに入れたのはbmp形式になります。
+            // それを一度変数に格納し、そのときにBitmapImageにasでキャストしておきます。
+            // データベースに格納するときに、バイト配列に変換する必要があります。
+            // BitmapImageをバイト配列に変換してからテーブルに挿入しましょう。
+            // あとは、bmpに変換しないでエンコードされた状態で保存したい場合は、
+            // ファイルの種類を知るための列があった方がよいでしょう。
+            // https://symfoware.blog.fc2.com/blog-entry-1280.html
+
             string sql = $@"
 INSERT INTO todo_items (
     title
