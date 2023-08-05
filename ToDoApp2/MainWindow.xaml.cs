@@ -79,6 +79,11 @@ ORDER BY
         {
             using var reader = this.ExecuteSqlReader(sql);
 
+            if (reader is null)
+            {
+                return;
+            }
+
             while (reader.Read())
             {
                 var id = reader.GetInt32(0);

@@ -18,6 +18,10 @@ namespace ToDoApp2;
 /// </summary>
 public partial class ToDoInputWindow : Window
 {
+    private string _imagePath;
+
+    private string _ext;
+
     public ToDoInputWindow()
     {
         this.InitializeComponent();
@@ -59,6 +63,9 @@ public partial class ToDoInputWindow : Window
                 MessageBoxImage.Information);
             return;
         }
+
+        this._imagePath = fileName;
+        this._ext = ext;
 
         try
         {
@@ -106,6 +113,10 @@ public partial class ToDoInputWindow : Window
             // ファイルの種類を知るための列があった方がよいでしょう。
             // https://symfoware.blog.fc2.com/blog-entry-1280.html
 
+            var imageSource = this.ImageFrame.Source as BitmapImage;
+
+            byte[] bytesImage = File.ReadAllBytes(this._imagePath);
+
             string sql = $@"
 INSERT INTO todo_items (
     title
@@ -114,6 +125,7 @@ INSERT INTO todo_items (
   , memo
   , priority
   , image
+  , extension
 )
 VALUES (
     '{title}'
@@ -121,7 +133,8 @@ VALUES (
   , '{endDate}'
   , '{memo}'
   , '{priority}'
-  , '{this.ImageFrame.Source}'
+  , '{bytesImage}'
+  , '{this._ext}'
 );
 ";
 
