@@ -57,9 +57,14 @@ public class ToDoData
     public DateTime UpdateAt { get; set; }
 
     /// <summary>
-    /// 画像ファイルです。
+    /// 画像ファイルのバイナリデータです。
     /// </summary>
     public Byte[] Image { get; set; }
+
+    /// <summary>
+    /// 画像ファイルの拡張子です。
+    /// </summary>
+    public string? Ext {  get; set; }
 
     /// <summary>
     /// ToDoリストをリマインドするかを指定する値です。
@@ -95,7 +100,8 @@ public class ToDoData
         DateTime dateEnd,
         int priority,
         DateTime updatedAt,
-        byte[] image)
+        byte[] image,
+        string? ext)
     {
         this.IsFinished = isFinished;
         this.ToDoTitle = title;
@@ -105,6 +111,7 @@ public class ToDoData
         this.Priority = priority;
         this.UpdateAt = updatedAt;
         this.Image = image;
+        this.Ext = ext;
     }
 
     /// <summary>

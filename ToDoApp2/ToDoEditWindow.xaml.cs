@@ -19,6 +19,8 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
+using System.Security.Cryptography;
 
 namespace ToDoApp2;
 
@@ -50,10 +52,30 @@ public partial class ToDoEditWindow : Window
     {
         this.IsFinished.IsChecked = item.IsFinished;
         this.ToDoTitle.Text = item.ToDoTitle;
+        this.DateStart.Text = item.DateStart.ToString();
         this.DateEnd.Text = item.DateEnd.ToString();
         this.Memo.Text = item.Memo;
         this.PriorityComboBox.Text = item.Priority.ToString();
-        this.ToBitmap(item.Image);
+
+        try
+        {
+            var fileName = "result" + item.Ext;
+            File.WriteAllBytes(fileName, (byte[])item.Image);
+
+            var bmpImage = new BitmapImage();
+            using FileStream stream = File.OpenRead(fileName);
+            bmpImage.BeginInit();
+            bmpImage.StreamSource = stream;
+            bmpImage.DecodePixelWidth = 500;
+            bmpImage.CacheOption = BitmapCacheOption.OnLoad;
+            bmpImage.CreateOptions = BitmapCreateOptions.None;
+            bmpImage.EndInit();
+            this.ImageFrame.Source = bmpImage;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.ToString());
+        }
     }
 
     /// <summary>
