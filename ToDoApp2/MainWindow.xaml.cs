@@ -61,8 +61,7 @@ SELECT
   , date_end
   , priority
   , updated_at
-  , image
-  , extension
+  , image_path
 FROM
     todo_items
 WHERE
@@ -97,6 +96,7 @@ ORDER BY
                 var updateAt = reader.GetDateTime(7);
                 var image = (byte[])reader["image"];
                 var ext = reader.GetString(9);
+                var imagePath = reader.GetString(8) is not null ? "" : "";
 
                 var item = new ToDoData(id);
                 item.Set(
@@ -107,8 +107,7 @@ ORDER BY
                     dateEnd,
                     priority,
                     updateAt,
-                    image,
-                    ext);
+                    imagePath);
                 this._items.Add(item);
             }
 

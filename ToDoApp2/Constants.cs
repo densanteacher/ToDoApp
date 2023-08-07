@@ -20,6 +20,11 @@ namespace ToDoApp2
                Password=postgres;";
 
         /// <summary>
+        /// Dropboxのアクセストークンです。
+        /// </summary>
+        public static readonly string DropboxAccessToken = "sl.BjowQT5dImNHXXTKAUj4pJ-oTDubXf2c9d2AajtjrAHLALQXLVb7VF4paB9BwwMUSHtULJP5HEzK34BeRpZlIsJ-ZIE0ag-BQarqhZu4iKmWzDx1izvUZkPiu89IcYvBCxXG4VIpKIWX";
+
+        /// <summary>
         /// データベースと接続する際のタイムアウトまでの時間（秒）です。
         /// </summary>
         public static readonly int TimeoutSecond = 5;

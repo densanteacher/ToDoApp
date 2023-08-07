@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using Dropbox.Api;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -57,13 +58,15 @@ public partial class ToDoEditWindow : Window
         this.Memo.Text = item.Memo;
         this.PriorityComboBox.Text = item.Priority.ToString();
 
+        if (item.ImagePath is null)
+        {
+            return;
+        }
+
         try
         {
-            var fileName = "result" + item.Ext;
-            File.WriteAllBytes(fileName, (byte[])item.Image);
-
             var bmpImage = new BitmapImage();
-            using FileStream stream = File.OpenRead(fileName);
+            using FileStream stream = File.OpenRead(item.ImagePath);
             bmpImage.BeginInit();
             bmpImage.StreamSource = stream;
             bmpImage.DecodePixelWidth = 500;
@@ -147,42 +150,4 @@ WHERE
             MessageBox.Show(this, ex.Message);
         }
     }
-    private void ToBitmap(byte[] image)
-    {
-        using var ms = new MemoryStream(image);
-        using var bmp = new Bitmap(ms);
-        ms.Close();
-        var source = this.ToImageSource(bmp);
-        this.ImageFrame.Source = source;
-    }
-
-    private ImageSource ToImageSource(Bitmap bmp)
-    {
-        if (bmp == null) return null;
-
-        var hBitmap = bmp.GetHbitmap();
-        try
-        {
-            return Imaging.CreateBitmapSourceFromHBitmap(
-                hBitmap,
-                IntPtr.Zero,
-                Int32Rect.Empty,
-                BitmapSizeOptions.FromEmptyOptions());
-        }
-        catch (Exception)
-        {
-            return null;
-        }
-        finally
-        {
-            NativeMethods.DeleteObject(hBitmap);
-        }
-    }
-}
-
-class NativeMethods
-{
-    [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool DeleteObject([In] IntPtr hObject);
 }

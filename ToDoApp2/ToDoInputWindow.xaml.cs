@@ -10,6 +10,8 @@ using System.Data.Common;
 using System.Windows.Documents;
 using System.Collections.Generic;
 using System.Windows.Media;
+using Dropbox.Api;
+using System.Threading.Tasks;
 
 namespace ToDoApp2;
 
@@ -21,7 +23,6 @@ public partial class ToDoInputWindow : Window
     private string _imagePath;
 
     private string _ext;
-
     public ToDoInputWindow()
     {
         this.InitializeComponent();
@@ -115,7 +116,9 @@ public partial class ToDoInputWindow : Window
 
             var imageSource = this.ImageFrame.Source as BitmapImage;
 
-            byte[] bytesImage = File.ReadAllBytes(this._imagePath);
+            Task task = this.UploadDropbox();
+
+            var imagePath = "/TestFolder/UploadTest.jpg";
 
             string sql = $@"
 INSERT INTO todo_items (
@@ -124,8 +127,7 @@ INSERT INTO todo_items (
   , date_end
   , memo
   , priority
-  , image
-  , extension
+  , image_path
 )
 VALUES (
     '{title}'
@@ -133,8 +135,7 @@ VALUES (
   , '{endDate}'
   , '{memo}'
   , '{priority}'
-  , '{bytesImage}'
-  , '{this._ext}'
+  , '{imagePath}'
 );
 ";
 
@@ -198,5 +199,42 @@ VALUES (
     {
         this.InsertToDoItem();
         this.Close();
+    }
+
+    private async Task UploadDropbox()
+    {
+        var result = await this.CreateDropboxFolder();
+
+        using var client = new DropboxClient(Constants.DropboxAccessToken);
+
+
+        var saveFolderName = "/TestFolder/";
+
+        //アップロードファイル名
+        var saveFileName = "UploadTest.jpg";
+
+        //アップロードファイルパス
+        var uploadSource = _imagePath;
+
+        //ファイルのアップロード
+        using var stream = new MemoryStream(File.ReadAllBytes(uploadSource));
+
+        //ストリームに変換して、bodyに渡す
+        await client.Files.UploadAsync(saveFolderName + saveFileName, body: stream);
+
+
+    }
+
+    private async Task<int> CreateDropboxFolder()
+    {
+        using var client = new DropboxClient(Constants.DropboxAccessToken);
+
+        //作成フォルダ
+        var folder = "/TestFolder";
+        //フォルダ作成
+        await client.Files.CreateFolderV2Async(folder);
+
+        var result = await this.CreateDropboxFolder();
+        return result + 1;
     }
 }
