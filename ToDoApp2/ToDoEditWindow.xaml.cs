@@ -49,7 +49,7 @@ public partial class ToDoEditWindow : Window
     /// <summary>
     /// ウィンドウ呼び出し時に渡された値を表示します。
     /// </summary>
-    private void SetValues(ToDoData item)
+    private async void SetValues(ToDoData item)
     {
         this.IsFinished.IsChecked = item.IsFinished;
         this.ToDoTitle.Text = item.ToDoTitle;
@@ -65,10 +65,14 @@ public partial class ToDoEditWindow : Window
 
         try
         {
+            using var client = new DropboxClient(Constants.DropboxAccessToken);
+            var response = await client.Files.DownloadAsync(item.ImagePath);
+            var imageBytes = await response.GetContentAsByteArrayAsync();
+            var ms = new MemoryStream(imageBytes);
+
             var bmpImage = new BitmapImage();
-            using FileStream stream = File.OpenRead(item.ImagePath);
             bmpImage.BeginInit();
-            bmpImage.StreamSource = stream;
+            bmpImage.StreamSource = ms;
             bmpImage.DecodePixelWidth = 500;
             bmpImage.CacheOption = BitmapCacheOption.OnLoad;
             bmpImage.CreateOptions = BitmapCreateOptions.None;

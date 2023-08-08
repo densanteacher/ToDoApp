@@ -22,7 +22,6 @@ public partial class ToDoInputWindow : Window
 {
     private string _imagePath;
 
-    private string _ext;
     public ToDoInputWindow()
     {
         this.InitializeComponent();
@@ -66,7 +65,6 @@ public partial class ToDoInputWindow : Window
         }
 
         this._imagePath = fileName;
-        this._ext = ext;
 
         try
         {
@@ -116,7 +114,7 @@ public partial class ToDoInputWindow : Window
 
             var imageSource = this.ImageFrame.Source as BitmapImage;
 
-            Task task = this.UploadDropbox();
+            var task = this.UploadDropbox();
 
             var imagePath = "/TestFolder/UploadTest.jpg";
 
@@ -201,9 +199,9 @@ VALUES (
         this.Close();
     }
 
-    private async Task UploadDropbox()
+    private async Task<bool> UploadDropbox()
     {
-        var result = await this.CreateDropboxFolder();
+        var result = this.CreateDropboxFolder();
 
         using var client = new DropboxClient(Constants.DropboxAccessToken);
 
@@ -222,10 +220,10 @@ VALUES (
         //ストリームに変換して、bodyに渡す
         await client.Files.UploadAsync(saveFolderName + saveFileName, body: stream);
 
-
+        return await this.UploadDropbox();
     }
 
-    private async Task<int> CreateDropboxFolder()
+    private async Task<bool> CreateDropboxFolder()
     {
         using var client = new DropboxClient(Constants.DropboxAccessToken);
 
@@ -235,6 +233,6 @@ VALUES (
         await client.Files.CreateFolderV2Async(folder);
 
         var result = await this.CreateDropboxFolder();
-        return result + 1;
+        return result;
     }
 }

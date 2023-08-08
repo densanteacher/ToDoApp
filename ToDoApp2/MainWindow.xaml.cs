@@ -94,9 +94,7 @@ ORDER BY
                 var dateEnd = reader.GetDateTime(5);
                 var priority = reader.GetInt32(6);
                 var updateAt = reader.GetDateTime(7);
-                var image = (byte[])reader["image"];
-                var ext = reader.GetString(9);
-                var imagePath = reader.GetString(8) is not null ? "" : "";
+                var imagePath = reader["image_path"] is null ? "" : reader.GetString(8);
 
                 var item = new ToDoData(id);
                 item.Set(
