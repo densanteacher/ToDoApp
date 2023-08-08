@@ -22,9 +22,14 @@ public partial class ToDoInputWindow : Window
 {
     private string _imagePath;
 
-    public ToDoInputWindow()
+    private readonly int _maxId;
+
+    private string _ext;
+    public ToDoInputWindow(int maxId)
     {
         this.InitializeComponent();
+
+        this._maxId = maxId + 1;
 
         this.PriorityComboBox.ItemsSource = Constants.Priorities;
         this.PriorityComboBox.SelectedIndex = 5;
@@ -65,6 +70,7 @@ public partial class ToDoInputWindow : Window
         }
 
         this._imagePath = fileName;
+        this._ext = ext;
 
         try
         {
@@ -72,7 +78,6 @@ public partial class ToDoInputWindow : Window
             using FileStream stream = File.OpenRead(fileName);
             bmpImage.BeginInit();
             bmpImage.StreamSource = stream;
-            bmpImage.DecodePixelWidth = 500;
             bmpImage.CacheOption = BitmapCacheOption.OnLoad;
             bmpImage.CreateOptions = BitmapCreateOptions.None;
             bmpImage.EndInit();
@@ -91,6 +96,13 @@ public partial class ToDoInputWindow : Window
     {
         try
         {
+            var imagePath = "";
+
+            if (this._imagePath is not null)
+            {
+                var task = this.UploadDropbox();
+                imagePath = Constants.DropboxImagePath + Constants.DropboxImageName + this._maxId + _ext;
+            }
 
             #region SQL文
 
@@ -111,12 +123,6 @@ public partial class ToDoInputWindow : Window
             // あとは、bmpに変換しないでエンコードされた状態で保存したい場合は、
             // ファイルの種類を知るための列があった方がよいでしょう。
             // https://symfoware.blog.fc2.com/blog-entry-1280.html
-
-            var imageSource = this.ImageFrame.Source as BitmapImage;
-
-            var task = this.UploadDropbox();
-
-            var imagePath = "/TestFolder/UploadTest.jpg";
 
             string sql = $@"
 INSERT INTO todo_items (
@@ -206,10 +212,10 @@ VALUES (
         using var client = new DropboxClient(Constants.DropboxAccessToken);
 
 
-        var saveFolderName = "/TestFolder/";
+        var saveFolderName = Constants.DropboxImagePath;
 
         //アップロードファイル名
-        var saveFileName = "UploadTest.jpg";
+        var saveFileName = Constants.DropboxImageName + this._maxId + this._ext;
 
         //アップロードファイルパス
         var uploadSource = _imagePath;
@@ -228,7 +234,7 @@ VALUES (
         using var client = new DropboxClient(Constants.DropboxAccessToken);
 
         //作成フォルダ
-        var folder = "/TestFolder";
+        var folder = Constants.DropboxImagePath;
         //フォルダ作成
         await client.Files.CreateFolderV2Async(folder);
 

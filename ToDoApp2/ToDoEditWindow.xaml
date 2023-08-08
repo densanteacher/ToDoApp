@@ -35,7 +35,7 @@
         <DatePicker Grid.Row="0" Grid.Column="4" x:Name="DateEnd"/>
 
         <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="Memo"/>
-        <Image Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3" x:Name="ImageFrame"/>
+        <Image Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3" x:Name="ImageFrame" MaxWidth="400"/>
 
         <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal">
             <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="優先度(高い程優先して表示）"/>

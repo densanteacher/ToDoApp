@@ -22,7 +22,11 @@ namespace ToDoApp2
         /// <summary>
         /// Dropboxのアクセストークンです。
         /// </summary>
-        public static readonly string DropboxAccessToken = "sl.BjowQT5dImNHXXTKAUj4pJ-oTDubXf2c9d2AajtjrAHLALQXLVb7VF4paB9BwwMUSHtULJP5HEzK34BeRpZlIsJ-ZIE0ag-BQarqhZu4iKmWzDx1izvUZkPiu89IcYvBCxXG4VIpKIWX";
+        public static readonly string DropboxAccessToken = "sl.Bjtw40N44DR-x-FKky-OiJtS2vY6lRni1AO3PGYLASPsmr4xfYGXFtzICYvM9MG2C8hcFK31dzYWcDgDqCAp5twvkaJiBcNo_jj3OfZnghv9Zqz7ndi4jgfDoQUCSd80dBAfpiogHy93KW9GXmf18Mg";
+
+        public static readonly string DropboxImagePath = "/ToDoItems/";
+
+        public static readonly string DropboxImageName = "ToDoItem";
 
         /// <summary>
         /// データベースと接続する際のタイムアウトまでの時間（秒）です。

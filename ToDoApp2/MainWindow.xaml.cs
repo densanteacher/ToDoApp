@@ -94,7 +94,7 @@ ORDER BY
                 var dateEnd = reader.GetDateTime(5);
                 var priority = reader.GetInt32(6);
                 var updateAt = reader.GetDateTime(7);
-                var imagePath = reader["image_path"] is null ? "" : reader.GetString(8);
+                var imagePath = reader.GetString(8) ?? "";
 
                 var item = new ToDoData(id);
                 item.Set(
@@ -172,7 +172,7 @@ WHERE
     /// </summary>
     private void InputToDo_Click(object sender, RoutedEventArgs e)
     {
-        var window = new ToDoInputWindow
+        var window = new ToDoInputWindow(_items.Max(x => x.Id))
         {
             Owner = this
         };

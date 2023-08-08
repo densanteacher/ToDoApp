@@ -58,7 +58,7 @@ public partial class ToDoEditWindow : Window
         this.Memo.Text = item.Memo;
         this.PriorityComboBox.Text = item.Priority.ToString();
 
-        if (item.ImagePath is null)
+        if (item.ImagePath == "" || item.ImagePath is null)
         {
             return;
         }
@@ -73,7 +73,6 @@ public partial class ToDoEditWindow : Window
             var bmpImage = new BitmapImage();
             bmpImage.BeginInit();
             bmpImage.StreamSource = ms;
-            bmpImage.DecodePixelWidth = 500;
             bmpImage.CacheOption = BitmapCacheOption.OnLoad;
             bmpImage.CreateOptions = BitmapCreateOptions.None;
             bmpImage.EndInit();
