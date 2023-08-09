@@ -304,13 +304,16 @@ WHERE
     private void FinishButton_Click(object sender, RoutedEventArgs e)
     {
         var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
+        var id = this._items[row].Id;
 
+        // TODO: クエリをパラメタライズ化してみましょう。
+        // パラメータ化することにより解決する問題を調べてみましょう。
         var sql = $@"
 UPDATE todo_items SET
     is_finished = true
   , updated_at = current_timestamp
 WHERE
-    id = {this._items[row].Id}
+    id = {id}
 ";
         this.ExecuteSqlCommand(sql);
 
@@ -346,6 +349,9 @@ WHERE
     /// <param name="sql">SQLコマンドです。</param>
     private void ExecuteSqlCommand(string sql)
     {
+        // TODO: DBのコネクションを作るところと、コマンドを作るところは、ある程度共通化できそうです。
+        // 別システムのものを参考にしてよいので、DB用のクラスを用意してみましょう。
+        // DIできるようになれば更に良いですが、まずは段階を踏むのがよいでしょう。
         using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
         using var command = conn.CreateCommand();
         command.CommandText = sql;

@@ -56,6 +56,9 @@ public class ToDoData
     /// </summary>
     public DateTime UpdateAt { get; set; }
 
+
+    // TODO: nullableにはせず、空文字列を使うようにしましょう。
+    // DBにおけるNULLは特殊値です。
     /// <summary>
     /// 画像ファイルのパスです。
     /// </summary>

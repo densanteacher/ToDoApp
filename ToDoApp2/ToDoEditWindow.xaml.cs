@@ -25,6 +25,9 @@ using System.Security.Cryptography;
 
 namespace ToDoApp2;
 
+// TODO: 新規登録も編集も同じような機能なので、どちらかのWindowにまとめてしまってよいでしょう。
+// レイアウトだけ別々にしたいというなら中心となる機能をまとめたクラスを用意するとよいでしょう。
+
 /// <summary>
 /// ToDoタスクの詳細表示・編集を行うウィンドウです。
 /// </summary>

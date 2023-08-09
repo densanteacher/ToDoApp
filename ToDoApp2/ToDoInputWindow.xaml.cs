@@ -205,6 +205,9 @@ VALUES (
         this.Close();
     }
 
+    // TODO: Dropbox用のクラスを用意するとよいでしょう。
+    // dropbox.Upload() みたいな書き方ができます。
+    // どうせなら別プロジェクトにしてしまうのがよいでしょう。
     private async Task<bool> UploadDropbox()
     {
         var result = this.CreateDropboxFolder();
