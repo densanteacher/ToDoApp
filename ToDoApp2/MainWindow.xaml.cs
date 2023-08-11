@@ -172,7 +172,12 @@ WHERE
     /// </summary>
     private void InputToDo_Click(object sender, RoutedEventArgs e)
     {
-        var window = new ToDoInputWindow(_items.Max(x => x.Id))
+        var maxId = 0;
+        if (this._items.Any())
+        {
+            maxId = _items.Max(x => x.Id);
+        }
+        var window = new ToDoInputWindow(maxId)
         {
             Owner = this
         };
