@@ -308,22 +308,45 @@ WHERE
     /// </summary>
     private void FinishButton_Click(object sender, RoutedEventArgs e)
     {
-        var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
-        var id = this._items[row].Id;
+        try
+        {
+            var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
+            var id = this._items[row].Id;
 
-        // TODO: クエリをパラメタライズ化してみましょう。
-        // パラメータ化することにより解決する問題を調べてみましょう。
-        var sql = $@"
+            using var command = this.PrepareCommand();
+
+            // TODO: クエリをパラメタライズ化してみましょう。
+            // パラメータ化することにより解決する問題を調べてみましょう。
+            command.CommandText = $@"
 UPDATE todo_items SET
-    is_finished = true
-  , updated_at = current_timestamp
-WHERE
-    id = {id}
-";
-        this.ExecuteSqlCommand(sql);
+    is_finished = @IS_FINISHED
+  , update_at = @UPDATED_AT
+WHERE 
+    id = @ID
+;";
+            command.Parameters.Add(new SqlParameter("@IS_FINISHED", true));
+            command.Parameters.Add(new SqlParameter("@UPDATED_AT", DateTime.Today));
+            command.Parameters.Add(new SqlParameter("@ID", id));
 
-        this.LoadToDoList();
-        this.ToDoDataGrid.SelectedIndex = row;
+            command.ExecuteNonQuery();
+
+            this.LoadToDoList();
+            this.ToDoDataGrid.SelectedIndex = row;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, ex.Message);
+        }
+
+        //        var sql = $@"
+        //UPDATE todo_items SET
+        //    is_finished = true
+        //  , updated_at = current_timestamp
+        //WHERE
+        //    id = {id}
+        //;";
+        //        this.ExecuteSqlCommand(sql);
+
     }
 
     /// <summary>
@@ -346,6 +369,12 @@ WHERE
         }
 
         this.LoadToDoList();
+    }
+
+    private IDbCommand PrepareCommand()
+    {
+        IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
+        return conn.CreateCommand();
     }
 
     /// <summary>
