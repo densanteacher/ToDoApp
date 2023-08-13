@@ -53,6 +53,7 @@ public partial class MainWindow : Window
 
         #region SQL文
 
+        // TODO: DB関連の処理を別クラスにしたので、ToDoDataControllerクラスを作成して、そちらに処理をまとめてみましょう。
         var sql = $@"
 SELECT
     id
@@ -305,11 +306,6 @@ WHERE
         {
             var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
             var id = this._items[row].Id;
-
-            // TODO: クエリをパラメタライズ化してみましょう。
-            // パラメータ化することにより解決する問題を調べてみましょう。
-
-            // 繰り返し処理が容易になるほか、SQLインジェクションなどの脆弱性への対策となります。
 
             DbConnect.FinishToDoCommand(id);
 

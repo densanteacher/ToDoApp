@@ -11,6 +11,8 @@ using static Dropbox.Api.Files.ListRevisionsMode;
 
 namespace ToDoApp2
 {
+    // TODO: DbConnect は DbConnection と紛らわしいので変えたほうがよさそうです。
+    // こういうDB関連クラスの場合は、DbClient, DbManager, DbHelper, etc... などが考えられます。
     internal class DbConnect
     {
         /// <summary>
@@ -20,6 +22,8 @@ namespace ToDoApp2
         /// <returns>SQLコマンドです。</returns>
         public static NpgsqlCommand PrepareSqlCommand(string sql)
         {
+            // TODO: conn は Close しなければならないので、どこかで保持しておく必要があります。
+            // また、一回の接続(Open)で、複数のSQLを実行したい場合もあるでしょう。
             var conn = new NpgsqlConnection(Constants.ConnectionString);
             try
             {
@@ -73,6 +77,7 @@ namespace ToDoApp2
             }
             return null;
         }
+
         /// <summary>
         /// ToDoリストを完了状態にします。
         /// </summary>
@@ -85,7 +90,7 @@ namespace ToDoApp2
 UPDATE todo_items SET
     is_finished = true
   , updated_at = @UPDATED_AT
-WHERE 
+WHERE
     id = @ID
 ;";
                 using var command = DbConnect.PrepareSqlCommand(sql);
