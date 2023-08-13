@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Data.SqlClient;
 using Dropbox.Api;
 using System.Threading.Tasks;
 using System.Windows;
@@ -123,32 +124,28 @@ public partial class ToDoEditWindow : Window
             }
             var sql = $@"
 UPDATE todo_items SET
-    is_finished = {isFinished}
-  , title = '{this.ToDoTitle.Text}'
-  , date_end = '{dateEnd}'
-  , memo = '{this.Memo.Text}'
-  , priority = {priority}
-  , updated_at = current_timestamp
+    is_finished = @IS_FINISHED
+  , title = @TITLE
+  , date_end = @DATE_END
+  , memo = @MEMO
+  , priority = @PRIORITY
+  , updated_at = @UPDATED_AT
 WHERE
-    id = {this._item.Id}
+    id = @ID
 ";
 
             #endregion SQL文
 
-            using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
+            using var command = DbConnect.PrepareSqlCommand(sql);
 
-            try
-            {
-                conn.Open();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.Message);
-            }
-
-            using var command = conn.CreateCommand();
-            command.CommandText = sql;
-            command.CommandTimeout = Constants.TimeoutSecond;
+            command.Parameters.AddWithValue("@IS_FINISHED", isFinished);
+            command.Parameters.AddWithValue("@TITLE", this.ToDoTitle.Text);
+            command.Parameters.AddWithValue("@DATE_END", dateEnd);
+            command.Parameters.AddWithValue("@MEMO", this.Memo.Text);
+            command.Parameters.AddWithValue("@PRIORITY", priority);
+            command.Parameters.AddWithValue("@UPDATED_AT", DateTime.Now);
+            command.Parameters.AddWithValue("@ID", this._item.Id);
+            
             var result = command.ExecuteNonQuery();
         }
         catch (Exception ex)

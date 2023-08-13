@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Windows.Media;
 using Dropbox.Api;
 using System.Threading.Tasks;
+using Dropbox;
 
 namespace ToDoApp2;
 
@@ -112,8 +113,8 @@ public partial class ToDoInputWindow : Window
             {
                 return;
             }
-            var startDate = this.StartDate.SelectedDate.Value;
-            var endDate = this.EndDate.SelectedDate.Value;
+            var dateStart = this.StartDate.SelectedDate.Value;
+            var dateEnd = this.EndDate.SelectedDate.Value;
 
             // TODO: データベースに画像を保存する方法を解説します。
             // this.ImageFrame.Sourceに入れたのはbmp形式になります。
@@ -134,40 +135,30 @@ INSERT INTO todo_items (
   , image_path
 )
 VALUES (
-    '{title}'
-  , '{startDate}'
-  , '{endDate}'
-  , '{memo}'
-  , '{priority}'
-  , '{imagePath}'
+    @TITLE
+  , @DATE_START
+  , @DATE_END
+  , @MEMO
+  , @PRIORITY
+  , @IMAGE_PATH
 );
 ";
 
             #endregion SQL文
 
-            using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
+            using var command = DbConnect.PrepareSqlCommand(sql);
 
-            try
-            {
-                conn.Open();
+            command.Parameters.AddWithValue("@TITLE", title);
+            command.Parameters.AddWithValue("@DATE_START", dateStart);
+            command.Parameters.AddWithValue("@DATE_END", dateEnd);
+            command.Parameters.AddWithValue("@MEMO", memo);
+            command.Parameters.AddWithValue("@PRIORITY", priority);
+            command.Parameters.AddWithValue("@IMAGE_PATH", imagePath);
 
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.Message);
-            }
 
-            try
-            {
-                using var command = conn.CreateCommand();
-                command.CommandText = sql;
-                command.CommandTimeout = Constants.TimeoutSecond;
-                var result = command.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.Message);
-            }
+            command.CommandTimeout = Constants.TimeoutSecond;
+            var result = command.ExecuteNonQuery();
+
         }
         catch (Exception ex)
         {
