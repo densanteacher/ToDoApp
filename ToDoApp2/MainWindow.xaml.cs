@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -15,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static Dropbox.Api.Files.ListRevisionsMode;
 
 namespace ToDoApp2;
 
@@ -77,7 +79,7 @@ ORDER BY
 
         try
         {
-            using var reader = this.ExecuteSqlReader(sql);
+            using var reader = DbConnect.ExecuteSqlReader(sql);
 
             if (reader is null)
             {
@@ -141,13 +143,17 @@ ORDER BY
         var item = this._items[row];
         var sql = $@"
 UPDATE todo_items SET
-    is_finished = {item.IsFinished}
-  , updated_at = current_timestamp
+    is_finished = @IS_FINISHED
+  , updated_at = @UPDATED_AT
 WHERE
-    id = {item.Id}
+    id = @ID
 ;";
 
-        this.ExecuteSqlCommand(sql);
+        using var command = DbConnect.PrepareSqlCommand(sql);
+
+        command.Parameters.AddWithValue("@IS_FINISHED", item.IsFinished);
+        command.Parameters.AddWithValue("@UPDATED_AT", DateTime.Now);
+        command.Parameters.AddWithValue("@ID", item.Id);
     }
 
     /// <summary>
@@ -172,11 +178,9 @@ WHERE
     /// </summary>
     private void InputToDo_Click(object sender, RoutedEventArgs e)
     {
-        var maxId = 0;
-        if (this._items.Any())
-        {
-            maxId = _items.Max(x => x.Id);
-        }
+        var maxId = this._items.Any()
+            ? _items.Max(x => x.Id)
+            : 0;
         var window = new ToDoInputWindow(maxId)
         {
             Owner = this
@@ -229,9 +233,11 @@ WHERE
             return;
         }
 
-        var sql = $@"UPDATE todo_items SET is_deleted = true WHERE id = {id};";
+        var sql = $@"UPDATE todo_items SET is_deleted = true WHERE id = @ID;";
 
-        this.ExecuteSqlCommand(sql);
+        using var command = DbConnect.PrepareSqlCommand(sql);
+
+        command.Parameters.AddWithValue("@ID", id);
 
         this.LoadToDoList();
     }
@@ -245,7 +251,7 @@ WHERE
 
         var sql = $@"UPDATE todo_items SET is_deleted = true WHERE is_finished = true";
 
-        this.ExecuteSqlCommand(sql);
+        DbConnect.ExecuteSqlCommand(sql);
 
         this.LoadToDoList();
     }
@@ -261,15 +267,8 @@ WHERE
         {
             priority++;
         }
-        var sql = $@"
-UPDATE todo_items SET
-    priority = {priority}
-  , updated_at = current_timestamp
-WHERE
-    id = {this._items[row].Id}
-";
 
-        this.ExecuteSqlCommand(sql);
+        DbConnect.UpdatePriority(priority, this._items[row].Id);
 
         this.LoadToDoList();
         this.ToDoDataGrid.SelectedIndex = row;
@@ -288,15 +287,9 @@ WHERE
         {
             priority--;
         }
-        var sql = $@"
-UPDATE todo_items SET
-    priority = {priority}
-  , updated_at = current_timestamp
-WHERE
-    id = {this._items[row].Id}
-";
 
-        this.ExecuteSqlCommand(sql);
+        DbConnect.UpdatePriority(priority, this._items[row].Id);
+
         this.LoadToDoList();
         this.ToDoDataGrid.SelectedIndex = row;
     }
@@ -313,22 +306,12 @@ WHERE
             var row = this.ToDoDataGrid.Items.IndexOf(this.ToDoDataGrid.SelectedItem);
             var id = this._items[row].Id;
 
-            using var command = this.PrepareCommand();
-
             // TODO: クエリをパラメタライズ化してみましょう。
             // パラメータ化することにより解決する問題を調べてみましょう。
-            command.CommandText = $@"
-UPDATE todo_items SET
-    is_finished = @IS_FINISHED
-  , update_at = @UPDATED_AT
-WHERE 
-    id = @ID
-;";
-            command.Parameters.Add(new SqlParameter("@IS_FINISHED", true));
-            command.Parameters.Add(new SqlParameter("@UPDATED_AT", DateTime.Today));
-            command.Parameters.Add(new SqlParameter("@ID", id));
 
-            command.ExecuteNonQuery();
+            // 繰り返し処理が容易になるほか、SQLインジェクションなどの脆弱性への対策となります。
+
+            DbConnect.FinishToDoCommand(id);
 
             this.LoadToDoList();
             this.ToDoDataGrid.SelectedIndex = row;
@@ -337,16 +320,6 @@ WHERE
         {
             MessageBox.Show(this, ex.Message);
         }
-
-        //        var sql = $@"
-        //UPDATE todo_items SET
-        //    is_finished = true
-        //  , updated_at = current_timestamp
-        //WHERE
-        //    id = {id}
-        //;";
-        //        this.ExecuteSqlCommand(sql);
-
     }
 
     /// <summary>
@@ -354,96 +327,20 @@ WHERE
     /// </summary>
     private void BulkFinishButton_Click(object sender, RoutedEventArgs e)
     {
-        foreach (var selectedItem in this.ToDoDataGrid.SelectedItems)
+        try
         {
-            var row = this.ToDoDataGrid.Items.IndexOf(selectedItem);
+            foreach (var selectedItem in this.ToDoDataGrid.SelectedItems)
+            {
+                var row = this.ToDoDataGrid.Items.IndexOf(selectedItem);
 
-            var sql = $@"
-UPDATE todo_items SET
-    is_finished = true
-  , updated_at = current_timestamp
-WHERE
-    id = {this._items[row].Id}
-";
-            this.ExecuteSqlCommand(sql);
+                DbConnect.FinishToDoCommand(this._items[row].Id);
+            }
         }
-
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, ex.Message);
+        }
         this.LoadToDoList();
-    }
-
-    private IDbCommand PrepareCommand()
-    {
-        IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
-        return conn.CreateCommand();
-    }
-
-    /// <summary>
-    /// SQLコマンドを実行します。
-    /// </summary>
-    /// <param name="sql">SQLコマンドです。</param>
-    private void ExecuteSqlCommand(string sql)
-    {
-        // TODO: DBのコネクションを作るところと、コマンドを作るところは、ある程度共通化できそうです。
-        // 別システムのものを参考にしてよいので、DB用のクラスを用意してみましょう。
-        // DIできるようになれば更に良いですが、まずは段階を踏むのがよいでしょう。
-        using IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
-        using var command = conn.CreateCommand();
-        command.CommandText = sql;
-        command.CommandTimeout = Constants.TimeoutSecond;
-
-        try
-        {
-            conn.Open();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(this, ex.Message);
-        }
-
-        try
-        {
-            command.ExecuteNonQuery();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(this, ex.Message);
-        }
-        finally
-        {
-            conn.Close();
-        }
-    }
-
-    /// <summary>
-    /// SQLコマンドを実行し、データベースからデータを読み取ります。
-    /// </summary>
-    /// <param name="sql">SQLコマンドです。</param>
-    /// <returns>読み取ったデータです。</returns>
-    private System.Data.IDataReader ExecuteSqlReader(string sql)
-    {
-        IDbConnection conn = new NpgsqlConnection(Constants.ConnectionString);
-        IDbCommand command = conn.CreateCommand();
-        command.CommandText = sql;
-        command.CommandTimeout = Constants.TimeoutSecond;
-
-        try
-        {
-            conn.Open();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(this, ex.Message);
-        }
-
-        try
-        {
-            return command.ExecuteReader();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(this, ex.Message);
-        }
-        return null;
     }
 }
 

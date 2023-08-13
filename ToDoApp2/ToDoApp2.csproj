@@ -131,6 +131,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Constants.cs" />
+    <Compile Include="DbConnect.cs" />
     <Compile Include="ToDoData.cs" />
     <Compile Include="ToDoEditWindow.xaml.cs">
       <DependentUpon>ToDoEditWindow.xaml</DependentUpon>
